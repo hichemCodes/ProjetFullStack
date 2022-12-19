@@ -3,9 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\BoutiqueRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
+
 
 /**
+ * @ApiResource()
  * @ORM\Entity(repositoryClass=BoutiqueRepository::class)
  */
 class Boutique
@@ -36,6 +41,27 @@ class Boutique
      * @ORM\Column(type="datetime")
      */
     private $date_de_creation;
+
+    /**
+     * @ORM\OneToMany(targetEntity=User::class, mappedBy="boutique_id")
+     */
+    private $users;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Adresse::class, cascade={"persist", "remove"})
+     */
+    private $adresse_id;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Produit::class, mappedBy="boutique_id")
+     */
+    private $produits;
+
+    public function __construct()
+    {
+        $this->users = new ArrayCollection();
+        $this->produits = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -86,6 +112,78 @@ class Boutique
     public function setDateDeCreation(\DateTimeInterface $date_de_creation): self
     {
         $this->date_de_creation = $date_de_creation;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users[] = $user;
+            $user->setBoutiqueId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->removeElement($user)) {
+            // set the owning side to null (unless already changed)
+            if ($user->getBoutiqueId() === $this) {
+                $user->setBoutiqueId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getAdresseId(): ?Adresse
+    {
+        return $this->adresse_id;
+    }
+
+    public function setAdresseId(?Adresse $adresse_id): self
+    {
+        $this->adresse_id = $adresse_id;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Produit>
+     */
+    public function getProduits(): Collection
+    {
+        return $this->produits;
+    }
+
+    public function addProduit(Produit $produit): self
+    {
+        if (!$this->produits->contains($produit)) {
+            $this->produits[] = $produit;
+            $produit->setBoutiqueId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProduit(Produit $produit): self
+    {
+        if ($this->produits->removeElement($produit)) {
+            // set the owning side to null (unless already changed)
+            if ($produit->getBoutiqueId() === $this) {
+                $produit->setBoutiqueId(null);
+            }
+        }
 
         return $this;
     }

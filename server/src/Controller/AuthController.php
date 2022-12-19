@@ -5,6 +5,9 @@ namespace App\Controller;
 
 
 use App\Entity\User;
+use App\Entity\Adresse;
+use App\Entity\Ville;
+use App\Repository\VilleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -35,19 +38,30 @@ class AuthController extends ApiController
         $password = $request->get('password');
         $nom = $request->get('nom');
         $prenom = $request->get('prenom');
-        $dateDeNaissance = $request->get('date_de_naissance');
 
         if (empty($email) || empty($password) || empty($nom)) {
             return $this->respondValidationError("Invalid Username or Password or Email");
         }
 
         $user = new User();
+        $villeRepository = $this->em->getRepository(Ville::class);
         $user->setEmail($email);
         $user->setPassword($encoder->encodePassword($user, $password));
         $user->setNom($nom);
         $user->setPrenom($prenom);
-        $user->setDateDeNaissance(\DateTime::createFromFormat('d-m-Y',$dateDeNaissance));
-        $user->setRoles(array('ROLE_ADMIN'));
+        $user->setRoles(array($request->get('roles')));
+        if(!empty($request->get('ville_id'))) {
+             $userAdress = new Adresse();
+             if(!empty($request->get('complement_adresse'))) {
+                $userAdress->setComplementAdresse($request->get('complement_adresse'));
+                $userAdress->setVileId(
+                    $villeRepository->find($request->get('ville_id'))
+                );
+                $this->em->persist($userAdress);
+                $this->em-> flush();
+            } 
+        }
+        $user->setAdresseId($userAdress);
         $this->em->persist($user);
         $this->em-> flush();
         return $this->respondWithSuccess(sprintf('User %s successfully created', $user->getUsername()));

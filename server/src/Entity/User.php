@@ -45,6 +45,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $prenom;
 
+    /**
+     * @ORM\OneToOne(targetEntity=Adresse::class, cascade={"persist", "remove"})
+     */
+    private $adresse_id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Boutique::class, inversedBy="users")
+     */
+    private $boutique_id;
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -154,6 +165,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPrenom(string $prenom): self
     {
         $this->prenom = $prenom;
+
+        return $this;
+    }
+
+    public function getAdresseId(): ?Adresse
+    {
+        return $this->adresse_id;
+    }
+
+    public function setAdresseId(?Adresse $adresse_id): self
+    {
+        $this->adresse_id = $adresse_id;
+
+        return $this;
+    }
+
+    public function getBoutiqueId(): ?Boutique
+    {
+        return $this->boutique_id;
+    }
+
+    public function setBoutiqueId(?Boutique $boutique_id): self
+    {
+        $this->boutique_id = $boutique_id;
 
         return $this;
     }
