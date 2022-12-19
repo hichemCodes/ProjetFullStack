@@ -29,7 +29,7 @@ class Adresse
      * @ORM\ManyToOne(targetEntity=Ville::class, inversedBy="adresses")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $vile_id;
+    private $ville_id;
 
     public function getId(): ?int
     {
@@ -48,12 +48,12 @@ class Adresse
         return $this;
     }
 
-    public function getVileId(): ?Ville
+    public function getVilleId(): ?Ville
     {
         return $this->vile_id;
     }
 
-    public function setVileId(?Ville $vile_id): self
+    public function setVilleId(?Ville $vile_id): self
     {
         $this->vile_id = $vile_id;
 
