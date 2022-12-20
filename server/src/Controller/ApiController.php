@@ -5,6 +5,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class ApiController extends AbstractController
 {
@@ -147,6 +148,17 @@ class ApiController extends AbstractController
         $request->request->replace($data);
 
         return $request;
+    }
+
+    /**
+     * Returns a formatted 204 no data response.
+     *
+     * @return JsonResponse
+     */
+    protected function noData(): JsonResponse
+    {
+        // Only step : Return the empty body.
+        return $this->json(null,Response::HTTP_NO_CONTENT);
     }
 
 
