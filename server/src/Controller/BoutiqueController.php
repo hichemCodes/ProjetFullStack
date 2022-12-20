@@ -11,15 +11,24 @@ use App\Repository\VilleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use FOS\RestBundle\Request\ParamFetcher;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Routing\Annotation\Route;
+
 
 class BoutiqueController extends ApiController
 {
+    private $em;
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * Get a list of all boutiques.
-     * @Route ("/api/boutiques", name="boutiques", methods={"GET"})
+     * @Route("/api/boutiques", name="boutiques", methods={"GET"})
      * @param BoutiqueRepository $boutiqueRepository
      * @return JsonResponse
      */
@@ -31,12 +40,12 @@ class BoutiqueController extends ApiController
         $boutiques = $boutiqueRepository->findAll();
 
         // Last Step : return the data.
-        return $this->response($boutiques);
+        return $this->json($boutiques,Response::HTTP_OK);
     }
 
     /**
      * Create boutique.
-     * @Route ("/api/boutiques", name="create_boutique", methods={"POST"})
+     * @Route("/api/boutiques", name="create_boutique", methods={"POST"})
      * @param BoutiqueRepository $boutiqueRepository
      * @param Request $request
      * @param EntityManagerInterface $entityManagerInterface
@@ -44,44 +53,30 @@ class BoutiqueController extends ApiController
      */
     public function createBoutique(
         BoutiqueRepository $boutiqueRepository,
-        Request $request,
-        EntityManagerInterface $entityManagerInterface
+        Request $request
     ): JsonResponse {
 
         $request = $this->transformJsonBody($request);
         $nom = $request->get('nom');
         $horaires_de_ouverture = $request->get('horaires_de_ouverture');
         $en_conge = $request->get('en_conge');
-        $date_de_creation = $request->get('date_de_creation');
 
-        if (empty($nom) || empty($horaires_de_ouverture) || empty($en_conge) || empty($date_de_creation)) {
+        if (empty($nom) || empty($horaires_de_ouverture) || empty($en_conge)) {
             return $this->respondValidationError("Invalid request");
         }
 
         $boutique = new Boutique();
-        $villeRepository = $this->$entityManagerInterface->getRepository(Ville::class);
         $boutique->setNom($nom);
         $boutique->setHorairesDeOuverture($horaires_de_ouverture);
         $boutique->setEnConge($en_conge);
-        $boutique->setDateDeCreation($date_de_creation);
+        $boutique->setDateDeCreation(new \DateTime());
 
-        if(!empty($request->get('ville_id'))) {
-            $boutiqueAdresse = new Adresse();
-            if(!empty($request->get('complement_adresse'))) {
-                $boutiqueAdresse->setComplementAdresse($request->get('complement_adresse'));
-                $boutiqueAdresse->setVilleId(
-                    $villeRepository->find($request->get('ville_id'))
-                );
-                $this->$entityManagerInterface->persist($boutiqueAdresse);
-                $this->$entityManagerInterface-> flush();
-            }
-        }
-        $boutique->setAdresseId($boutiqueAdresse);
-        $this->$entityManagerInterface->persist($boutique);
-        $this->$entityManagerInterface-> flush();
+        $this->em->persist($boutique);
+        $this->em-> flush();
 
         // Last Step : return the data.
-        return $this->respondWithSuccess(sprintf('Boutique %s successfully created', $boutique->getNom()));
+        return $this->json($boutique,Response::HTTP_CREATED, array());
+
 
     }
 
@@ -89,7 +84,7 @@ class BoutiqueController extends ApiController
      * Delete boutique.
      *
      *
-     * @Route ("/api/boutiques/{id}", name="delete_boutique", methods={"DELETE"})
+     * @Route("/api/boutiques/{id}", name="delete_boutique", methods={"DELETE"})
      * @noinspection PhpOptionalBeforeRequiredParametersInspection
      * @param Boutique|null $existingBoutique
      * @param EntityManagerInterface $entityManager
@@ -107,7 +102,8 @@ class BoutiqueController extends ApiController
          $entityManager->flush();
 
          // Last step : Return no data as confirmation.
-         return $this->noData();
+         return $this->json('Boutique supprimée',Response::HTTP_OK);
+
      }
 
 
