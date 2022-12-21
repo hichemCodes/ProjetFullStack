@@ -39,6 +39,22 @@ class ProduitRepository extends ServiceEntityRepository
         }
     }
 
+    /*public function findAllProduitsBoutiqueCategorie($boutiqueId,$categorieId): ?Produit
+    {
+        $qb = $this->createQueryBuilder('p')
+        ->innerJoin('p.phones', 'p', 'WITH', 'p.phone = :phone')
+        ->where('c.username = :username')
+        ->setParameter('phone', $phone)
+        ->setParameter('username', $username);
+
+        $qb->select('c')
+    ->innerJoin('c.phones', 'p', 'WITH', 'p.phone = :phone')
+    ->where('c.username = :username')
+    ->setParameter('phone', $phone)
+    ->setParameter('username', $username);
+or
+    }*/
+
 //    /**
 //     * @return Produit[] Returns an array of Produit objects
 //     */
