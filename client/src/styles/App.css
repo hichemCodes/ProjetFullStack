@@ -54,3 +54,7 @@
 #nom,#prenom,#codePostal,#vile {
     width: 35vh;
 }
+
+.appLogo{
+    margin-bottom: -57px
+}
