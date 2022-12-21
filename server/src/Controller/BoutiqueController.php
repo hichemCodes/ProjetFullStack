@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Adresse;
 use App\Entity\Boutique;
+use App\Entity\Produit;
 use App\Entity\Ville;
 use App\Repository\BoutiqueRepository;
 use App\Repository\AdresseRepository;
@@ -48,7 +49,6 @@ class BoutiqueController extends ApiController
      * @Route("/api/boutiques", name="create_boutique", methods={"POST"})
      * @param BoutiqueRepository $boutiqueRepository
      * @param Request $request
-     * @param EntityManagerInterface $entityManagerInterface
      * @return JsonResponse
      */
     public function createBoutique(
@@ -91,21 +91,105 @@ class BoutiqueController extends ApiController
      * @return JsonResponse
      */
 
-     public function deleteBoutique(
-         Boutique $existingBoutique = null,
-         EntityManagerInterface $entityManager
-     ) :JsonResponse {
-         if(is_null($existingBoutique)) {
-             return $this->respondNotFound();
-         }
-         $entityManager->remove($existingBoutique);
-         $entityManager->flush();
+    public function deleteBoutique(
+        Boutique $existingBoutique = null,
+        EntityManagerInterface $entityManager
+    ) :JsonResponse {
+        if(is_null($existingBoutique)) {
+            return $this->respondNotFound();
+        }
+        $this->em->remove($existingBoutique);
+        $this->em->flush();
 
-         // Last step : Return no data as confirmation.
-         return $this->json('Boutique supprimée',Response::HTTP_OK);
+        // Last step : Return no data as confirmation.
+        return $this->json('Boutique supprimée',Response::HTTP_OK);
 
-     }
+    }
 
+    /**
+     * Update boutique
+     * @Route("/api/boutiques/{id}", name="update_boutique", methods={"PATCH"})
+     * @noinspection PhpOptionalBeforeRequiredParametersInspection
+     * @param Boutique|null $existingBoutique
+     * @param BoutiqueRepository $boutiqueRepository
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function updateBoutique(
+        Boutique $existingBoutique = null,
+        BoutiqueRepository $boutiqueRepository,
+        Request $request
+    ): JsonResponse {
+        if(is_null($existingBoutique)) {
+            return $this->respondNotFound();
+        }
+        $request = $this->transformJsonBody($request);
+        $nom = $request->get('nom');
+        $horaires_de_ouverture = $request->get('horaires_de_ouverture');
+        $en_conge = $request->get('en_conge');
+
+        if (empty($nom) || empty($prix)) {
+            return $this->respondValidationError("Invalid request");
+        }
+        $existingBoutique->setNom($nom);
+        $existingBoutique->setHorairesDeOuverture($horaires_de_ouverture);
+        $existingBoutique->setEnConge($en_conge);
+
+        $this->em->persist($existingBoutique);
+        $this->em->flush();
+
+        // Last step : Return no data as confirmation.
+        return $this->json($existingBoutique,Response::HTTP_OK);
+
+    }
+
+    /**
+     * Associate  produit to boutique E_BTQ_40
+     * @Route("/api/boutiques/{id}/produit/{idProduit}", name="associate_produit_boutique", methods={"PATCH"})
+     * @noinspection PhpOptionalBeforeRequiredParametersInspection
+     * @param Boutique|null $existingBoutique
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function associateProduitToBoutique(
+        Boutique $existingBoutique = null,
+        Request $request
+    ): JsonResponse {
+        if(is_null($existingBoutique)) {
+            return $this->respondNotFound();
+        }
+        $request = $this->transformJsonBody($request);
+        $produit = $request->get('produit');
+
+        if (empty($produit)) {
+            return $this->respondValidationError("Invalid request");
+        }
+        $produitRepository = $this->em->getRepository(Produit::class);
+        $produitAdded = $produitRepository->find($produit);
+        $existingBoutique->addProduit($produitAdded);
+        //$produit->addProduit($existingBoutique);
+        $this->em->persist($existingBoutique);
+        //$this->em->persist($produit);
+
+        $this->em->flush();
+        return $this->json($existingBoutique,Response::HTTP_OK);
+
+
+    }
+
+    /**
+     * Get specific boutique.
+     * @Route("/api/boutiques/{id}", name="boutique", methods={"GET"})
+     * @return JsonResponse
+     */
+    public function getProduit(
+        Boutique $existingBoutique
+    ): JsonResponse {
+        if(is_null($existingBoutique)) {
+            return $this->respondNotFound();
+        }
+        return $this->json($existingBoutique,Response::HTTP_OK);
+    }
 
 
 
