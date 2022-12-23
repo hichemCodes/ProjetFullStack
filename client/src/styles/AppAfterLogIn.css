@@ -117,11 +117,10 @@ body{
    position: absolute;
    top: 84%;
    right: 2.4%;
-   display: flex;
    flex-direction: column;
    z-index: 100;
    background: #fff;
-   display: flex;
+   display: none;
    overflow: hidden;
  }
  
@@ -133,10 +132,18 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
+    
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
  }
+ .pop-up-fav span:last-child {
+  cursor: pointer;
+ }
+ .pop-up-fav span:first-child {
+  font-weight: bold;
+
+ }
+
  .pop-up-fav span:hover{
    background: #f7f7f7;
  }
@@ -173,14 +180,19 @@ body{
 	transition: linear 0.25s;
     height: 48px;
     width: 48px;
+    background-image: url(../images/online-shopping-retail.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
 }
 
 
-.avatar-user:hover {
+/*.avatar-user:hover {
 	transition: ease-out 0.2s;
     border: 1.5px solid rgba(0,0,0,0.2);
     -webkit-transition: ease-out 0.2s;
-}
+}*/
 
  .favorite{
    position: relative;
@@ -495,3 +507,98 @@ body{
       margin: 30px 0px 8.8% 0px;
      
  }
+
+ .card h1,.card h2 {
+  margin: 0;
+  font-family: Montserrat, sans-serif;
+  text-align: left;
+}
+
+.card h1  {
+  font-size: 1.2rem;
+}
+
+.card-item-title {
+  color: #9E9E9E;
+  font-style: italic;
+  font-size: 0.9rem;
+  font-weight: bold;
+  margin: 4px 0px 4px 0px;
+}
+
+.card-item-title span {
+   color: #222222;
+}
+.card {
+  background-color: #FFFFFF;
+  margin: 50px auto;
+  max-width: 300px;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 10px 10px 30px #BDBDBD;
+}
+.card__image {
+  border-radius: 10px 10px 0 0;
+  overflow: hidden;
+  height: 150px;
+  background-image: url(../images/online-shopping-retail.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  transition: all .2s ease-out;
+
+}
+.card-name {
+  margin-bottom: 11px !important;
+}
+.card__copy {
+  padding : 19px 24px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: column;
+}
+.card__copy table { 
+  margin-left: 12px
+}
+.card__copy tr {
+  font-size: .9rem;
+  font-weight: bold;
+  margin-left: 5px;
+}
+.show_option {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height:100%;
+}
+.cover_option {
+  width: 100;
+  background: #222222ad;
+  width: 100%;
+  height:100%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+.cover_option i {
+  color: white;
+  transform: scale(2.5);
+  margin: 0px 25px;
+  cursor: pointer;
+
+}
+.cover_option i:hover {
+  color: var(--main-bg-color);
+}
+
+
+.card__image:hover .cover_option {
+  display: flex;
+  
+}
+
+.swal2-styled.swal2-confirm {
+  background: var(--main-bg-color);
+}

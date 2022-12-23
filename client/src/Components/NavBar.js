@@ -9,11 +9,24 @@ import Grid from '@mui/material/Grid';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 import logo from "../images/logo.PNG";
+import { useNavigate  } from "react-router-dom";
 
 
 const NavBar = (props) => {
 
   const [token,setToken] = useState(localStorage.getItem("token"));
+  const navigate = useNavigate();
+
+
+  const deconnexion = () => {
+    localStorage.removeItem('token');
+    navigate("/login");    
+  };
+
+  const switchPopUp = () => {
+    document.querySelector(".pop-up-fav").classList.toggle("show_me");
+
+  }
 
   return (
     <div className="navbar">
@@ -24,13 +37,13 @@ const NavBar = (props) => {
                         <input type="text"  id="search_input" />
                 </div>           
         </form>
-        <div class="avatar-user"></div>
+        <div class="avatar-user" onClick={switchPopUp}></div>
         <div className="pop-up-fav ">
-                
+            
             <span> 
-                 Mon Profil
-            </span>   
-            <span > 
+                  Hichem LAOUAR
+            </span>  
+            <span onClick={deconnexion} > 
                  Se Déconecter
             </span>   
                     

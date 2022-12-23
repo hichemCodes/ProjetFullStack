@@ -10,6 +10,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 import NavBar from "./NavBar";
 import FilterBoutique from "./FilterBoutique";
+import Boutique from "./Boutique";
 import logo from "../images/shop.png";
 import '../styles/App.css';
 import '../styles/AppAfterLogIn.css';
@@ -30,10 +31,27 @@ const Boutiques = (props) => {
   const [per_page,setPerpage] = useState(10);
   const [current_action,setCurrentAction] = useState("Toutes les boutiques");
   const [enConge,setenConge] = useState("/");
+  const [boutiques,setBoutiques] = useState([]);
   
-  
+  const getAllBoutiques = () => {
+    const config = {
+      headers: { 
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'}
+    };
+    const datas = {};
+    axios.get(`${api}/boutiques`,{ headers: {"Authorization" : `Bearer ${token}`} }).then(
+        response => {
+            if( response.status === 200) {
+              setBoutiques(response.data);
+            }
+        }
+    )
+  }
+
   useEffect( () =>{
-     console.log("appel a l'api");
+    getAllBoutiques();
   },[query,orderBy,page,enConge]);
 
 
@@ -50,6 +68,20 @@ const Boutiques = (props) => {
                 change_order = { (new_order)=> { setOrderBy(new_order)}}
                 change_enConge = { (new_conge)=> { setenConge(new_conge)}}
         />  
+         <div className="imgs">
+             { boutiques.map( (boutique) => (
+                <Boutique
+                    boutique = {boutique}
+                    getAllBoutiques = {getAllBoutiques}
+                  />
+                ))
+              }
+                
+
+            
+          </div>
+        
+
 
     </React.Fragment>
   );

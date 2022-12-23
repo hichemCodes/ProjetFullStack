@@ -43,7 +43,7 @@ const LogIn = (props) => {
     ).catch( error => {
       if(error.request.status === 401) {
         ///form validation with toast
-        console.log("l'email ou le mote de passe sont inccorect");
+        console.log("l'email ou le mot de passe sont inccorect");
       }
     })
     
