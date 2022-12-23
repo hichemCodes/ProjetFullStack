@@ -7,12 +7,11 @@ use App\Entity\Boutique;
 use App\Entity\Produit;
 use App\Entity\Ville;
 use App\Repository\BoutiqueRepository;
-use App\Repository\AdresseRepository;
-use App\Repository\VilleRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -34,11 +33,45 @@ class BoutiqueController extends ApiController
      * @return JsonResponse
      */
     public function getAllBoutique(
-        BoutiqueRepository $boutiqueRepository
+        BoutiqueRepository $boutiqueRepository,
+        Request $request
     ): JsonResponse {
 
         // Step 1 : Fetch the data from database
-        $boutiques = $boutiqueRepository->findAll();
+        $request = $this->transformJsonBody($request);
+
+        if ($request->request->has('createdBefore')) {
+
+            //$date_de_creation = new \DateTime( $request->get('createdBefore'));
+            //$fromDate->setTime(0, 0, 0);
+            $date_de_creation=DateTime::createFromFormat('d/m/Y', $request->get('createdBefore'))->setTime(0, 0, 0);
+            //var_dump($date_de_creation);
+            $orderBY=($request->request->has('date_de_creation')) ? $request->request->has('date_de_creation') : 'date_de_creation';
+            $boutiques= $boutiqueRepository->searchDateBefore($date_de_creation, $orderBY);
+
+        }elseif ($request->request->has('createdAfter')) {
+            $date_de_creation=DateTime::createFromFormat('d/m/Y', $request->get('createdAfter'))->setTime(0, 0, 0);
+            //var_dump($date_de_creation);
+            $orderBY=($request->request->has('date_de_creation')) ? $request->request->has('date_de_creation') : 'date_de_creation';
+            $boutiques= $boutiqueRepository->searchDateAfter($date_de_creation, $orderBY);
+
+        } elseif ( $request->request->has('createdBetween1') && $request->request->has('createdBetween2')){
+            $date_de_creationbefore=DateTime::createFromFormat('d/m/Y', $request->get('createdBetween1'))->setTime(0, 0, 0);
+            $date_de_creationafter=DateTime::createFromFormat('d/m/Y', $request->get('createdBetween2'))->setTime(0, 0, 0);
+            //var_dump($date_de_creation);
+            $orderBY=($request->request->has('date_de_creation')) ? $request->request->has('date_de_creation') : 'date_de_creation';
+            $boutiques= $boutiqueRepository->searchDateBetween($date_de_creationbefore,$date_de_creationafter, $orderBY);
+
+        } elseif($request->request->has('query')) {
+            $query=$request->get('query');
+            //var_dump($date_de_creation);
+            $boutiques= $boutiqueRepository->searchbyName($query);
+
+
+        } else {
+            $boutiques = $boutiqueRepository->findAll();
+
+        }
 
         // Last Step : return the data.
         return $this->json($boutiques,Response::HTTP_OK);
@@ -148,26 +181,27 @@ class BoutiqueController extends ApiController
      * @Route("/api/boutiques/{id}/produit/{idProduit}", name="associate_produit_boutique", methods={"PATCH"})
      * @noinspection PhpOptionalBeforeRequiredParametersInspection
      * @param Boutique|null $existingBoutique
-     * @param Request $request
+     * @param Produit|null $exsitingProduit
      * @return JsonResponse
      */
     public function associateProduitToBoutique(
         Boutique $existingBoutique = null,
-        Request $request
+        Produit  $exsitingProduit =null
     ): JsonResponse {
         if(is_null($existingBoutique)) {
             return $this->respondNotFound();
         }
-        $request = $this->transformJsonBody($request);
-        $produit = $request->get('produit');
+        //$request = $this->transformJsonBody($request);
+        //$produit = $request->get('produit');
 
-        if (empty($produit)) {
+        if (empty($exsitingProduit) || empty($existingBoutique)) {
             return $this->respondValidationError("Invalid request");
         }
-        $produitRepository = $this->em->getRepository(Produit::class);
-        $produitAdded = $produitRepository->find($produit);
-        $existingBoutique->addProduit($produitAdded);
+        //$produitRepository = $this->em->getRepository(Produit::class);
+        //$produitAdded = $produitRepository->find($produit);
+        $existingBoutique->addProduit($exsitingProduit);
         //$produit->addProduit($existingBoutique);
+        $exsitingProduit->setBoutiqueId($existingBoutique);
         $this->em->persist($existingBoutique);
         //$this->em->persist($produit);
 
@@ -188,6 +222,28 @@ class BoutiqueController extends ApiController
         if(is_null($existingBoutique)) {
             return $this->respondNotFound();
         }
+        return $this->json($existingBoutique,Response::HTTP_OK);
+    }
+
+    /**
+     * Get specific boutique by filtering with date creation.
+     * @Route("/api/boutiques/date", name="boutiquedate_creation", methods={"GET"})
+     * @return JsonResponse
+     */
+    public function getProduitByDateCreation(
+        Boutique $existingBoutique,
+        BoutiqueRepository $boutiqueRepository,
+        Request $request
+    ): JsonResponse {
+        if(is_null($existingBoutique)) {
+            return $this->respondNotFound();
+        }
+        $request = $this->transformJsonBody($request);
+        $date_de_creation = new \DateTime( $request->get('date_de_creation'));
+
+        $existingBoutique= $boutiqueRepository->searchDateBefore($date_de_creation);
+
+
         return $this->json($existingBoutique,Response::HTTP_OK);
     }
 

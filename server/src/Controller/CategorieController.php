@@ -38,11 +38,18 @@ class CategorieController extends ApiController
      * @return JsonResponse
      */
     public function getAllBoutique(
-        CategorieRepository $categorieRepository
+        CategorieRepository $categorieRepository,
+        Request $request
     ): JsonResponse {
 
         // Step 1 : Fetch the data from database
-        $categories = $categorieRepository->findAll();
+        if($request->request->has('query')) {
+            $query = $request->get('query');
+            $categories = $categorieRepository->searchbyName($query);
+        } else {
+            $categories = $categorieRepository->findAll();
+
+        }
 
         // Last Step : return the data.
         return $this->json($categories,Response::HTTP_OK);
@@ -134,7 +141,7 @@ class CategorieController extends ApiController
      * @return JsonResponse
      */
 
-    public function deleteBoutique(
+    public function deleteCategory(
         Categorie $existingCategory = null
     ) :JsonResponse {
         if(is_null($existingCategory)) {

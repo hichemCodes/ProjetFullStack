@@ -33,9 +33,15 @@ class ProduitController extends ApiController
      * @return JsonResponse
      */
     public function getAllProduits(
-        ProduitRepository $produitRepository
+        ProduitRepository $produitRepository,
+        Request $request
     ): JsonResponse {
-        $produits = $produitRepository->findAll();
+        if($request->request->has('query')) {
+            $query = $request->get('query');
+            $produits = $produitRepository->searchbyName($query);
+        }else {
+            $produits = $produitRepository->findAll();
+        }
         return $this->json($produits,Response::HTTP_OK);
     }
 

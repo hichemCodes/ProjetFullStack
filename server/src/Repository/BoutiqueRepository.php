@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Boutique;
+use Cassandra\Date;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Mapping\OrderBy;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -63,4 +65,59 @@ class BoutiqueRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    /**
+     * Find all the boutique before the date creation passed in parameter.
+     *
+     */
+    public function searchDateBefore(\DateTime $date_de_creation, $orderBY) {
+        $queryBuilder = $this->createQueryBuilder("b")
+            ->andWhere('b.date_de_creation < :searchDate ')
+            ->setParameter('searchDate', $date_de_creation)
+            ->orderBy('b.date_de_creation', 'ASC');
+        return $queryBuilder->getQuery()->getResult();
+
+    }
+
+    /**
+     * Find all the boutique after the date creation passed in parameter.
+     *
+     */
+    public function searchDateAfter(\DateTime $date_de_creation, $orderBY) {
+        $queryBuilder = $this->createQueryBuilder("b")
+            ->andWhere('b.date_de_creation > :searchDate ')
+            ->setParameter('searchDate', $date_de_creation)
+            ->orderBy('b.date_de_creation', 'ASC');
+        return $queryBuilder->getQuery()->getResult();
+
+    }
+
+    /**
+     * Find all the boutique between the date creation passed in parameter.
+     *
+     */
+    public function searchDateBetween(\DateTime $date_de_creationbefore, \DateTime $date_de_creationafter, $orderBy) {
+        $queryBuilder = $this->createQueryBuilder("b")
+            ->andWhere('b.date_de_creation > :createdBetween1 ')
+            ->andWhere('b.date_de_creation < :createdBetween2 ')
+            ->setParameter('createdBetween1', $date_de_creationbefore)
+            ->setParameter('createdBetween2', $date_de_creationafter)
+            ->orderBy('b.date_de_creation', 'ASC');
+        return $queryBuilder->getQuery()->getResult();
+
+    }
+
+    /**
+     * Find all the boutique with name  passed in parameter.
+     *
+     */
+    public function searchbyName(string $query) {
+        $queryBuilder = $this->createQueryBuilder("b")
+            ->andWhere('b.nom LIKE :query')
+            ->setParameter('query','%'.$query);
+            //->orderBy('b.date_de_creation', 'ASC');
+        return $queryBuilder->getQuery()->getResult();
+
+    }
+
+
 }

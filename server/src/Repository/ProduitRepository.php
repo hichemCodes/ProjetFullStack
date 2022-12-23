@@ -79,4 +79,16 @@ or
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    /**
+     * Find all the product with name  passed in parameter.
+     *
+     */
+    public function searchbyName(string $query) {
+        $queryBuilder = $this->createQueryBuilder("b")
+            ->andWhere('b.nom LIKE :query')
+            ->setParameter('query','%'.$query);
+        //->orderBy('b.date_de_creation', 'ASC');
+        return $queryBuilder->getQuery()->getResult();
+
+    }
 }
