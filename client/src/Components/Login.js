@@ -14,7 +14,7 @@ import logo from "../images/shop.png";
 
 
 
-const LogIn = (props) => {
+const Login = (props) => {
 
   const [email,setEmail] = useState("");
   const [password,setPassword] = useState("");
@@ -112,4 +112,4 @@ const LogIn = (props) => {
     </ThemeProvider>
   );
 }
-export default LogIn;
+export default Login;
