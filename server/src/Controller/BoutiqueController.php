@@ -64,8 +64,9 @@ class BoutiqueController extends ApiController
 
         } elseif($request->request->has('query')) {
             $query=$request->get('query');
-            //var_dump($date_de_creation);
-            $boutiques= $boutiqueRepository->searchbyName($query);
+            //var_dump($query);
+            $orderBY=($request->request->has('query')) ? $request->request->has('query') : 'query';
+            $boutiques= $boutiqueRepository->searchbyName($query, $orderBY);
 
 
         } else {

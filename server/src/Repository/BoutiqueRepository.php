@@ -110,11 +110,11 @@ class BoutiqueRepository extends ServiceEntityRepository
      * Find all the boutique with name  passed in parameter.
      *
      */
-    public function searchbyName(string $query) {
+    public function searchbyName(string $query, $orderBY) {
         $queryBuilder = $this->createQueryBuilder("b")
             ->andWhere('b.nom LIKE :query')
-            ->setParameter('query','%'.$query);
-            //->orderBy('b.date_de_creation', 'ASC');
+            ->setParameter('query','%'.$query)
+            ->orderBy('b.nom', 'ASC');
         return $queryBuilder->getQuery()->getResult();
 
     }
