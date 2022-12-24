@@ -155,6 +155,35 @@ class CategorieController extends ApiController
 
     }
 
+    /**
+     * Associate  category to product E_CAT_40
+     * @Route("/api/categories/{id}/produit/{idProduit}", name="associate_category_product", methods={"PATCH"})
+     * @noinspection PhpOptionalBeforeRequiredParametersInspection
+     * @param Boutique|null $existingBoutique
+     * @param Produit|null $exsitingProduit
+     * @return JsonResponse
+     */
+    public function associateProduitToBoutique(
+        Categorie $existingCategory = null,
+        Produit  $exsitingProduct =null
+    ): JsonResponse {
+        if(is_null($existingCategory)) {
+            return $this->respondNotFound();
+        }
+        if (empty($exsitingProduct) || empty($existingCategory)) {
+            return $this->respondValidationError("Invalid request");
+        }
+        $existingCategory->addProduit($exsitingProduct);
+        $exsitingProduct->addCategory($existingCategory);
+        $this->em->persist($existingCategory);
+
+        $this->em->flush();
+        return $this->json($existingCategory,Response::HTTP_OK);
+
+
+    }
+
+
 
 
 
