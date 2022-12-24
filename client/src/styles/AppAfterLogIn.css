@@ -269,10 +269,15 @@ body{
    cursor: pointer;
    margin-right: 8px;
  }
+
+ .c_item_en_conge {
+  width: 144px !important;
+ }
+
  .c_item:hover{
    border:1px solid black;
  }
- .orders,.all_pages,.en_conge{
+ .orders,.all_pages,.en_conge,.change_page{
     width: 180px;
     height: auto;
     display: none;
@@ -285,11 +290,18 @@ body{
     left: 0;
     z-index: 100;
     background: #fff;
-    top:83%
+    top:76%
+ }
+ .en_conge {
+  left:16%;
+
  }
  .orders {
-    left:9%;
+    left:27.7%;
     width: 280px;
+}
+.orders_by {
+  left:47% !important;
 }
 
  .all_pages{
@@ -320,7 +332,7 @@ body{
  .all_pages span:hover{
     background: #f7f7f7;
  }
- .orders .o_item,.en_conge .o_item{
+ .orders .o_item,.en_conge .o_item,.change_page .o_item{
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -328,9 +340,9 @@ body{
     cursor: pointer;
  }
  .orders .o_item:first-child,.en_conge .o_item:first-child{
-   margin-bottom: 20px;
+   /*margin-bottom: 20px;*/
  }
- .orders .o_item .checkbox,.en_conge .o_item .checkbox{
+ .orders .o_item .checkbox,.en_conge .o_item .checkbox,.change_page .o_item .checkbox{
     width: 22px;
     height: 22px;
     border:1px solid rgb(176, 176, 176);
@@ -557,6 +569,9 @@ body{
   align-items: flex-start;
   justify-content: flex-start;
   flex-direction: column;
+  cursor: pointer;
+}
+.card__copy:hover {
 }
 .card__copy table { 
   margin-left: 12px

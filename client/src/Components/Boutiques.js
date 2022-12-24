@@ -11,12 +11,13 @@ import axios from 'axios';
 import NavBar from "./NavBar";
 import FilterBoutique from "./FilterBoutique";
 import Boutique from "./Boutique";
+import Loader from "./loader";
 import logo from "../images/shop.png";
 import '../styles/App.css';
 import '../styles/AppAfterLogIn.css';
 
 
-const Boutiques = (props) => {
+const Boutiques = ({change_current_page,currentPageSwitch}) => {
 
   const [api,setApi] = useState("http://localhost:8000/api");
   const [token,setToken] = useState(localStorage.getItem("token"));
@@ -32,7 +33,8 @@ const Boutiques = (props) => {
   const [current_action,setCurrentAction] = useState("Toutes les boutiques");
   const [enConge,setenConge] = useState("/");
   const [boutiques,setBoutiques] = useState([]);
-  
+
+
   const getAllBoutiques = () => {
     const config = {
       headers: { 
@@ -45,17 +47,22 @@ const Boutiques = (props) => {
         response => {
             if( response.status === 200) {
               setBoutiques(response.data);
+              setIsloading(false);
             }
         }
     )
   }
 
   useEffect( () =>{
+    setIsloading(true);
     getAllBoutiques();
   },[query,orderBy,page,enConge]);
 
+  useEffect( () =>{
+    change_current_page("boutiques");
+  },[]);
 
-  return (
+  return (is_loading) ? (<Loader/>) : ( 
     <React.Fragment>
         <NavBar />
         <span id="current_action">{current_action}</span>
@@ -67,18 +74,19 @@ const Boutiques = (props) => {
                 enConge = {enConge}
                 change_order = { (new_order)=> { setOrderBy(new_order)}}
                 change_enConge = { (new_conge)=> { setenConge(new_conge)}}
+                change_current_page = {change_current_page}
+                currentPageSwitch= {currentPageSwitch}
         />  
+        
          <div className="imgs">
-             { boutiques.map( (boutique) => (
+             { boutiques.map( (boutique) =>  (
+
                 <Boutique
                     boutique = {boutique}
                     getAllBoutiques = {getAllBoutiques}
                   />
                 ))
               }
-                
-
-            
           </div>
         
 

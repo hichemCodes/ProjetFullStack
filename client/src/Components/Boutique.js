@@ -1,11 +1,15 @@
 import React,{useState,useEffect} from 'react'
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import { useNavigate  } from "react-router-dom";
+
+  
 
 const Boutique = ({boutique,getAllBoutiques}) => {
 
     const [api,setApi] = useState("http://localhost:8000/api");
     const [token,setToken] = useState(localStorage.getItem("token"));
+    const navigate = useNavigate();
 
     const DeleteBoutique = (id) => {
         console.log(id);
@@ -37,6 +41,15 @@ const Boutique = ({boutique,getAllBoutiques}) => {
           })
     }
 
+    const updateBoutique = (id) => {
+       
+    }
+
+    const showBoutique = (id) => {
+
+        navigate(`/boutiques/${id}`); 
+    }
+
 
     return (
 
@@ -44,12 +57,12 @@ const Boutique = ({boutique,getAllBoutiques}) => {
         <div className="card__image">
            <div className="show_option">
                 <div className="cover_option">
-                    <i class="fa-solid fa-pen-to-square" title='modifier'></i>
+                    <i class="fa-solid fa-pen-to-square" title='modifier' onClick={()=>{updateBoutique(boutique.id)}}></i>
                     <i class="fa-sharp fa-solid fa-trash" onClick={()=>{DeleteBoutique(boutique.id)}} title='supprimer'></i>
                 </div>
            </div>
         </div>
-        <div className="card__copy">
+        <div className="card__copy" onClick={()=> {showBoutique(boutique.id)}}>
             <h1 className='card-name'>{boutique.nom}</h1>
             <span className='card-item-title'>Crée le : <span>{boutique.date_de_creation}</span></span>
             <span className='card-item-title'>En congé : <span>{ (boutique.en_conge) ? "oui" : "non"  }</span></span>
@@ -75,7 +88,8 @@ const Boutique = ({boutique,getAllBoutiques}) => {
                  
             </table>
         </div>
-      </div>
+       
+    </div>
 
 )
 }

@@ -1,7 +1,19 @@
 import React from 'react'
 import AllPages from './AllPages';
+import SwitchPages from './SwitchPages';
 
-const FilterBoutique = ({orderBy,current_page,all_pages,change_page,enConge,change_order,change_enConge}) => {
+const FilterBoutique = (
+    {
+        orderBy,
+        current_page,
+        all_pages,
+        change_page,
+        enConge,
+        change_order,
+        change_enConge,
+        change_current_page,
+        currentPageSwitch
+    }) => {
 
     const show_en_conge = () =>{
         document.querySelector('.en_conge').classList.toggle('show_me');
@@ -11,10 +23,18 @@ const FilterBoutique = ({orderBy,current_page,all_pages,change_page,enConge,chan
     const show_orders = () =>{
         document.querySelector('.orders').classList.toggle('show_me');  
     } 
+    
+    const show_orders_by = () =>{
+        document.querySelector('.orders_by').classList.toggle('show_me');  
+    } 
 
     return (
         <div className="choices">
-                 <span className="current_order c_item" onClick = {() => {show_en_conge() }}>En Congé :  <strong> {enConge} </strong> </span>
+                 <SwitchPages 
+                    change_current_page={change_current_page}
+                    currentPageSwitch={currentPageSwitch}
+                 />
+                 <span className="current_order c_item c_item_en_conge" onClick = {() => {show_en_conge() }}>En Congé :  <strong> {enConge} </strong> </span>
                  <div className="en_conge">
                        <div className="o_item"  onClick = {() => {change_enConge('oui')}}>
                                     
@@ -53,8 +73,8 @@ const FilterBoutique = ({orderBy,current_page,all_pages,change_page,enConge,chan
                         </div>
                       
                 </div>
-                <span className="current_order c_item" onClick = {() => {show_orders() }} >Triée Par :  <strong> {orderBy} </strong> </span>
-                <div className="orders">
+                <span className="current_order c_item" onClick = {() => {show_orders_by() }} >Triée Par :  <strong> {orderBy} </strong> </span>
+                <div className="orders orders_by">
                        <div className="o_item first_o"  onClick = {() => {change_order('Date de création')}}>
                                     
                                    <div className={ (orderBy == 'Date de création' ) ? 'checkbox c_check' : 'checkbox' } id="by_date">
@@ -68,6 +88,13 @@ const FilterBoutique = ({orderBy,current_page,all_pages,change_page,enConge,chan
                                         <div className="white_space"></div>
                                     </div>
                                     <label htmlFor="by_nb_produit" >Nombre de produit</label>
+                        </div>
+                        <div className="o_item" onClick = {() => {change_order('Nom')}}>
+                                    
+                                    <div className={(orderBy == 'Nom' ) ? 'checkbox c_check' : 'checkbox' } id="by_nom">
+                                        <div className="white_space"></div>
+                                    </div>
+                                    <label htmlFor="by_nom" >Nom</label>
                         </div>
                       
                 </div>
