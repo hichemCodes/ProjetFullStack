@@ -69,7 +69,7 @@ const Boutique = ({boutique,getAllBoutiques}) => {
             <span className='card-item-title'>Horraires : </span>
             <table>
                 {
-                    boutique.horairesDeOuverture.map( jourObjet => (
+                    boutique.horaires_de_ouverture.map( jourObjet => (
                             <tr>
                                 <td>
                                 {

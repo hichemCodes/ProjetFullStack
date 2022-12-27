@@ -40,36 +40,11 @@ class BoutiqueRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-
-//    /**
-//     * @return Boutique[] Returns an array of Boutique objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('a.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Boutique
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
     /**
      * Find all the boutique before the date creation passed in parameter.
      *
      */
-    public function searchDateBefore(\DateTime $date_de_creation, $orderBY) {
+    public function searchDateBefore(\DateTime $date_de_creation) {
         $queryBuilder = $this->createQueryBuilder("b")
             ->andWhere('b.date_de_creation < :searchDate ')
             ->setParameter('searchDate', $date_de_creation)
@@ -117,6 +92,65 @@ class BoutiqueRepository extends ServiceEntityRepository
             ->orderBy('b.nom', 'ASC');
         return $queryBuilder->getQuery()->getResult();
 
+    }
+
+    
+    /**
+     * Find all the boutique with name  passed in parameter.
+     *
+     */
+    public function findAllBoutiquesWithFilter(
+        $enConge = null,
+        $date_de_creationbefore = "",
+        $date_de_creationafter = "",
+        $query,
+        $orderBy = "date_de_creation",
+        $offset = 0,
+        $limit = 10
+
+    ) {
+        $queryBuilder = $this->createQueryBuilder("b")
+            ->select('b.id, b.nom,b.date_de_creation,b.en_conge,b.horaires_de_ouverture');
+
+        if($enConge != null) {
+            $queryBuilder->andWhere('b.en_conge = :param')
+            ->setParameter('param',$enConge);
+        }
+        if($date_de_creationbefore != "") {
+            $queryBuilder->andWhere('b.date_de_creation < :searchDatebefore ')
+            ->setParameter('searchDatebefore', $date_de_creationbefore);
+        }
+        if($date_de_creationafter != "") {
+            $queryBuilder->andWhere('b.date_de_creation > :searchDatebeforeAfter ')
+            ->setParameter('searchDatebeforeAfter', $date_de_creationafter);
+        }
+        if($query != "") {
+            $queryBuilder->andWhere('b.nom LIKE :query')
+            ->setParameter('query','%'.$query);
+        }
+
+        if($orderBy == "date_de_creation") {
+            $queryBuilder->orderBy('b.date_de_creation', 'DESC');
+        }
+        if($orderBy == "nom") {
+            $queryBuilder->orderBy('b.nom', 'ASC');
+        }
+        $queryBuilder->setFirstResult($offset)->setMaxResults($limit);
+
+        return $queryBuilder->getQuery()->getResult();
+
+    }
+
+
+    //get boutiques details
+    public function getBoutiquesProduits($id) {
+        $queryBuilder = $this->createQueryBuilder("b")
+        ->select('p.id,p.nom,p.prix,p.description')
+        ->leftJoin('b.produits', 'p')
+        ->andWhere('b.id = :id')
+        ->setParameter('id',$id);
+
+        return $queryBuilder->getQuery()->getResult();
     }
 
 
