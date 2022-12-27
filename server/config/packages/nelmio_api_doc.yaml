@@ -1,0 +1,20 @@
+# config/packages/nelmio_api_doc.yaml
+nelmio_api_doc:
+  documentation:
+    schemes: [ https, http ]
+    info:
+      title: 'MYSHOP | Rest API'
+      version: v1.0.0
+    securityDefinitions:
+      Bearer:
+        type: apiKey
+        description: 'Value: Bearer {jwt}'
+        name: Authorization
+        in: header
+    security:
+      - Bearer: [ ]
+  areas:
+    path_patterns: # an array of regexps
+      - ^/api(?!/doc$)
+    host_patterns:
+      - ^api\.
