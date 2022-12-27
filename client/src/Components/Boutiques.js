@@ -21,17 +21,20 @@ const Boutiques = ({change_current_page,currentPageSwitch}) => {
 
   const [api,setApi] = useState("http://localhost:8000/api");
   const [token,setToken] = useState(localStorage.getItem("token"));
-  const [query,setQuery] = useState('paris');
+  const [query,setQuery] = useState('');
   const [result,setResult] = useState('');
   const [is_loading,setIsloading] = useState(true);
   const [cpt_results,setCptResult] = useState(0);
-  const [orderBy,setOrderBy] = useState('Date de création');
+  const [orderBy,setOrderBy] = useState('date_de_creation');
   const [show_choices,setShowchoices] = useState(true);
   const [page,setPage] = useState(1);
-  const [all_pages,setAllpages] = useState(1);
+  const [offset,setOffest] = useState(0);
   const [per_page,setPerpage] = useState(10);
+  const [all_pages,setAllpages] = useState(1);
   const [current_action,setCurrentAction] = useState("Toutes les boutiques");
-  const [enConge,setenConge] = useState("/");
+  const [enConge,setenConge] = useState(null);
+  const [createdBefore,setCreatedBefore] = useState("");
+  const [createdAfter,setCreatedAfter] = useState("");
   const [boutiques,setBoutiques] = useState([]);
 
 
@@ -41,11 +44,22 @@ const Boutiques = ({change_current_page,currentPageSwitch}) => {
         'Authorization': `Bearer ${token}`,
         'Accept': 'application/json',
         'Content-Type': 'application/json'}
-    };
-    const datas = {};
-    axios.get(`${api}/boutiques`,{ headers: {"Authorization" : `Bearer ${token}`} }).then(
+      };
+     
+      const datas = {
+        "enConge" : 1,
+        "createdBefore" : createdBefore,
+        "createdAfter" : createdAfter,
+        "orderBy" : orderBy,
+        "query" : "utchi",
+        "offset" : offset,
+        "limit" : 3
+      };
+
+      axios.post(`${api}/boutiques`,datas,{ headers: {"Authorization" : `Bearer ${token}`} }).then(
         response => {
             if( response.status === 200) {
+              console.log(response.data);
               setBoutiques(response.data);
               setIsloading(false);
             }

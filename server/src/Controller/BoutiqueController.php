@@ -28,7 +28,7 @@ class BoutiqueController extends ApiController
 
     /**
      * Get a list of all boutiques.
-     * @Route("/api/boutiques", name="boutiques", methods={"GET"})
+     * @Route("/api/boutiques", name="boutiques", methods={"POST"})
      * @param BoutiqueRepository $boutiqueRepository
      * @return JsonResponse
      */
@@ -43,6 +43,8 @@ class BoutiqueController extends ApiController
         $date_de_creationafter = "";
         $query = "";
         $orderBy = "date_de_creation";
+        $offset = 0;
+        $limit = 10;
 
         if ($request->request->has('enConge')) {
             $enConge = $request->get('enConge');
@@ -63,13 +65,21 @@ class BoutiqueController extends ApiController
         if($request->request->has('orderBy')) {
             $orderBy=$request->get('orderBy');
         }
+        if($request->request->has('offset')) {
+            $offset=$request->get('offset');
+        }
+        if($request->request->has('limit')) {
+            $limit=$request->get('limit');
+        }
 
         $boutiques= $boutiqueRepository->findAllBoutiquesWithFilter(
             $enConge,
             $date_de_creationbefore,
             $date_de_creationafter,
             $query,
-            $orderBy
+            $orderBy,
+            $offset,
+            $limit
         );
 
         return $this->json($boutiques,Response::HTTP_OK);
@@ -77,7 +87,7 @@ class BoutiqueController extends ApiController
 
     /**
      * Create boutique.
-     * @Route("/api/boutiques", name="create_boutique", methods={"POST"})
+     * @Route("/api/boutiques/create", name="create_boutique", methods={"POST"})
      * @param BoutiqueRepository $boutiqueRepository
      * @param Request $request
      * @return JsonResponse
