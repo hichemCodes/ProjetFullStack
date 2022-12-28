@@ -135,12 +135,14 @@ class BoutiqueRepository extends ServiceEntityRepository
         if($orderBy == "nom") {
             $queryBuilder->orderBy('b.nom', 'ASC');
         }
+        if($orderBy == "nombre_de_produits") {
+            //$queryBuilder->orderBy('Count(b.id)', 'DESC');
+        }
         $queryBuilder->setFirstResult($offset)->setMaxResults($limit);
 
         return $queryBuilder->getQuery()->getResult();
 
     }
-
 
     //get boutiques details
     public function getBoutiquesProduits($id) {

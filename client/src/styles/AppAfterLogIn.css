@@ -108,7 +108,12 @@ body{
    color: var(--main-bg-color);
    font-size: 1.07rem;
    top: 32%;
-     left: 3%;
+   left: 89%;
+   cursor: pointer;
+ }
+ .fa-cart-plus {
+  transform: scale(2) !important;
+  margin-top: 10px !important;
  }
  .pop-up-fav{
    width: 185px;
@@ -166,7 +171,7 @@ body{
   
  #current_action{
    font-size: 2.2rem;
-   margin: 45px 0px 10px 1%;
+   margin: 45px 0px 20px 1%;
    width: 98%;
    
  
@@ -274,6 +279,17 @@ body{
   width: 144px !important;
  }
 
+ .orders button {
+  border-radius: 23px;
+  line-height: 0px;
+  box-shadow: none;
+  text-transform: capitalize;
+  padding: 16px 24px;
+  color: white;
+  cursor: pointer;
+  margin-top: 6px;
+ }
+
  .c_item:hover{
    border:1px solid black;
  }
@@ -292,16 +308,33 @@ body{
     background: #fff;
     top:76%
  }
+
+ .orders-first {
+  justify-content: center;
+  align-items: center;
+ }
+ 
+ .orders .o_item div{ 
+  margin: 10px 5px;
+  }
+ .orders .o_item div label{ 
+  margin-right: 15px;
+  }
+  
+  .orders .o_item div input {
+    border:none
+  }
+
  .en_conge {
-  left:16%;
+  left:15.5%;
 
  }
  .orders {
-    left:27.7%;
+    left:26.7%;
     width: 280px;
 }
 .orders_by {
-  left:47% !important;
+  left:46.5% !important;
 }
 
  .all_pages{
@@ -599,7 +632,7 @@ body{
 }
 .cover_option i {
   color: white;
-  transform: scale(2.5);
+  transform: scale(2);
   margin: 0px 25px;
   cursor: pointer;
 
@@ -616,4 +649,21 @@ body{
 
 .swal2-styled.swal2-confirm {
   background: var(--main-bg-color);
+}
+
+.pop-up-update-add {
+  display: none;
+  width: 50%;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 10px;
+  border: 1px solid;
+  box-shadow: rgb(0 0 0 / 15%) 0px 10px 37px;
+  border: 1px solid rgba(118, 118, 118, 0.28);
+  border-radius: 10px;
+  padding: 15px 20px;
+  z-index: 5000;
 }

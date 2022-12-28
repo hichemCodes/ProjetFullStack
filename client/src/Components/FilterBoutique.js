@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import AllPages from './AllPages';
 import SwitchPages from './SwitchPages';
 
@@ -12,9 +12,16 @@ const FilterBoutique = (
         change_order,
         change_enConge,
         change_current_page,
-        currentPageSwitch
+        currentPageSwitch,
+        changeCreatedBefore,
+        changeCreatedAfter,
+        createdBeforeInput,
+        createdAfterInput,
+        changeCreatedBeforeInput,
+        changeCreatedafterInput
     }) => {
 
+    
     const show_en_conge = () =>{
         document.querySelector('.en_conge').classList.toggle('show_me');
 
@@ -28,70 +35,91 @@ const FilterBoutique = (
         document.querySelector('.orders_by').classList.toggle('show_me');  
     } 
 
+    const AppliqueFilterDate = () => {
+        let dateBeforeOriginal = (document.querySelector("#date_boutique_avant").value).split("-");
+        let dateAfterOriginal = (document.querySelector("#date_boutique_apres").value).split("-");
+        console.log(typeof dateBeforeOriginal[2] === typeof undefined);
+        if(typeof dateBeforeOriginal[2] === typeof undefined) {
+            changeCreatedBefore("");
+        } else {
+            let dateBefore = dateBeforeOriginal[2]+ "/" +dateBeforeOriginal[1]+ "/" +dateBeforeOriginal[0];
+            changeCreatedBefore(dateBefore);
+        }
+        if(typeof dateAfterOriginal[2] === typeof undefined) {
+            changeCreatedAfter("");
+        } else {
+            let dateAfter = dateAfterOriginal[2]+ "/" +dateAfterOriginal[1]+ "/" +dateAfterOriginal[0];
+            changeCreatedAfter(dateAfter);
+        }
+
+      
+    };
+
     return (
         <div className="choices">
                  <SwitchPages 
                     change_current_page={change_current_page}
                     currentPageSwitch={currentPageSwitch}
                  />
-                 <span className="current_order c_item c_item_en_conge" onClick = {() => {show_en_conge() }}>En Congé :  <strong> {enConge} </strong> </span>
+                 <span className="current_order c_item c_item_en_conge" onClick = {() => {show_en_conge() }}>En Congé :  <strong> {enConge == 1 ? "oui" : "non"} </strong> </span>
                  <div className="en_conge">
-                       <div className="o_item"  onClick = {() => {change_enConge('oui')}}>
+                       <div className="o_item"  onClick = {() => {change_enConge(1)}}>
                                     
-                                   <div className={ (enConge == 'oui' ) ? 'checkbox c_check' : 'checkbox' } id="conge_oui">
+                                   <div className={ (enConge == 1 ) ? 'checkbox c_check' : 'checkbox' } id="conge_oui">
                                          <div className="white_space"></div>
                                    </div>
                                    <label htmlFor="conge_oui">Oui</label>
                        </div>
-                       <div className="o_item" onClick = {() => {change_enConge('non')}}>
-                                    <div className={(enConge == 'non' ) ? 'checkbox c_check' : 'checkbox' } id="conge_non">
+                       <div className="o_item" onClick = {() => {change_enConge(0)}}>
+                                    <div className={(enConge == 0 ) ? 'checkbox c_check' : 'checkbox' } id="conge_non">
                                         <div className="white_space"></div>
                                     </div>
                                     <label htmlFor="conge_non" >Non</label>
                         </div>
                       
                 </div>
-                <span className="current_order c_item" onClick = {() => {show_orders() }} >Filtré Par date : <strong> avant xx/xx/xxx </strong> </span>
-                <div className="orders">
-                       <div className="o_item first_o"  onClick = {() => {change_order('Date de création')}}>
-                                    
-                                   <div className={ (orderBy == 'Date de création' ) ? 'checkbox c_check' : 'checkbox' } id="by_date">
-                                         <div className="white_space"></div>
-                                   </div>
-                                   <label htmlFor="by_date">Avant</label>
+                <span className="current_order c_item" onClick = {() => {show_orders() }} >Filtré Par date : <strong> avant/Aprés/entre </strong> </span>
+                <div className="orders orders-first">
+                       <div className="o_item first_o" >
+                            <div>
+                                <label htmlFor="by_date">Avant</label>
+                                <input type="date" value={createdBeforeInput} onChange={(e)=> {changeCreatedBeforeInput(e.target.value)}} name="date_boutique_avant" id="date_boutique_avant" />
+                            </div>
                        </div>
-                       <div className="o_item" onClick = {() => {change_order('Nombre de produits')}}>
+                       <div className="o_item">
                                     
-                                    <div className={(orderBy == 'Nombre de produits' ) ? 'checkbox c_check' : 'checkbox' } id="by_nb_produit">
-                                        <div className="white_space"></div>
-                                    </div>
-                                    <label htmlFor="by_nb_produit" >Aprés</label>
+                            <div>
+                                <label htmlFor="by_date">Après</label>
+                                <input type="date"  value={createdAfterInput} onChange={(e)=> {changeCreatedafterInput(e.target.value)}} name="date_boutique_apres" id="date_boutique_apres" />
+                            </div>
                         </div>
-                        <div className="o_item" onClick = {() => {change_order('Nombre de produits')}}>
-                                    
-                                   <input type="date" name="date_boutique" id="date_boutique" />
-                        </div>
+                        <button onClick={()=> {AppliqueFilterDate()}}>Appliquer</button>
+                      
                       
                 </div>
-                <span className="current_order c_item" onClick = {() => {show_orders_by() }} >Triée Par :  <strong> {orderBy} </strong> </span>
+                <span className="current_order c_item" onClick = {() => {show_orders_by() }} >
+                    Triée Par :  <strong>
+                         {(orderBy === 'date_de_creation') ? 'Date de création' : ((orderBy === 'nom') ? "Nom" : "Nombre de produit") } 
+                         </strong>
+                 </span>
                 <div className="orders orders_by">
-                       <div className="o_item first_o"  onClick = {() => {change_order('Date de création')}}>
+                       <div className="o_item first_o"  onClick = {() => {change_order('date_de_creation')}}>
                                     
-                                   <div className={ (orderBy == 'Date de création' ) ? 'checkbox c_check' : 'checkbox' } id="by_date">
+                                   <div className={ (orderBy == 'date_de_creation' ) ? 'checkbox c_check' : 'checkbox' } id="by_date">
                                          <div className="white_space"></div>
                                    </div>
-                                   <label htmlFor="by_date">date de création</label>
+                                   <label htmlFor="by_date">Date de création</label>
                        </div>
-                       <div className="o_item" onClick = {() => {change_order('Nombre de produits')}}>
+                       <div className="o_item" onClick = {() => {change_order('nombre_de_produits')}}>
                                     
-                                    <div className={(orderBy == 'Nombre de produits' ) ? 'checkbox c_check' : 'checkbox' } id="by_nb_produit">
+                                    <div className={(orderBy == 'nombre_de_produits' ) ? 'checkbox c_check' : 'checkbox' } id="by_nb_produit">
                                         <div className="white_space"></div>
                                     </div>
                                     <label htmlFor="by_nb_produit" >Nombre de produit</label>
                         </div>
-                        <div className="o_item" onClick = {() => {change_order('Nom')}}>
+                        <div className="o_item" onClick = {() => {change_order('nom')}}>
                                     
-                                    <div className={(orderBy == 'Nom' ) ? 'checkbox c_check' : 'checkbox' } id="by_nom">
+                                    <div className={(orderBy == 'nom' ) ? 'checkbox c_check' : 'checkbox' } id="by_nom">
                                         <div className="white_space"></div>
                                     </div>
                                     <label htmlFor="by_nom" >Nom</label>

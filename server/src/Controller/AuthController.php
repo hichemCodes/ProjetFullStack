@@ -15,14 +15,21 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\HttpFoundation\Response;
+
 
 class AuthController extends ApiController
 {
-    private $em;
+    private $tokenStorage   = null;
 
-    public function __construct(EntityManagerInterface $em)
+
+    public function __construct(EntityManagerInterface $em,TokenStorageInterface $tokenStorage)
     {
         $this->em = $em;
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -54,7 +61,7 @@ class AuthController extends ApiController
              $userAdress = new Adresse();
              if(!empty($request->get('complement_adresse'))) {
                 $userAdress->setComplementAdresse($request->get('complement_adresse'));
-                $userAdress->setVileId(
+                $userAdress->setVilleId(
                     $villeRepository->find($request->get('ville_id'))
                 );
                 $this->em->persist($userAdress);
@@ -75,7 +82,22 @@ class AuthController extends ApiController
      */
     public function getTokenUser(UserInterface $user, JWTTokenManagerInterface $JWTManager): JsonResponse
     {
-        return new JsonResponse(['token' => $JWTManager->create($user)]);
+        return new JsonResponse(
+            [
+            'token' => $JWTManager->create($user),
+            ]
+        );
     }
 
+    /**
+     * @Route("/api/user/me", name="get_me", methods={"GET"})
+    */
+    public function getUser(): ?JsonResponse
+    {
+        $useremail = $this->get('security.token_storage')->getToken()->getUser()->getUserIdentifier();
+        $user = $this->em->getRepository(User::class)->findBy(array("email" => $useremail));
+        return $this->json($user,Response::HTTP_OK);
+         
+    }
+    
 }

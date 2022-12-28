@@ -28,7 +28,7 @@ class BoutiqueController extends ApiController
 
     /**
      * Get a list of all boutiques.
-     * @Route("/api/boutiques", name="boutiques", methods={"POST"})
+     * @Route("/api/boutiques", name="boutiques", methods={"GET"})
      * @param BoutiqueRepository $boutiqueRepository
      * @return JsonResponse
      */
@@ -45,31 +45,31 @@ class BoutiqueController extends ApiController
         $orderBy = "date_de_creation";
         $offset = 0;
         $limit = 10;
-
-        if ($request->request->has('enConge')) {
-            $enConge = $request->get('enConge');
+        
+        if ($request->query->has('enConge')) {
+            $enConge = $request->query->get('enConge');
+        }
+        
+        if ($request->query->has('createdBefore')) {
+            $date_de_creationbefore=DateTime::createFromFormat('d/m/Y', $request->query->get('createdBefore'))->setTime(0, 0, 0);
         }
 
-        if ($request->request->has('createdBefore')) {
-            $date_de_creationbefore=DateTime::createFromFormat('d/m/Y', $request->get('createdBefore'))->setTime(0, 0, 0);
+        if($request->query->has('createdAfter')) {
+            $date_de_creationafter = DateTime::createFromFormat('d/m/Y', $request->query->get('createdAfter'))->setTime(0, 0, 0);
         }
 
-        if($request->request->has('createdAfter')) {
-            $date_de_creationafter = DateTime::createFromFormat('d/m/Y', $request->get('createdAfter'))->setTime(0, 0, 0);
+        if($request->query->has('query')) {
+            $query=$request->query->get('query');
         }
 
-        if($request->request->has('query')) {
-            $query=$request->get('query');
+        if($request->query->has('orderBy')) {
+            $orderBy=$request->query->get('orderBy');
         }
-
-        if($request->request->has('orderBy')) {
-            $orderBy=$request->get('orderBy');
+        if($request->query->has('offset')) {
+            $offset=$request->query->get('offset');
         }
-        if($request->request->has('offset')) {
-            $offset=$request->get('offset');
-        }
-        if($request->request->has('limit')) {
-            $limit=$request->get('limit');
+        if($request->query->has('limit')) {
+            $limit=$request->query->get('limit');
         }
 
         $boutiques= $boutiqueRepository->findAllBoutiquesWithFilter(

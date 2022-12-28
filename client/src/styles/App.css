@@ -28,7 +28,7 @@
     color: rgba(0, 0, 0, 0.6);
 }
 
-.register-right-section button {
+.register-right-section button,.orders button {
     background-color: var(--oficial) !important;
     border: none;
     border-radius: 7px;

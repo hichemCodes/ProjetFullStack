@@ -10,6 +10,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 import NavBar from "./NavBar";
 import FilterBoutique from "./FilterBoutique";
+import UpdateBoutique from "./UpdateBoutique";
 import Boutique from "./Boutique";
 import Loader from "./loader";
 import logo from "../images/shop.png";
@@ -35,31 +36,47 @@ const Boutiques = ({change_current_page,currentPageSwitch}) => {
   const [enConge,setenConge] = useState(null);
   const [createdBefore,setCreatedBefore] = useState("");
   const [createdAfter,setCreatedAfter] = useState("");
+  const [createdBeforeInput,setCreatedBeforeInput] = useState("");
+  const [createdAfterInput,setCreatedAfterInput] = useState("");
   const [boutiques,setBoutiques] = useState([]);
+  const config = {
+    headers: { 
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'}
+    };
 
+
+  
 
   const getAllBoutiques = () => {
-    const config = {
-      headers: { 
-        'Authorization': `Bearer ${token}`,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'}
-      };
-     
+    
       const datas = {
-        "enConge" : 1,
-        "createdBefore" : createdBefore,
-        "createdAfter" : createdAfter,
-        "orderBy" : orderBy,
-        "query" : "utchi",
+        "limit" : per_page,
         "offset" : offset,
-        "limit" : 3
+        "orderBy" : orderBy
       };
 
-      axios.post(`${api}/boutiques`,datas,{ headers: {"Authorization" : `Bearer ${token}`} }).then(
+      if(enConge != "") {
+          datas.enConge = 1
+      }
+
+      if(createdBefore != "") {
+        datas.createdBefore = createdBefore
+      }
+
+      if(createdAfter != "") {
+        datas.createdAfter = createdAfter
+      }
+
+      if(query != "") {
+        datas.query = query
+      }
+
+      axios.get(`${api}/boutiques`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
         response => {
             if( response.status === 200) {
-              console.log(response.data);
+              setAllpages(Math.ceil((response.data.length) / per_page))
               setBoutiques(response.data);
               setIsloading(false);
             }
@@ -70,7 +87,7 @@ const Boutiques = ({change_current_page,currentPageSwitch}) => {
   useEffect( () =>{
     setIsloading(true);
     getAllBoutiques();
-  },[query,orderBy,page,enConge]);
+  },[orderBy,page,enConge,createdBefore,createdAfter]);
 
   useEffect( () =>{
     change_current_page("boutiques");
@@ -78,8 +95,13 @@ const Boutiques = ({change_current_page,currentPageSwitch}) => {
 
   return (is_loading) ? (<Loader/>) : ( 
     <React.Fragment>
-        <NavBar />
-        <span id="current_action">{current_action}</span>
+        <NavBar
+           query = {query}
+           change_query = {(new_query)=> { setQuery(new_query)}}
+           getAllBoutiques = {()=>{getAllBoutiques()}}
+           setIsloading = {(new_is_loading)=>{setIsloading(new_is_loading)}}
+        />
+        <span id="current_action">{current_action} { (query != "") ? `(recherche : ${query} )` : ""}</span>
         <FilterBoutique 
                 orderBy = {orderBy}
                 current_page = {page} 
@@ -90,9 +112,15 @@ const Boutiques = ({change_current_page,currentPageSwitch}) => {
                 change_enConge = { (new_conge)=> { setenConge(new_conge)}}
                 change_current_page = {change_current_page}
                 currentPageSwitch= {currentPageSwitch}
+                changeCreatedBefore = { (new_date_before)=> { setCreatedBefore(new_date_before)}}
+                changeCreatedAfter = { (new_date_after)=> { setCreatedAfter(new_date_after)}}
+                createdBeforeInput = {createdBeforeInput}
+                createdAfterInput = {createdAfterInput}
+                changeCreatedBeforeInput = { (new_date_before_input)=> { setCreatedBeforeInput(new_date_before_input)}}
+                changeCreatedafterInput = { (new_date_after_input)=> { setCreatedAfterInput(new_date_after_input)}}
         />  
         
-         <div className="imgs">
+         <div className="imgs boutiques">
              { boutiques.map( (boutique) =>  (
 
                 <Boutique
@@ -102,8 +130,10 @@ const Boutiques = ({change_current_page,currentPageSwitch}) => {
                 ))
               }
           </div>
-        
-
+          
+          <UpdateBoutique
+          
+          />
 
     </React.Fragment>
   );

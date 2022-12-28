@@ -59,6 +59,7 @@ const Boutique = ({boutique,getAllBoutiques}) => {
                 <div className="cover_option">
                     <i class="fa-solid fa-pen-to-square" title='modifier' onClick={()=>{updateBoutique(boutique.id)}}></i>
                     <i class="fa-sharp fa-solid fa-trash" onClick={()=>{DeleteBoutique(boutique.id)}} title='supprimer'></i>
+                    <i class="fa-sharp fa-solid fa-cart-plus"></i>
                 </div>
            </div>
         </div>
