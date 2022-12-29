@@ -8,25 +8,41 @@ const ShowBoutique = () => {
 
     const [api,setApi] = useState("http://localhost:8000/api");
     const [token,setToken] = useState(localStorage.getItem("token"));
+    const config = {
+        headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    };
 
+    useEffect( () =>{
+       
+        axios.get(`${api}/boutiques/${id}/produits`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
+            response => {
+                if( response.status === 200) {
+                  setAllpages(Math.ceil((response.data.length) / per_page))
+                  setBoutiques(response.data);
+                  setIsloading(false);
+                }
+            }
+        );
+
+
+
+    },[]);
+    
         
     return (
        
         <div class="show_img show_me">
             <div class="img_header">
                 <span class="close_img">
-                    <i class="fas fa-times"> </i>
-                    close
+                    <i class="fa-solid fa-backward-step"></i>
+                    Retour
                 </span>
-                <span class="c_image">
-                     2 / 30
-                 </span>
-                 <span class="">
-                    <a class="d_full_img" href="" rel="nofollow" download="" target="_blank">
-                         <i class="fas fa-download"></i>
-                    </a>
-                 </span>
             </div>
+            <h1>Boutique :</h1>
         </div>
     
 

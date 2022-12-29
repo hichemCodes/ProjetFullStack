@@ -147,8 +147,9 @@ class BoutiqueRepository extends ServiceEntityRepository
     //get boutiques details
     public function getBoutiquesProduits($id) {
         $queryBuilder = $this->createQueryBuilder("b")
-        ->select('p.id,p.nom,p.prix,p.description')
-        ->leftJoin('b.produits', 'p')
+        ->select('b.nom as nomBoutique,b.date_de_creation,b.en_conge,p.id as idProduit,p.nom,p.prix,p.description,c.nom as categorie')
+        ->innerJoin('b.produits', 'p')
+        ->leftJoin('p.categories', 'c')
         ->andWhere('b.id = :id')
         ->setParameter('id',$id);
 

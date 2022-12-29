@@ -20,7 +20,6 @@ function App() {
     } else if(currentPage == "produits") {
         navigate('/produits'); 
     }
-    console.log("run");
   },[currentPage]);
 
   return (
@@ -30,7 +29,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/boutiques" element={<Boutiques change_current_page = {(new_page)=> {setCurrentPage(new_page)}} currentPageSwitch={currentPage}/>} />
-          <Route path="/boutiques/{:id}" element={<ShowBoutique />} />
+          <Route path="/boutiques/:id" element={<ShowBoutique />} />
        </Routes>
     </div>
   );

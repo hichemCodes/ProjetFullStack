@@ -5,14 +5,13 @@ import { useNavigate  } from "react-router-dom";
 
   
 
-const Boutique = ({boutique,getAllBoutiques}) => {
+const Boutique = ({boutique,getAllBoutiques,boutiques}) => {
 
     const [api,setApi] = useState("http://localhost:8000/api");
     const [token,setToken] = useState(localStorage.getItem("token"));
     const navigate = useNavigate();
 
     const DeleteBoutique = (id) => {
-        console.log(id);
         Swal.fire({
             title: 'Est-ce que vous êtes sûr de vouloir supprimer la boutique',
             showCancelButton: true,
@@ -27,12 +26,12 @@ const Boutique = ({boutique,getAllBoutiques}) => {
                       'Accept': 'application/json',
                       'Content-Type': 'application/json'}
                   };
-                  const datas = {};
+                  boutiques.filter((item) => item.id !== id);
+                  Swal.fire('Boutique supprimée avec succès !', '', 'success');
                   axios.delete(`${api}/boutiques/${id}`,{ headers: {"Authorization" : `Bearer ${token}`} }).then(
                       response => {
                             if( response.status === 200) {
                                getAllBoutiques();
-                               Swal.fire('Saved!', '', 'success');
                             }
                       }
                   )

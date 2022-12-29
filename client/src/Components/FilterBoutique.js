@@ -55,6 +55,11 @@ const FilterBoutique = (
       
     };
 
+   const updateBoutique = (operation)=> {
+        document.querySelector(".pop-up-update-add").classList.toggle('show_me');
+        document.querySelector(".cover_add").classList.toggle('fade')
+    }
+
     return (
         <div className="choices">
                  <SwitchPages 
@@ -132,6 +137,7 @@ const FilterBoutique = (
                          get_page = { ()=> { console.log("page changed")}}
                          
                 />
+                <span className="current_order c_item add_boutique" onClick = {() => {updateBoutique("ajouter")}}> <strong>Ajouter</strong> </span>
 
                 
 

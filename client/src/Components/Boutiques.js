@@ -33,12 +33,16 @@ const Boutiques = ({change_current_page,currentPageSwitch}) => {
   const [per_page,setPerpage] = useState(10);
   const [all_pages,setAllpages] = useState(1);
   const [current_action,setCurrentAction] = useState("Toutes les boutiques");
-  const [enConge,setenConge] = useState(null);
+  const [enConge,setenConge] = useState("");
   const [createdBefore,setCreatedBefore] = useState("");
   const [createdAfter,setCreatedAfter] = useState("");
   const [createdBeforeInput,setCreatedBeforeInput] = useState("");
   const [createdAfterInput,setCreatedAfterInput] = useState("");
+  const [operation,setOperation] = useState("add");
+  const [boutiqueUpdate,setBoutiqueUpdate] = useState([]);
   const [boutiques,setBoutiques] = useState([]);
+  
+  
   const config = {
     headers: { 
       'Authorization': `Bearer ${token}`,
@@ -46,43 +50,42 @@ const Boutiques = ({change_current_page,currentPageSwitch}) => {
       'Content-Type': 'application/json'}
     };
 
+    const getAllBoutiques = () => {
+      
+        const datas = {
+          "limit" : per_page,
+          "offset" : offset,
+          "orderBy" : orderBy
+        };
 
-  
-
-  const getAllBoutiques = () => {
-    
-      const datas = {
-        "limit" : per_page,
-        "offset" : offset,
-        "orderBy" : orderBy
-      };
-
-      if(enConge != "") {
-          datas.enConge = 1
-      }
-
-      if(createdBefore != "") {
-        datas.createdBefore = createdBefore
-      }
-
-      if(createdAfter != "") {
-        datas.createdAfter = createdAfter
-      }
-
-      if(query != "") {
-        datas.query = query
-      }
-
-      axios.get(`${api}/boutiques`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
-        response => {
-            if( response.status === 200) {
-              setAllpages(Math.ceil((response.data.length) / per_page))
-              setBoutiques(response.data);
-              setIsloading(false);
-            }
+        if(enConge != "") {
+            datas.enConge = 1
         }
-    )
-  }
+
+        if(createdBefore != "") {
+          datas.createdBefore = createdBefore
+        }
+
+        if(createdAfter != "") {
+          datas.createdAfter = createdAfter
+        }
+
+        if(query != "") {
+          datas.query = query
+        }
+
+        axios.get(`${api}/boutiques`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
+          response => {
+              if( response.status === 200) {
+                setAllpages(Math.ceil((response.data.length) / per_page))
+                setBoutiques(response.data);
+                setIsloading(false);
+              }
+          }
+      )
+    }
+  
+  
 
   useEffect( () =>{
     setIsloading(true);
@@ -126,15 +129,19 @@ const Boutiques = ({change_current_page,currentPageSwitch}) => {
                 <Boutique
                     boutique = {boutique}
                     getAllBoutiques = {getAllBoutiques}
+                    boutiques = {boutiques}
                   />
                 ))
               }
           </div>
-          
           <UpdateBoutique
-          
+            operation={operation}
+            boutiqueUpdate={boutiqueUpdate}
+            config = {config}
+            api = {api}
+            getAllBoutiques = {getAllBoutiques}
           />
-
+          <div className="cover_add fade"></div>
     </React.Fragment>
   );
 }

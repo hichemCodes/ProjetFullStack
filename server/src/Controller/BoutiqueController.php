@@ -87,7 +87,7 @@ class BoutiqueController extends ApiController
 
     /**
      * Create boutique.
-     * @Route("/api/boutiques/create", name="create_boutique", methods={"POST"})
+     * @Route("/api/boutiques", name="create_boutique", methods={"POST"})
      * @param BoutiqueRepository $boutiqueRepository
      * @param Request $request
      * @return JsonResponse
@@ -98,11 +98,12 @@ class BoutiqueController extends ApiController
     ): JsonResponse {
 
         $request = $this->transformJsonBody($request);
+       
         $nom = $request->get('nom');
         $horaires_de_ouverture = $request->get('horaires_de_ouverture');
         $en_conge = $request->get('en_conge');
 
-        if (empty($nom) || empty($horaires_de_ouverture) || empty($en_conge)) {
+         if (empty($nom) /*|| empty($horaires_de_ouverture)*/) {
             return $this->respondValidationError("Invalid request");
         }
 

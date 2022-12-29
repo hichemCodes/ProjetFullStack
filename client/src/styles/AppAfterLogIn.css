@@ -653,7 +653,7 @@ body{
 
 .pop-up-update-add {
   display: none;
-  width: 50%;
+  width: 35%;
   position: fixed;
   left: 50%;
   top: 50%;
@@ -664,6 +664,56 @@ body{
   box-shadow: rgb(0 0 0 / 15%) 0px 10px 37px;
   border: 1px solid rgba(118, 118, 118, 0.28);
   border-radius: 10px;
-  padding: 15px 20px;
+  padding: 30px 30px;
   z-index: 5000;
+  z-index: 100000;
+}
+
+.cover_add {
+  position:fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: #222222ad;
+  z-index: 2000;
+
+}
+.cover_add.fade {
+display: none;
+}
+
+#boutique_btn_add,#boutique_btn_update{
+  background: var(--main-bg-color);
+}
+#nom_boutique-label {
+  color: #222222 !important;
+}
+
+#nom_boutique:focus {
+border-color: var(--main-bg-color);  
+}
+
+.pop-up-update-add h1 {
+  margin-bottom: 20px;
+}
+
+.pop-up-update-add button {
+  margin-top: 15px;
+  margin-bottom: 0px;
+}
+.pop-up-update-add .css-1d3z3hw-MuiOutlinedInput-notchedOutline {
+  border-color: rgb(192, 192, 192) !important;
+}
+.pop-up-update-add .fa-xmark {
+  position: absolute;
+  right: 21px;
+  top: 24px;
+  transform: scale(1.5);
+  cursor: pointer;
+  color:rgb(192, 192, 192) ;
+}
+
+.pop-up-update-add .fa-xmark:hover {
+  color: var(--main-bg-color);
 }
