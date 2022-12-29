@@ -14,7 +14,8 @@ nelmio_api_doc:
     security:
       - Bearer: [ ]
   areas:
+    #default:
     path_patterns: # an array of regexps
-      - ^/api(?!/doc$)
-    host_patterns:
-      - ^api\.
+      - ^(?!/_wdt)(?!/_profiler)(?!/_error)(?!/api/doc)(?!/api/user/me)
+
+
