@@ -21,9 +21,7 @@ const ShowBoutique = () => {
         axios.get(`${api}/boutiques/${id}/produits`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
             response => {
                 if( response.status === 200) {
-                  setAllpages(Math.ceil((response.data.length) / per_page))
-                  setBoutiques(response.data);
-                  setIsloading(false);
+                 
                 }
             }
         );

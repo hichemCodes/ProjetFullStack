@@ -24,13 +24,13 @@ security:
                     lexik_jwt_authentication.handler.authentication_success
                 failure_handler:          
                     lexik_jwt_authentication.handler.authentication_failure
-        api:
-            pattern: ^/api
-            stateless: true
-            provider: app_user_provider
-            guard:
-                authenticators:
-                   - lexik_jwt_authentication.jwt_token_authenticator
+        #api:
+            #pattern: ^/api
+            #stateless: true
+            #provider: app_user_provider
+            #guard:
+                #authenticators:
+                   #- lexik_jwt_authentication.jwt_token_authenticator
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
