@@ -5,6 +5,11 @@ api_login_ckeck:
     path: /api/login_check
 
 app.swagger_ui:
-    path: /api/doc
+    path: /doc
     methods: GET
     defaults: { _controller: nelmio_api_doc.controller.swagger_ui }
+
+app.swagger_areas:
+    path: /doc/{area}
+    methods: GET
+    defaults: { _controller: nelmio_api_doc.controller.swagger_ui, area: default }

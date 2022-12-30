@@ -15,6 +15,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use Swagger\Annotations as SWG;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+
 
 
 class ProduitController extends ApiController
@@ -29,6 +34,24 @@ class ProduitController extends ApiController
     /**
      * Get a list of all produits.
      * @Route("/api/produits", name="produits", methods={"GET"})
+     * @SWG\Tag(name="Produit")
+     *
+     *  @SWG\Response(
+     *     response=200,
+     *     description="Returned with the list of products",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(
+     *              type="object",
+     *              @SWG\Property(property="id", type="integer", example="1"),
+     *              @SWG\Property(property="nom", type="string", example="Pomme"),
+     *              @SWG\Property(property="prix", type="float", example="10"),
+     *              @SWG\Property(property="description", type="string", example="alimentaire"),
+     *              @SWG\Property(property="boutique_id", type="integer", example="1"),
+     *              @SWG\Property(property="categories", type="string", example="FRUITS"),
+     *     )
+     * )
+     * )
      * @param ProduitRepository $produitRepository
      * @return JsonResponse
      */
@@ -47,8 +70,26 @@ class ProduitController extends ApiController
 
     
     /**
-     * Get a list of all produits.
+     * Get a specific product.
      * @Route("/api/produits/{id}", name="produit", methods={"GET"})
+     * @SWG\Tag(name="Produit")
+     *
+     *   @SWG\Response(
+     *     response=200,
+     *     description=" Return with the details of product",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(
+     *              type="object",
+     *              @SWG\Property(property="id", type="integer", example="1"),
+     *              @SWG\Property(property="nom", type="string", example="Pomme"),
+     *              @SWG\Property(property="prix", type="float", example="10"),
+     *              @SWG\Property(property="description", type="string", example="alimentaire"),
+     *              @SWG\Property(property="boutique_id", type="integer", example="1"),
+     *              @SWG\Property(property="categories", type="string", example="FRUITS"),
+     *     )
+     * )
+     * )
      * @param ProduitRepository $produitRepository
      * @return JsonResponse
      */
@@ -64,6 +105,47 @@ class ProduitController extends ApiController
     /**
      * Create produit.
      * @Route("/api/produits", name="create_produit", methods={"POST"})
+     *@SWG\Tag(name="Produit")
+     *
+     * @SWG\Parameter(
+     *      name="Produit",
+     *      in="body",
+     *      required=true,
+     *      @SWG\Schema(
+     *          type="object",
+     *          required={"nom", "prix"},
+     *          @SWG\Property(property="nom", type="string", example="Pomme"),
+     *          @SWG\Property(property="prix", type="float", example="10"),
+     *              )
+     * )
+     *
+     *   @SWG\Response(
+     *     response=201,
+     *     description=" Return when the product has been created",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(
+     *              type="object",
+     *              @SWG\Property(property="id", type="integer", example="1"),
+     *              @SWG\Property(property="nom", type="string", example="Pomme"),
+     *              @SWG\Property(property="prix", type="float", example="10"),
+     *              @SWG\Property(property="description", type="string", example="alimentaire"),
+     *              @SWG\Property(property="boutique_id", type="integer", example="1"),
+     *              @SWG\Property(property="categories", type="string", example="FRUITS"),
+     *     )
+     * )
+     * )
+     *
+     * @SWG\Response(
+     *      response=422,
+     *      description="Returned when the sent request isn't valid",
+     *
+     *      @SWG\Schema(
+     *          type="object",
+     *          @SWG\Property(property="code", type="integer", example=422),
+     *          @SWG\Property(property="message", type="string", example="Invalid Request."),
+     *      )
+     * )
      * @param ProduitRepository $produitRepository
      * @param Request $request
      * @param EntityManagerInterface $entityManagerInterface
@@ -96,6 +178,35 @@ class ProduitController extends ApiController
      * Delete produit.
      *
      * @Route("/api/produits/{id}", name="delete_produit", methods={"DELETE"})
+     * @SWG\Tag(name="Produit")
+     *
+     *  @SWG\Response(
+     *     response=204,
+     *     description="Returned when the product has been deleted",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(
+     *              type="object",
+     *              @SWG\Property(property="id", type="integer", example="1"),
+     *              @SWG\Property(property="nom", type="string", example="Pomme"),
+     *              @SWG\Property(property="prix", type="float", example="10"),
+     *              @SWG\Property(property="description", type="string", example="alimentaire"),
+     *              @SWG\Property(property="boutique_id", type="integer", example="1"),
+     *              @SWG\Property(property="categories", type="string", example="FRUITS"),
+     *     )
+     * )
+     * )
+     *
+     *  @SWG\Response(
+     *      response=404,
+     *      description="Returned when the product isn't found",
+     *
+     *      @SWG\Schema(
+     *          type="object",
+     *          @SWG\Property(property="status", type="integer", example=404),
+     *          @SWG\Property(property="errors", type="string", example="Not found!")
+     *      )
+     * )
      * @noinspection PhpOptionalBeforeRequiredParametersInspection
      * @param Produit|null $existingProduit
      * @param EntityManagerInterface $entityManager
@@ -119,6 +230,57 @@ class ProduitController extends ApiController
      /**
      * update produit E_PRD_20 E_PRD_30
      * @Route("/api/produits/{id}", name="update_produit", methods={"PATCH"})
+      * @SWG\Tag(name="Produit")
+      *
+      * @SWG\Parameter(
+      *      name="nom",
+      *      in="body",
+      *      required=true,
+      *      @SWG\Schema(
+      *          type="object",
+      *          required={"nom", "prix"},
+      *          @SWG\Property(property="nom", type="string", example="Pomme"),
+      *          @SWG\Property(property="prix", type="integer", example="10"),
+      *              )
+      * )
+      *
+      *   @SWG\Response(
+      *     response=204,
+      *     description=" Return when the product has been changed",
+      *     @SWG\Schema(
+      *         type="array",
+      *         @SWG\Items(
+      *              type="object",
+      *              @SWG\Property(property="id", type="integer", example="1"),
+      *              @SWG\Property(property="nom", type="string", example="Pomme"),
+      *              @SWG\Property(property="prix", type="float", example="10"),
+      *              @SWG\Property(property="description", type="string", example="alimentaire"),
+      *              @SWG\Property(property="boutique_id", type="integer", example="1"),
+      *              @SWG\Property(property="categories", type="string", example="FRUITS"),
+      *     )
+      * )
+      * )
+      *
+      * @SWG\Response(
+      *      response=422,
+      *      description="Returned when the sent request isn't valid",
+      *
+      *      @SWG\Schema(
+      *          type="object",
+      *          @SWG\Property(property="code", type="integer", example=422),
+      *          @SWG\Property(property="message", type="string", example="Invalid Request."),
+      *      )
+      * )
+      * @SWG\Response(
+      *      response=404,
+      *      description="Returned when the category isn't found",
+      *
+      *      @SWG\Schema(
+      *          type="object",
+      *          @SWG\Property(property="status", type="integer", example=404),
+      *          @SWG\Property(property="errors", type="string", example="Not found!")
+      *      )
+      * )
      * @noinspection PhpOptionalBeforeRequiredParametersInspection
      * @param Produit|null $existingProduit
      * @param ProduitRepository $produitRepository
@@ -163,6 +325,54 @@ class ProduitController extends ApiController
      /**
      * associer produit. to categories E_BTQ_50
      * @Route("/api/produits/{id}/categories", name="associer_categories_produit", methods={"PUT"})
+      * @SWG\Tag(name="Produit")
+      * @SWG\Parameter(
+      *      name="produit",
+      *      in="body",
+      *      required=true,
+      *      @SWG\Schema(
+      *          type="object",
+      *          required={"categories"},
+      *          @SWG\Property(property="categories", type="string", example="FRUITS"),
+      *              )
+      * )
+     * @SWG\Response(
+      *     response=200,
+      *     description="Returned when the product has been associated to the category ",
+      *     @SWG\Schema(
+      *         type="array",
+      *         @SWG\Items(
+      *              type="object",
+      *              @SWG\Property(property="id", type="integer", example="1"),
+      *              @SWG\Property(property="nom", type="string", example="Pomme"),
+      *              @SWG\Property(property="prix", type="float", example="10"),
+      *              @SWG\Property(property="description", type="string", example="alimentaire"),
+      *              @SWG\Property(property="boutique_id", type="integer", example="1"),
+      *              @SWG\Property(property="categories", type="string", example="FRUITS"),
+      *     )
+      * )
+      * )
+      * @SWG\Response(
+      *      response=422,
+      *      description="Returned when the sent request isn't valid",
+      *
+      *      @SWG\Schema(
+      *          type="object",
+      *          @SWG\Property(property="code", type="integer", example=422),
+      *          @SWG\Property(property="message", type="string", example="Invalid Request."),
+      *      )
+      * )
+      *
+      *  @SWG\Response(
+      *      response=404,
+      *      description="Returned when the boutique or the product isn't found",
+      *
+      *      @SWG\Schema(
+      *          type="object",
+      *          @SWG\Property(property="status", type="integer", example=404),
+      *          @SWG\Property(property="errors", type="string", example="Not found!")
+      *      )
+      * )
      * @noinspection PhpOptionalBeforeRequiredParametersInspection
      * @param Produit|null $existingProduit
      * @param Request $request
@@ -197,6 +407,24 @@ class ProduitController extends ApiController
     /**
      * Get a list of all produits. E_PRD_70
      * @Route("/api/produits/boutiques/{id}/categories/{idCategorie}", name="produits_boutiques_categorie", methods={"GET"})
+     * @SWG\Tag(name="Produit")
+     *
+     *   @SWG\Response(
+     *     response=200,
+     *     description=" Return with the details of product",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(
+     *              type="object",
+     *              @SWG\Property(property="id", type="integer", example="1"),
+     *              @SWG\Property(property="nom", type="string", example="Pomme"),
+     *              @SWG\Property(property="prix", type="float", example="10"),
+     *              @SWG\Property(property="description", type="string", example="alimentaire"),
+     *              @SWG\Property(property="boutique_id", type="integer", example="1"),
+     *              @SWG\Property(property="categories", type="string", example="FRUITS"),
+     *     )
+     * )
+     * )
      * @noinspection PhpOptionalBeforeRequiredParametersInspection
      * @param Boutique|null $existingBoutique
      * @param Categorie|null $existingCategorie

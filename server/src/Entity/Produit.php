@@ -41,6 +41,7 @@ class Produit
 
     /**
      * @ORM\ManyToMany(targetEntity=Categorie::class, inversedBy="produits")
+     * @ORM\JoinTable(name="produit_categorie")
      */
     private $categories;
 

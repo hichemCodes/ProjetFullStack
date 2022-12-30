@@ -19,6 +19,11 @@ use App\Repository\VilleRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use Swagger\Annotations as SWG;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+
 
 
 
@@ -34,10 +39,25 @@ class CategorieController extends ApiController
     /**
      * Get a list of all categories.
      * @Route("/api/categories", name="categories", methods={"GET"})
+     * @SWG\Tag(name="Categorie")
+     *
+     *  @SWG\Response(
+     *     response=200,
+     *     description="Returned with the list of categories",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(
+     *              type="object",
+     *              @SWG\Property(property="id", type="integer", example="1"),
+     *              @SWG\Property(property="nom", type="string", example="Boisson"),
+     *              @SWG\Property(property="produits", type="string", example="Jus"),
+     *     )
+     * )
+     * )
      * @param CategorieRepository $categorieRepository
      * @return JsonResponse
      */
-    public function getAllBoutique(
+    public function getAllCategories(
         CategorieRepository $categorieRepository,
         Request $request
     ): JsonResponse {
@@ -58,6 +78,44 @@ class CategorieController extends ApiController
     /**
      * Create categorie.
      * @Route("/api/categories", name="create_categorie", methods={"POST"})
+     * @SWG\Tag(name="Categorie")
+     *
+     * @SWG\Parameter(
+     *      name="nom",
+     *      in="body",
+     *      required=true,
+     *      @SWG\Schema(
+     *          type="object",
+     *          required={"nom"},
+     *          @SWG\Property(property="nom", type="string", example="Boisson")
+     *              )
+     * )
+     *
+     *   @SWG\Response(
+     *     response=201,
+     *     description=" Return when the category has been created",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(
+     *              type="object",
+     *              @SWG\Property(property="id", type="integer", example="1"),
+     *              @SWG\Property(property="nom", type="string", example="Boisson"),
+     *              @SWG\Property(property="produits", type="string", example="Jus"),
+     *     )
+     * )
+     * )
+     *
+     * @SWG\Response(
+     *      response=422,
+     *      description="Returned when the sent request isn't valid",
+     *
+     *      @SWG\Schema(
+     *          type="object",
+     *          @SWG\Property(property="code", type="integer", example=422),
+     *          @SWG\Property(property="message", type="string", example="Invalid Request."),
+     *      )
+     * )
+     *
      * @param CategorieRepository $categorieRepository
      * @param Request $request
      * @return JsonResponse
@@ -87,6 +145,22 @@ class CategorieController extends ApiController
     /**
      * Get specific categorie.
      * @Route("/api/categories/{id}", name="categorie", methods={"GET"})
+     * @SWG\Tag(name="Categorie")
+     *
+     *   @SWG\Response(
+     *     response=200,
+     *     description=" Return with the details of category",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(
+     *              type="object",
+     *              @SWG\Property(property="id", type="integer", example="1"),
+     *              @SWG\Property(property="nom", type="string", example="Boisson"),
+     *              @SWG\Property(property="produits", type="string", example="Jus"),
+     *     )
+     * )
+     * )
+     *
      * @return JsonResponse
      */
     public function getCategorie(
@@ -101,13 +175,61 @@ class CategorieController extends ApiController
     /**
      * Update category
      * @Route("/api/categories/{id}", name="update_categorie", methods={"PATCH"})
+     * @SWG\Tag(name="Categorie")
+     *
+     * @SWG\Parameter(
+     *      name="nom",
+     *      in="body",
+     *      required=true,
+     *      @SWG\Schema(
+     *          type="object",
+     *          required={"nom"},
+     *          @SWG\Property(property="nom", type="string", example="Boisson")
+     *              )
+     * )
+     *
+     *   @SWG\Response(
+     *     response=204,
+     *     description=" Return when the category has been changed",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(
+     *              type="object",
+     *              @SWG\Property(property="id", type="integer", example="1"),
+     *              @SWG\Property(property="nom", type="string", example="Boisson"),
+     *              @SWG\Property(property="produits", type="string", example="Jus"),
+     *     )
+     * )
+     * )
+     *
+     * @SWG\Response(
+     *      response=422,
+     *      description="Returned when the sent request isn't valid",
+     *
+     *      @SWG\Schema(
+     *          type="object",
+     *          @SWG\Property(property="code", type="integer", example=422),
+     *          @SWG\Property(property="message", type="string", example="Invalid Request."),
+     *      )
+     * )
+     * @SWG\Response(
+     *      response=404,
+     *      description="Returned when the category isn't found",
+     *
+     *      @SWG\Schema(
+     *          type="object",
+     *          @SWG\Property(property="status", type="integer", example=404),
+     *          @SWG\Property(property="errors", type="string", example="Not found!")
+     *      )
+     * )
+     *
      * @noinspection PhpOptionalBeforeRequiredParametersInspection
      * @param Categorie|null $existingCategory
      * @param CategorieRepository $categoryRepository
      * @param Request $request
      * @return JsonResponse
      */
-    public function updateBoutique(
+    public function updateCategory(
         Categorie $existingCategory = null,
         CategorieRepository  $categoryRepository,
         Request $request
@@ -133,9 +255,34 @@ class CategorieController extends ApiController
 
     /**
      * Delete category.
-     *
-     *
      * @Route("/api/categories/{id}", name="delete_category", methods={"DELETE"})
+     * @SWG\Tag(name="Categorie")
+     *
+     *  @SWG\Response(
+     *     response=204,
+     *     description="Returned when the category has been deleted",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(
+     *              type="object",
+     *              @SWG\Property(property="id", type="integer", example="1"),
+     *              @SWG\Property(property="nom", type="string", example="Boisson"),
+     *              @SWG\Property(property="produits", type="string", example="Jus"),
+     *     )
+     * )
+     * )
+     *
+     *  @SWG\Response(
+     *      response=404,
+     *      description="Returned when the category isn't found",
+     *
+     *      @SWG\Schema(
+     *          type="object",
+     *          @SWG\Property(property="status", type="integer", example=404),
+     *          @SWG\Property(property="errors", type="string", example="Not found!")
+     *      )
+     * )
+     *
      * @noinspection PhpOptionalBeforeRequiredParametersInspection
      * @param Categorie|null $existingCategory
      * @return JsonResponse
@@ -158,12 +305,38 @@ class CategorieController extends ApiController
     /**
      * Associate  category to product E_CAT_40
      * @Route("/api/categories/{id}/produit/{idProduit}", name="associate_category_product", methods={"PATCH"})
+     * @SWG\Tag(name="Categorie")
+     *
+     *  @SWG\Response(
+     *     response=200,
+     *     description="Returned when the category has been associated to the product ",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(
+     *              type="object",
+     *              @SWG\Property(property="id", type="integer", example="1"),
+     *              @SWG\Property(property="nom", type="string", example="Boisson"),
+     *              @SWG\Property(property="produits", type="string", example="Jus"),
+     *     )
+     * )
+     * )
+     *
+     *  @SWG\Response(
+     *      response=404,
+     *      description="Returned when the category or the product isn't found",
+     *
+     *      @SWG\Schema(
+     *          type="object",
+     *          @SWG\Property(property="status", type="integer", example=404),
+     *          @SWG\Property(property="errors", type="string", example="Not found!")
+     *      )
+     * )
      * @noinspection PhpOptionalBeforeRequiredParametersInspection
      * @param Boutique|null $existingBoutique
      * @param Produit|null $exsitingProduit
      * @return JsonResponse
      */
-    public function associateProduitToBoutique(
+    public function associateCategoryToProduct(
         Categorie $existingCategory = null,
         Produit  $exsitingProduct =null
     ): JsonResponse {
@@ -182,9 +355,4 @@ class CategorieController extends ApiController
 
 
     }
-
-
-
-
-
 }

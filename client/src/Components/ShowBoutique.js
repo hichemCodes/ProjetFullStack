@@ -18,13 +18,13 @@ const ShowBoutique = () => {
 
     useEffect( () =>{
        
-        axios.get(`${api}/boutiques/${id}/produits`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
+        /*axios.get(`${api}/boutiques/${id}/produits`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
             response => {
                 if( response.status === 200) {
                  
                 }
             }
-        );
+        );*/
 
 
 
