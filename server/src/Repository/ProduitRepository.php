@@ -83,18 +83,29 @@ or
      * Find all the product with name  passed in parameter.
      *
     */
-    public function getProduits() {
+    public function getProduits(
+        $query,
+        $offset = 0,
+        $limit = 10
+    ) {
         $queryBuilder = $this->createQueryBuilder("p")
-        ->select('p.id,p.prix,p.description,b.id as boutique')
-        ->innerJoin('p.boutique_id', 'b');
-       
+        ->select('p.id,p.nom,p.prix,p.description,b.id as boutique')
+        ->leftJoin('p.boutique_id', 'b');
+
+        if($query != "") {
+            $queryBuilder->andWhere('p.nom LIKE :query')
+                ->setParameter('query','%'.$query);
+        }
+
+        $queryBuilder->setFirstResult($offset)->setMaxResults($limit);
+
         return $queryBuilder->getQuery()->getResult();
     }
 
     public function getProduit($id) {
         $queryBuilder = $this->createQueryBuilder("p")
         ->select('p.id,p.prix,p.description,b.id as boutique')
-        ->innerJoin('p.boutique_id', 'b')
+        ->leftJoin('p.boutique_id', 'b')
         ->andWhere('p.id =  :id')
         ->setParameter('id',$id);
         return $queryBuilder->getQuery()->getResult();
@@ -110,6 +121,7 @@ or
 
     public function getAllProduitsNonAssigner() {
         $queryBuilder = $this->createQueryBuilder("p")
+            ->select('p.id,p.nom,p.prix,p.description')
             ->andWhere('p.boutique_id is NULL');
         return $queryBuilder->getQuery()->getResult();
 

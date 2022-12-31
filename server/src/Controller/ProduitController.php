@@ -59,12 +59,21 @@ class ProduitController extends ApiController
         ProduitRepository $produitRepository,
         Request $request
     ): JsonResponse {
-        if($request->request->has('query')) {
-            $query = $request->get('query');
-            $produits = $produitRepository->searchbyName($query);
-        }else {
-            $produits = $produitRepository->getProduits();
+        $request = $this->transformJsonBody($request);
+        $query = "";
+        $offset = 0;
+        $limit = 10;
+        if($request->query->has('query')) {
+            $query = $request->query->get('query');
         }
+        if($request->query->has('offset')) {
+            $offset=$request->query->get('offset');
+        }
+        if($request->query->has('limit')) {
+            $limit=$request->query->get('limit');
+        }
+            $produits = $produitRepository->getProduits($query, $offset, $limit);
+
         return $this->json($produits,Response::HTTP_OK);
     }
 
