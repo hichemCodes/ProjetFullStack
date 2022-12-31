@@ -99,6 +99,7 @@ or
 
         $queryBuilder->setFirstResult($offset)->setMaxResults($limit);
 
+
         return $queryBuilder->getQuery()->getResult();
     }
 

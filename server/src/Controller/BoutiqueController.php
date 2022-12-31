@@ -36,6 +36,26 @@ class BoutiqueController extends ApiController
      * @Route("/api/boutiques", name="boutiques", methods={"GET"})
      * @SWG\Tag(name="Boutique")
      *
+     * @SWG\Parameter(
+     *      name="boutique",
+     *      in="body",
+     *      required=false,
+     *      @SWG\Schema(
+     *          type="object",
+     *          required={"nom", "horaires_de_ouverture", "en_conge"},
+     *          @SWG\Property(property="enConge", type="bool", example="true"),
+     *          @SWG\Property(property="createdBefore", type="string", example="12/12/2022"),
+     *          @SWG\Property(property="createdAfter", type="string", example="18/12/2022"),
+     *          @SWG\Property(property="query", type="string", example="nom du boutique"),
+     *          @SWG\Property(property="orderBy", type="string", example="date_de_creation"),
+     *          @SWG\Property(property="offset", type="int", example="0"),
+     *          @SWG\Property(property="limit", type="int", example="10"),
+
+     *          @SWG\Property(property="en_conge", type="boolean", example="1")
+     *
+     *              )
+     * )
+     * 
      *  @SWG\Response(
      *     response=200,
      *     description="Returned with the list of boutiques",
