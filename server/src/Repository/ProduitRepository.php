@@ -86,7 +86,7 @@ or
     public function getProduits() {
         $queryBuilder = $this->createQueryBuilder("p")
         ->select('p.id,p.prix,p.description,b.id as boutique')
-        ->innerJoin('p.boutique_id', 'b');
+        ->leftJoin('p.boutique_id', 'b');
        
         return $queryBuilder->getQuery()->getResult();
     }
@@ -94,7 +94,7 @@ or
     public function getProduit($id) {
         $queryBuilder = $this->createQueryBuilder("p")
         ->select('p.id,p.prix,p.description,b.id as boutique')
-        ->innerJoin('p.boutique_id', 'b')
+        ->leftJoin('p.boutique_id', 'b')
         ->andWhere('p.id =  :id')
         ->setParameter('id',$id);
         return $queryBuilder->getQuery()->getResult();
