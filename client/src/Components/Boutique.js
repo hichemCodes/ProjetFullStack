@@ -5,7 +5,7 @@ import { useNavigate  } from "react-router-dom";
 
   
 
-const Boutique = ({boutique,getAllBoutiques,boutiques}) => {
+const Boutique = ({boutique,getAllBoutiques,boutiques,changeOperation,changeBoutiqueUpdate,getAllProduitsNonAssigner}) => {
 
     const [api,setApi] = useState("http://localhost:8000/api");
     const [token,setToken] = useState(localStorage.getItem("token"));
@@ -40,8 +40,22 @@ const Boutique = ({boutique,getAllBoutiques,boutiques}) => {
           })
     }
 
-    const updateBoutique = (id) => {
-       
+    const updateBoutique = (id,boutiqueObj,operation) => {
+        changeOperation(operation);
+        changeBoutiqueUpdate(boutiqueObj);
+        
+        document.querySelector(".pop-up-update-add").classList.toggle('show_me');
+        document.querySelector(".cover_add").classList.toggle('fade');
+
+    }
+
+    const AssignerBoutique = (id) => {
+
+        document.querySelector(".pop-up-assigner").classList.toggle('show_me');
+        document.querySelector(".cover_add").classList.toggle('fade');
+        getAllProduitsNonAssigner();
+        localStorage.setItem("boutique_to_assigner",id)
+
     }
 
     const showBoutique = (id) => {
@@ -56,9 +70,9 @@ const Boutique = ({boutique,getAllBoutiques,boutiques}) => {
         <div className="card__image">
            <div className="show_option">
                 <div className="cover_option">
-                    <i class="fa-solid fa-pen-to-square" title='modifier' onClick={()=>{updateBoutique(boutique.id)}}></i>
+                    <i class="fa-solid fa-pen-to-square" title='modifier' onClick={()=>{updateBoutique(boutique.id,boutique,"update")}}></i>
                     <i class="fa-sharp fa-solid fa-trash" onClick={()=>{DeleteBoutique(boutique.id)}} title='supprimer'></i>
-                    <i class="fa-sharp fa-solid fa-cart-plus"></i>
+                    <i class="fa-sharp fa-solid fa-cart-plus" onClick={()=>{AssignerBoutique(boutique.id)}}></i>
                 </div>
            </div>
         </div>

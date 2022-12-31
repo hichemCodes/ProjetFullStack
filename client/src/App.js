@@ -22,6 +22,8 @@ function App() {
     }
   },[currentPage]);
 
+  
+
   return (
     <div className="App">
        <Routes>

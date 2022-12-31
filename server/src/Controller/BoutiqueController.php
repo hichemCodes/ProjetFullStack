@@ -7,6 +7,7 @@ use App\Entity\Boutique;
 use App\Entity\Produit;
 use App\Entity\Ville;
 use App\Repository\BoutiqueRepository;
+use App\Repository\ProduitRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -111,7 +112,7 @@ class BoutiqueController extends ApiController
 
     /**
      * Create boutique.
-     * @Route("/api/boutiques/create", name="create_boutique", methods={"POST"})
+     * @Route("/api/boutiques", name="create_boutique", methods={"POST"})
      * @SWG\Tag(name="Boutique")
      *
      * @SWG\Parameter(
@@ -172,7 +173,7 @@ class BoutiqueController extends ApiController
         $horaires_de_ouverture = $request->get('horaires_de_ouverture');
         $en_conge = $request->get('en_conge');
 
-         if (empty($nom) /*|| empty($horaires_de_ouverture)*/) {
+         if (empty($nom) || empty($horaires_de_ouverture)) {
             return $this->respondValidationError("Invalid request");
         }
 
@@ -250,7 +251,7 @@ class BoutiqueController extends ApiController
 
     /**
      * Update boutique
-     * @Route("/api/boutiques/{id}", name="update_boutique", methods={"PATCH"})
+     * @Route("/api/boutiques/{id}", name="update_boutique", methods={"PUT"})
      * @SWG\Tag(name="Boutique")
      *
      * @SWG\Parameter(
@@ -324,7 +325,7 @@ class BoutiqueController extends ApiController
         $horaires_de_ouverture = $request->get('horaires_de_ouverture');
         $en_conge = $request->get('en_conge');
 
-        if (empty($nom) || empty($prix)) {
+        if (empty($nom) || empty($horaires_de_ouverture)) {
             return $this->respondValidationError("Invalid request");
         }
         $existingBoutique->setNom($nom);
@@ -341,7 +342,7 @@ class BoutiqueController extends ApiController
 
     /**
      * Associate  produit to boutique E_BTQ_40
-     * @Route("/api/boutiques/{id}/produit/{idProduit}", name="associate_produit_boutique", methods={"PATCH"})
+     * @Route("/api/boutiques/{boutique}/produit/{produit}", name="associate_produit_boutique", methods={"PATCH"})
      * @SWG\Tag(name="Boutique")
      * @SWG\Response(
      *     response=200,
@@ -373,27 +374,26 @@ class BoutiqueController extends ApiController
      *      )
      * )
      * @noinspection PhpOptionalBeforeRequiredParametersInspection
-     * @param Boutique|null $existingBoutique
-     * @param Produit|null $exsitingProduit
+     * @param Boutique $existingBoutique
+     * @param Produit $exsitingProduit
      * @return JsonResponse
      */
     public function associateProduitToBoutique(
-        Boutique $existingBoutique = null,
-        Produit  $exsitingProduit =null
+        Boutique $boutique,
+        Produit  $produit
+        
     ): JsonResponse {
-        if(is_null($existingBoutique)) {
+        if(is_null($boutique)) {
             return $this->respondNotFound();
         }
-        if (empty($exsitingProduit) || empty($existingBoutique)) {
+        if (empty($boutique) || empty($produit)) {
             return $this->respondValidationError("Invalid request");
         }
-        $existingBoutique->addProduit($exsitingProduit);
-        //$produit->addProduit($existingBoutique);
-        $exsitingProduit->setBoutiqueId($existingBoutique);
-        $this->em->persist($existingBoutique);
+       
+        $this->em->getRepository(Produit::class)->associateProduitToBoutique($boutique->getId(),$produit->getId());
 
-        $this->em->flush();
-        return $this->json($existingBoutique,Response::HTTP_OK);
+        $produitAfterUpdate = $this->em->getRepository(Produit::class)->getProduit($produit->getId());
+        return $this->json($produitAfterUpdate,Response::HTTP_OK);
 
 
     }
@@ -467,4 +467,20 @@ class BoutiqueController extends ApiController
         $details =  $boutiqueRepository->getBoutiquesProduits($existingBoutique->getId());
         return $this->json($details,Response::HTTP_OK);
     }
+
+
+    /**
+     * @Route("/api/boutiquesCount", name="boutique_count", methods={"GET"})
+      * @return JsonResponse
+     */
+    public function getBoutiqueCount(
+        BoutiqueRepository $boutiqueRepository
+    ): JsonResponse {
+        
+        $count =  $boutiqueRepository->getBoutiquesCount();
+        return $this->json($count,Response::HTTP_OK);
+    }
+
+    
+
 }

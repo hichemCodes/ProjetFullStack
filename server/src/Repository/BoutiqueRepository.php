@@ -157,4 +157,17 @@ class BoutiqueRepository extends ServiceEntityRepository
     }
 
 
+    /**
+     * le nombre de boutique dans la bdd
+     */
+    
+    //get boutiques details
+    public function getBoutiquesCount() {
+        $queryBuilder = $this->createQueryBuilder("b")
+        ->select('count(b.id) as nombreDeBoutiques');
+      
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
 }

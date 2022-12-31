@@ -16,16 +16,26 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 
 
-const UpdateBoutique = ({operation,boutique,config,api,getAllBoutiques}) => {
+const UpdateBoutique = ({operation,boutiqueUpdate,config,api,getAllBoutiques,changeOperation}) => {
 
   const theme = createTheme();
   const [nom,setNom] = useState('');
   const [enConge,setEnConge] = useState(false);
   const [horaires_de_ouverture,setHorrairesDeOuverture] = useState([]);
   
+
+
+  useEffect( () =>{
+    if(operation != "add") {
+        console.log(boutiqueUpdate);
+        setNom(boutiqueUpdate.nom);
+        setEnConge(boutiqueUpdate.en_conge);
+    }
+  },[operation]);
+
+  const horaires_de_ouvertureValue = ([{"lundi":{"matin":"8h-12h","apreMidi":"14h-18h"}},{"mardi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"mercredi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"jeudi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"vendredi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"samedi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"dimanche":{"matin":"8h-12h","apreMidi":"14h-20h"}}]);
+
   const addBoutique = () => {
-    
-    const horaires_de_ouvertureValue = ([{"lundi":{"matin":"8h-12h","apreMidi":"14h-18h"}},{"mardi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"mercredi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"jeudi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"vendredi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"samedi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"dimanche":{"matin":"8h-12h","apreMidi":"14h-20h"}}]);
     
     const datas ={
         "nom" : nom,
@@ -38,6 +48,8 @@ const UpdateBoutique = ({operation,boutique,config,api,getAllBoutiques}) => {
               if( response.status === 201) {
                   getAllBoutiques();
                   close_pop_up();
+                  setNom("");
+                  setEnConge("");
                   Swal.fire('Boutique ajoutée avec succès !', '', 'success');
               }
           }
@@ -45,29 +57,38 @@ const UpdateBoutique = ({operation,boutique,config,api,getAllBoutiques}) => {
       
     };
 
+    //modifier boutique
     const updateSelectedBoutique = (id) => {
-
+        
         const datas ={
             "nom" : nom,
             "en_conge" : enConge,
+            "horaires_de_ouverture" : horaires_de_ouvertureValue
         }
         console.log(datas);
-        axios.post(`${api}/boutiques/id`, datas,config).then(
+        axios.put(`${api}/boutiques/${id}`, datas,config).then(
             response => {
                 if( response.status === 200) {
                     getAllBoutiques();
+                    setNom("");
+                    setEnConge("");
                     close_pop_up();
                     Swal.fire('Boutique Modifiée avec succès !', '', 'success');
+                  
                 }
             }
         );
           
-        };
+    };
     
 
   const close_pop_up = ()=> {
+    setNom("")
+    setEnConge(false);
+    changeOperation("");
     document.querySelector(".pop-up-update-add").classList.toggle('show_me');
-    document.querySelector(".cover_add").classList.toggle('fade')
+    document.querySelector(".cover_add").classList.toggle('fade');
+   
   }
    
     return (
@@ -77,7 +98,7 @@ const UpdateBoutique = ({operation,boutique,config,api,getAllBoutiques}) => {
             <Grid container component="main">
                     
                 <Typography component="h1" variant="h5">
-                Ajouter une Boutique
+                {(operation == "add") ? "Ajouter" : "Modifier" } une Boutique
                 </Typography>
                 <TextField
                     margin="normal"
@@ -87,11 +108,12 @@ const UpdateBoutique = ({operation,boutique,config,api,getAllBoutiques}) => {
                     label="Nom du boutique"
                     type="text"
                     id="nom_boutique"
+                    value={nom}
                     onChange={(e)=> {setNom(e.target.value)}}
                     focused
                 />
                 <FormGroup>
-                    <FormControlLabel label="En congé" control={<Checkbox onChange={(e)=> {setEnConge(e.target.checked)}} />}  />
+                    <FormControlLabel label="En congé" control={<Checkbox id="check_boutique" checked={enConge}  onChange={(e)=> {setEnConge(e.target.checked)}} />}  />
                 </FormGroup>
                 
                 {
@@ -113,10 +135,10 @@ const UpdateBoutique = ({operation,boutique,config,api,getAllBoutiques}) => {
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
-                            onClick = {()=> { updateSelectedBoutique(boutique.id)}}
+                            onClick = {()=> { updateSelectedBoutique(boutiqueUpdate.id)}}
                         >
                             Modifier
-                        </Button>  
+                    </Button>  
                 }
               
             </Grid>

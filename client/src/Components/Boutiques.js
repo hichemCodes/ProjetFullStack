@@ -11,6 +11,7 @@ import axios from 'axios';
 import NavBar from "./NavBar";
 import FilterBoutique from "./FilterBoutique";
 import UpdateBoutique from "./UpdateBoutique";
+import Assigner from "./Assigner";
 import Boutique from "./Boutique";
 import Loader from "./loader";
 import logo from "../images/shop.png";
@@ -41,20 +42,23 @@ const Boutiques = ({change_current_page,currentPageSwitch}) => {
   const [operation,setOperation] = useState("add");
   const [boutiqueUpdate,setBoutiqueUpdate] = useState([]);
   const [boutiques,setBoutiques] = useState([]);
-  
+  const [nonAssigners,setNonAssigner] = useState([]);
+
   
   const config = {
     headers: { 
       'Authorization': `Bearer ${token}`,
       'Accept': 'application/json',
-      'Content-Type': 'application/json'}
-    };
+      'Content-Type': 'application/json'}  
+  };
 
     const getAllBoutiques = () => {
-      
+
+       setOffest(per_page * (page - 1));
+
         const datas = {
           "limit" : per_page,
-          "offset" : offset,
+          "offset" : per_page * (page - 1),//a construire
           "orderBy" : orderBy
         };
 
@@ -77,16 +81,34 @@ const Boutiques = ({change_current_page,currentPageSwitch}) => {
         axios.get(`${api}/boutiques`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
           response => {
               if( response.status === 200) {
-                setAllpages(Math.ceil((response.data.length) / per_page))
                 setBoutiques(response.data);
                 setIsloading(false);
               }
           }
+        )
+    }
+
+    const getAllProduitsNonAssigner = () => {
+      axios.get(`${api}/produits/nonAssigner`,config).then(
+        response => {
+            if( response.status === 200) {
+               console.log(response.data);
+               setNonAssigner(response.data)
+            }
+        }
+      )
+  }
+
+    const synchronizeBoutiqueCount = () => {
+      axios.get(`${api}/boutiquesCount`,config).then(
+        response => {
+            if( response.status === 200) {
+              setAllpages(Math.ceil((response.data[0].nombreDeBoutiques) / per_page))
+            }
+        }
       )
     }
   
-  
-
   useEffect( () =>{
     setIsloading(true);
     getAllBoutiques();
@@ -94,9 +116,11 @@ const Boutiques = ({change_current_page,currentPageSwitch}) => {
 
   useEffect( () =>{
     change_current_page("boutiques");
+    synchronizeBoutiqueCount();
   },[]);
 
-  return (is_loading) ? (<Loader/>) : ( 
+
+  return ( 
     <React.Fragment>
         <NavBar
            query = {query}
@@ -121,27 +145,45 @@ const Boutiques = ({change_current_page,currentPageSwitch}) => {
                 createdAfterInput = {createdAfterInput}
                 changeCreatedBeforeInput = { (new_date_before_input)=> { setCreatedBeforeInput(new_date_before_input)}}
                 changeCreatedafterInput = { (new_date_after_input)=> { setCreatedAfterInput(new_date_after_input)}}
+                changeOperation = {(new_operation)=> {setOperation(new_operation)}}
+                changeBoutiqueUpdate = {(new_update_boutique)=> {setBoutiqueUpdate(new_update_boutique)}}
         />  
-        
-         <div className="imgs boutiques">
-             { boutiques.map( (boutique) =>  (
+        {
+          (is_loading) ? (<Loader/>) 
+          : 
+            <div className="imgs boutiques">
+                { boutiques.map( (boutique) =>  (
 
-                <Boutique
-                    boutique = {boutique}
-                    getAllBoutiques = {getAllBoutiques}
-                    boutiques = {boutiques}
-                  />
-                ))
-              }
-          </div>
+                  <Boutique
+                      boutique = {boutique}
+                      getAllBoutiques = {getAllBoutiques}
+                      boutiques = {boutiques}
+                      changeOperation = {(new_operation)=> {setOperation(new_operation)}}
+                      changeBoutiqueUpdate = {(new_update_boutique)=> {setBoutiqueUpdate(new_update_boutique)}}
+                      getAllProduitsNonAssigner = {getAllProduitsNonAssigner}
+                       
+                    />
+                  ))
+                }
+            </div>
+        }
+        
           <UpdateBoutique
             operation={operation}
             boutiqueUpdate={boutiqueUpdate}
             config = {config}
             api = {api}
             getAllBoutiques = {getAllBoutiques}
+            changeOperation = {(new_operation)=> {setOperation(new_operation)}}
           />
           <div className="cover_add fade"></div>
+
+          <Assigner 
+             config = {config}
+             api = {api}
+             nonAssigners = {nonAssigners}
+             changeNonAssigner = {(new_non_assigner)=> { setNonAssigner(new_non_assigner)}}
+          />
     </React.Fragment>
   );
 }

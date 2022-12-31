@@ -63,7 +63,7 @@ class ProduitController extends ApiController
             $query = $request->get('query');
             $produits = $produitRepository->searchbyName($query);
         }else {
-            $produits = $produitRepository->findAll();
+            $produits = $produitRepository->getProduits();
         }
         return $this->json($produits,Response::HTTP_OK);
     }
@@ -71,7 +71,7 @@ class ProduitController extends ApiController
     
     /**
      * Get a specific product.
-     * @Route("/api/produits/{id}", name="produit", methods={"GET"})
+     * @Route("/api/produits/{id}", name="produit", methods={"GET"},requirements={"id"="\d+"})
      * @SWG\Tag(name="Produit")
      *
      *   @SWG\Response(
@@ -94,12 +94,13 @@ class ProduitController extends ApiController
      * @return JsonResponse
      */
     public function getProduit(
-        Produit $existingProduit
+        Produit $existingProduit,
+        ProduitRepository $produitRepository
     ): JsonResponse {
         if(is_null($existingProduit)) {
             return $this->respondNotFound();
         }
-        return $this->json($existingProduit,Response::HTTP_OK);
+        return $this->json($produitRepository->getProduit($existingProduit->getId()),Response::HTTP_OK);
     }
 
     /**
@@ -406,7 +407,7 @@ class ProduitController extends ApiController
 
     /**
      * Get a list of all produits. E_PRD_70
-     * @Route("/api/produits/boutiques/{id}/categories/{idCategorie}", name="produits_boutiques_categorie", methods={"GET"})
+     * @Route("/api/produits/boutiques/{id}/categories/{idCategorie}", name="produits_boutiques_categorie", methods={"GET"},requirements={"id"="\d+"})
      * @SWG\Tag(name="Produit")
      *
      *   @SWG\Response(
@@ -447,6 +448,37 @@ class ProduitController extends ApiController
         return $this->json($produits,Response::HTTP_OK);
     }
 
+    /**
+     * Get a list of all produits Non Assigné
+     * @Route("/api/produits/nonAssigner", name="produits_non_assigner", methods={"GET"})
+     * * @SWG\Tag(name="Produit")
+     *
+     *  @SWG\Response(
+     *     response=200,
+     *     description="Returned with the list of products",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(
+     *              type="object",
+     *              @SWG\Property(property="id", type="integer", example="1"),
+     *              @SWG\Property(property="nom", type="string", example="Pomme"),
+     *              @SWG\Property(property="prix", type="float", example="10"),
+     *              @SWG\Property(property="description", type="string", example="alimentaire"),
+     *          
+     *     )
+     * )
+     * )
+     * @param ProduitRepository $produitRepository
+     * @return JsonResponse
+     */
+     public function getAllProduitsNonAssigner(
+        ProduitRepository $produitRepository
+     ) {
+        $produits =  $produitRepository->getAllProduitsNonAssigner();
+        return $this->json($produits,Response::HTTP_OK);
+     }
+
+    
 
 
 

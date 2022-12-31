@@ -18,7 +18,9 @@ const FilterBoutique = (
         createdBeforeInput,
         createdAfterInput,
         changeCreatedBeforeInput,
-        changeCreatedafterInput
+        changeCreatedafterInput,
+        changeOperation,
+        changeBoutiqueUpdate
     }) => {
 
     
@@ -56,9 +58,11 @@ const FilterBoutique = (
     };
 
    const updateBoutique = (operation)=> {
+        changeOperation("add");
+        changeBoutiqueUpdate([]);
         document.querySelector(".pop-up-update-add").classList.toggle('show_me');
-        document.querySelector(".cover_add").classList.toggle('fade')
-    }
+        document.querySelector(".cover_add").classList.toggle('fade');
+   }
 
     return (
         <div className="choices">
@@ -134,10 +138,10 @@ const FilterBoutique = (
                 <AllPages 
                          current_page = {current_page} 
                          all_pages = {all_pages} 
-                         get_page = { ()=> { console.log("page changed")}}
+                         get_page = { (new_page)=> { change_page(new_page)}}
                          
                 />
-                <span className="current_order c_item add_boutique" onClick = {() => {updateBoutique("ajouter")}}> <strong>Ajouter</strong> </span>
+                <span className="current_order c_item add_boutique" onClick = {() => {updateBoutique("add")}}> <strong>Ajouter</strong> </span>
 
                 
 
