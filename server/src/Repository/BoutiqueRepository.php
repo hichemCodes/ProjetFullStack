@@ -110,7 +110,9 @@ class BoutiqueRepository extends ServiceEntityRepository
 
     ) {
         $queryBuilder = $this->createQueryBuilder("b")
-            ->select('b.id, b.nom,b.date_de_creation,b.en_conge,b.horaires_de_ouverture');
+            ->select( 'DISTINCT b.id, b.nom,b.date_de_creation,b.en_conge,b.horaires_de_ouverture,count(p.id) as nombre_de_produit,count(c.id) as nombre_de_categories')
+        ->leftJoin('b.produits', 'p')
+            ->leftJoin('p.categories', 'c');
 
         if($enConge != null) {
             $queryBuilder->andWhere('b.en_conge = :param')

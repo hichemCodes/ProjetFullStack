@@ -76,4 +76,41 @@ class CategorieRepository extends ServiceEntityRepository
         return $queryBuilder->getQuery()->getResult();
 
     }
+
+
+    /**
+     * Find all the categories with name  passed in parameter.
+     * @param $query
+     * @param $offset
+     * @param $limit
+     * @return float|int|mixed|string
+     */
+    public function getCategories(
+        $query,
+        $offset = 0,
+        $limit = 10
+    ) {
+        $queryBuilder = $this->createQueryBuilder("c")
+            ->select('c.id,c.nom,p.prix,p.nom as produit')
+            ->leftJoin('c.produits', 'p');
+
+        if($query != "") {
+            $queryBuilder->andWhere('c.nom LIKE :query')
+                ->setParameter('query','%'.$query);
+        }
+
+        $queryBuilder->setFirstResult($offset)->setMaxResults($limit);
+
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    public function getCategory($id) {
+        $queryBuilder = $this->createQueryBuilder("c")
+            ->select('c.id,c.nom,p.nom as produit')
+            ->leftJoin('c.produits', 'p')
+            ->andWhere('c.id =  :id')
+            ->setParameter('id',$id);
+        return $queryBuilder->getQuery()->getResult();
+    }
 }

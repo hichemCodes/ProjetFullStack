@@ -490,8 +490,30 @@ class BoutiqueController extends ApiController
 
 
     /**
+     * Get the number of boutiques
      * @Route("/api/boutiquesCount", name="boutique_count", methods={"GET"})
-      * @return JsonResponse
+     * @SWG\Tag(name="Boutique")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description=" Return with the number of boutique",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(
+     *              type="object",
+     *              @SWG\Property(property="id", type="integer", example="1"),
+     *              @SWG\Property(property="nom", type="string", example="Lidl"),
+     *              @SWG\Property(property="horaires_de_ouverture", type="json", example="[{'lundi':{'matin':'8h-12h'}}]"),
+     *              @SWG\Property(property="en_conge", type="boolean", example="1"),
+     *              @SWG\Property(property="date_de_creation", type="datetime", example="1"),
+     *              @SWG\Property(property="users", type="integer", example="1"),
+     *              @SWG\Property(property="adresse_id", type="integer", example="1"),
+     *              @SWG\Property(property="produits", type="string", example="Pomme"),
+     *     )
+     * )
+     * )
+     * @param BoutiqueRepository $boutiqueRepository
+     * @return JsonResponse
      */
     public function getBoutiqueCount(
         BoutiqueRepository $boutiqueRepository

@@ -487,13 +487,4 @@ class ProduitController extends ApiController
         return $this->json($produits,Response::HTTP_OK);
      }
 
-    
-
-
-
-
-
-
-
-
 }

@@ -89,8 +89,9 @@ or
         $limit = 10
     ) {
         $queryBuilder = $this->createQueryBuilder("p")
-        ->select('p.id,p.nom,p.prix,p.description,b.id as boutique')
-        ->leftJoin('p.boutique_id', 'b');
+        ->select('p.id,p.nom,p.prix,p.description,c.nom as categories,b.id as boutique')
+        ->leftJoin('p.boutique_id', 'b')
+            ->leftJoin('p.categories', 'c');
 
         if($query != "") {
             $queryBuilder->andWhere('p.nom LIKE :query')
@@ -105,9 +106,10 @@ or
 
     public function getProduit($id) {
         $queryBuilder = $this->createQueryBuilder("p")
-        ->select('p.id,p.prix,p.description,b.id as boutique')
+        ->select('p.id,p.nom,p.prix,p.description,b.id as boutique,array(c.nom) as categories')
         ->leftJoin('p.boutique_id', 'b')
-        ->andWhere('p.id =  :id')
+            ->leftJoin('p.categories', 'c')
+            ->andWhere('p.id =  :id')
         ->setParameter('id',$id);
         return $queryBuilder->getQuery()->getResult();
     }

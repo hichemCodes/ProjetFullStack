@@ -63,13 +63,21 @@ class CategorieController extends ApiController
     ): JsonResponse {
 
         // Step 1 : Fetch the data from database
-        if($request->request->has('query')) {
-            $query = $request->get('query');
-            $categories = $categorieRepository->searchbyName($query);
-        } else {
-            $categories = $categorieRepository->findAll();
-
+        $request = $this->transformJsonBody($request);
+        $query = "";
+        $offset = 0;
+        $limit = 10;
+        if($request->query->has('query')) {
+            $query = $request->query->get('query');
         }
+        if($request->query->has('offset')) {
+            $offset=$request->query->get('offset');
+        }
+        if($request->query->has('limit')) {
+            $limit=$request->query->get('limit');
+        }
+
+        $categories = $categorieRepository->getCategories($query, $offset, $limit);
 
         // Last Step : return the data.
         return $this->json($categories,Response::HTTP_OK);
@@ -164,12 +172,14 @@ class CategorieController extends ApiController
      * @return JsonResponse
      */
     public function getCategorie(
-        Categorie $existingCategorie
+        Categorie $existingCategorie,
+        CategorieRepository $categorieRepository
     ): JsonResponse {
         if(is_null($existingCategorie)) {
             return $this->respondNotFound();
         }
-        return $this->json($existingCategorie,Response::HTTP_OK);
+        $category=$categorieRepository->getCategory($existingCategorie->getId());
+        return $this->json($category,Response::HTTP_OK);
     }
 
     /**
