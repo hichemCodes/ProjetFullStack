@@ -16,6 +16,7 @@ const Assigner = ({config,api,nonAssigners,changeNonAssigner}) => {
         document.querySelector(".pop-up-assigner").classList.toggle('show_me');
         document.querySelector(".cover_add").classList.toggle('fade');
         localStorage.removeItem('boutique_to_assigner');
+        changeNonAssigner([]);
     }
      
 

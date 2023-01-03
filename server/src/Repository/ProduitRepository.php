@@ -89,7 +89,7 @@ or
         $limit = 10
     ) {
         $queryBuilder = $this->createQueryBuilder("p")
-        ->select('p.id,p.nom,p.prix,p.description,c.nom as categories,b.id as boutique')
+        ->select('p.id,p.nom,p.prix,p.description,c.nom as categories,b.nom as boutique')
         ->leftJoin('p.boutique_id', 'b')
             ->leftJoin('p.categories', 'c');
 

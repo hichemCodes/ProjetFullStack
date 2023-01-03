@@ -293,6 +293,9 @@ body{
  .c_item:hover{
    border:1px solid black;
  }
+ .filter-container {
+  position: relative;
+ }
  .orders,.all_pages,.en_conge,.change_page{
     width: 180px;
     height: auto;
@@ -303,10 +306,9 @@ body{
     border-radius: 10px;
     padding: 15px 20px;
     position: absolute;
-    left: 0;
     z-index: 100;
     background: #fff;
-    top:76%
+    top:155%;
  }
 
  .orders-first {
@@ -326,15 +328,12 @@ body{
   }
 
  .en_conge {
-  left:15.5%;
 
  }
  .orders {
-    left:26.7%;
     width: 280px;
 }
 .orders_by {
-  left:46.5% !important;
 }
 
  .all_pages{
@@ -397,6 +396,11 @@ body{
    display: flex !important;
    
  }
+
+.change_page {
+  top: 73% !important;
+}
+
  .orders .o_item label,.en_conge .o_item label{
  text-transform: capitalize;
  cursor: pointer;
@@ -580,6 +584,7 @@ body{
   text-align: center;
   border-radius: 10px;
   box-shadow: 10px 10px 30px #BDBDBD;
+  min-width: 240px;
 }
 .card__image {
   border-radius: 10px 10px 0 0;
@@ -628,6 +633,7 @@ body{
   display: none;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 .cover_option i {
   color: white;
@@ -664,8 +670,7 @@ body{
   border: 1px solid rgba(118, 118, 118, 0.28);
   border-radius: 10px;
   padding: 30px 30px;
-  z-index: 5000;
-  z-index: 100000;
+  z-index: 3000;
   max-height: 600px;
 }
 

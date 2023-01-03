@@ -110,9 +110,9 @@ class BoutiqueRepository extends ServiceEntityRepository
 
     ) {
         $queryBuilder = $this->createQueryBuilder("b")
-            ->select( 'DISTINCT b.id, b.nom,b.date_de_creation,b.en_conge,b.horaires_de_ouverture,count(p.id) as nombre_de_produit,count(c.id) as nombre_de_categories')
-        ->leftJoin('b.produits', 'p')
-            ->leftJoin('p.categories', 'c');
+            ->select( 'b.id, b.nom,b.date_de_creation,b.en_conge,b.horaires_de_ouverture')
+            ->leftJoin('b.produits', 'p');
+            // ->leftJoin('p.categories', 'c');
 
         if($enConge != null) {
             $queryBuilder->andWhere('b.en_conge = :param')
@@ -128,7 +128,7 @@ class BoutiqueRepository extends ServiceEntityRepository
         }
         if($query != "") {
             $queryBuilder->andWhere('b.nom LIKE :query')
-            ->setParameter('query','%'.$query);
+            ->setParameter('query','%'.$query.'%');
         }
 
         if($orderBy == "date_de_creation") {

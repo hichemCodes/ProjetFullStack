@@ -12,9 +12,8 @@ import logo from "../images/logo.PNG";
 import { useNavigate  } from "react-router-dom";
 
 
-const NavBar = ({query,change_query,getAllBoutiques,setIsloading}) => {
+const NavBar = ({query,change_query}) => {
 
-  const [token,setToken] = useState(localStorage.getItem("token"));
   const navigate = useNavigate();
 
 
@@ -28,14 +27,12 @@ const NavBar = ({query,change_query,getAllBoutiques,setIsloading}) => {
 
   }
 
- 
-
   return (
     <div className="navbar">
         <img src={logo} alt="shop"  className="logo"/>
         <form onSubmit={(e)=> {e.preventDefault()}} >
                 <div className="search_input">
-                    <i class="fas fa-search" onClick={(e)=> {setIsloading(true);getAllBoutiques()}}></i>
+                    <i class="fas fa-search"></i>
                     <input type="text" onInput={(e)=> {change_query(e.target.value)}}  value={query} id="search_input" />
                 </div>           
         </form>

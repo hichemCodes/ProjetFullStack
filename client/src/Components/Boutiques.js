@@ -83,6 +83,7 @@ const Boutiques = ({change_current_page,currentPageSwitch}) => {
               if( response.status === 200) {
                 setBoutiques(response.data);
                 setIsloading(false);
+                console.log(boutiques)
               }
           }
         )
@@ -112,7 +113,7 @@ const Boutiques = ({change_current_page,currentPageSwitch}) => {
   useEffect( () =>{
     setIsloading(true);
     getAllBoutiques();
-  },[orderBy,page,enConge,createdBefore,createdAfter]);
+  },[orderBy,page,enConge,createdBefore,createdAfter,query]);
 
   useEffect( () =>{
     change_current_page("boutiques");
@@ -125,8 +126,6 @@ const Boutiques = ({change_current_page,currentPageSwitch}) => {
         <NavBar
            query = {query}
            change_query = {(new_query)=> { setQuery(new_query)}}
-           getAllBoutiques = {()=>{getAllBoutiques()}}
-           setIsloading = {(new_is_loading)=>{setIsloading(new_is_loading)}}
         />
         <span id="current_action">{current_action} { (query != "") ? `(recherche : ${query} )` : ""}</span>
         <FilterBoutique 

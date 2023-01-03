@@ -126,6 +126,15 @@ class BoutiqueController extends ApiController
             $offset,
             $limit
         );
+        $boutiques= $boutiqueRepository->findAllBoutiquesWithFilter(
+            $enConge,
+            $date_de_creationbefore,
+            $date_de_creationafter,
+            $query,
+            $orderBy,
+            $offset,
+            $limit
+        );
 
         return $this->json($boutiques,Response::HTTP_OK);
     }

@@ -4,6 +4,7 @@ import Home from "./Components/Home";
 import Register from "./Components/Register";
 import Login from "./Components/Login";
 import Boutiques from "./Components/Boutiques";
+import Produits from "./Components/Produits";
 import ShowBoutique from "./Components/ShowBoutique";
 import './styles/App.css';
 
@@ -32,6 +33,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/boutiques" element={<Boutiques change_current_page = {(new_page)=> {setCurrentPage(new_page)}} currentPageSwitch={currentPage}/>} />
           <Route path="/boutiques/:id" element={<ShowBoutique />} />
+          <Route path="/produits" element={<Produits change_current_page = {(new_page)=> {setCurrentPage(new_page)}} currentPageSwitch={currentPage}/>} />
        </Routes>
     </div>
   );
