@@ -5,7 +5,7 @@ import { useNavigate  } from "react-router-dom";
 
   
 
-const Produit = ({produit,getAllProduits,produits,changeOperation,changeBoutiqueUpdate}) => {
+const Produit = ({produit,getAllProduits,produits,changeOperation,changeProduitUpdate}) => {
 
     const [api,setApi] = useState("http://localhost:8000/api");
     const [token,setToken] = useState(localStorage.getItem("token"));
@@ -42,12 +42,12 @@ const Produit = ({produit,getAllProduits,produits,changeOperation,changeBoutique
     }
 
     const updateProduit = (id,boutiqueObj,operation) => {
-        /*changeOperation(operation);
-            changeBoutiqueUpdate(boutiqueObj);
-            
-            document.querySelector(".pop-up-update-add").classList.toggle('show_me');
-            document.querySelector(".cover_add").classList.toggle('fade');
-        */
+        changeOperation(operation);
+        changeProduitUpdate(boutiqueObj);
+        
+        document.querySelector(".pop-up-update-add").classList.toggle('show_me');
+        document.querySelector(".cover_add").classList.toggle('fade');
+        
     }
 
     const AssignerProduit = (id) => {

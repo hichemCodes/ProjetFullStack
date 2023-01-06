@@ -27,7 +27,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 class AuthController extends ApiController
 {
     private $tokenStorage   = null;
-
+    private $em;
 
     public function __construct(EntityManagerInterface $em,TokenStorageInterface $tokenStorage)
     {

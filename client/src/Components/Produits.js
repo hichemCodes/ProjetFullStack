@@ -16,6 +16,7 @@ import '../styles/produits.css';
 
 import Produit from './Produit';
 import FilterProduit from './FilterProduits';
+import UpdateProduit from './UpdateProduit';
 
 
 const Produits = ({change_current_page,currentPageSwitch}) => {
@@ -67,16 +68,16 @@ const Produits = ({change_current_page,currentPageSwitch}) => {
         }
       )
   }
-    /*
-    const synchronizeBoutiqueCount = () => {
-      axios.get(`${api}/boutiquesCount`,config).then(
-        response => {
-            if( response.status === 200) {
-              setAllpages(Math.ceil((response.data[0].nombreDeBoutiques) / per_page))
-            }
-        }
-      )
-    }*/
+  /*
+  const synchronizeBoutiqueCount = () => {
+    axios.get(`${api}/boutiquesCount`,config).then(
+      response => {
+          if( response.status === 200) {
+            setAllpages(Math.ceil((response.data[0].nombreDeBoutiques) / per_page))
+          }
+      }
+    )
+  }*/
   
   useEffect( () =>{
     setIsloading(true);
@@ -111,18 +112,27 @@ const Produits = ({change_current_page,currentPageSwitch}) => {
           : 
             <div className="imgs boutiques produits">
                 { produits.map( (produit) =>  (
-                     <Produit
+                    <Produit
                         produit = {produit}
                         getAllProduits = {getAllProduits}
                         produits = {produits}
                         changeOperation = {(new_operation)=> {setOperation(new_operation)}}
-                        changeBoutiqueUpdate = {(new_update_produit)=> {setProduitUpdate(new_update_produit)}}                        
+                        changeProduitUpdate = {(new_update_produit)=> {setProduitUpdate(new_update_produit)}}                        
                    />
                    
                   ))
                 }
             </div>
         }
+         <UpdateProduit
+            operation={operation}
+            produitUpdate={produitUpdate}
+            config = {config}
+            api = {api}
+            getAllProduits = {getAllProduits}
+            changeOperation = {(new_operation)=> {setOperation(new_operation)}}
+          />
+          <div className="cover_add fade"></div>
         
          
     </React.Fragment>

@@ -74,33 +74,38 @@ const Boutique = ({boutique,getAllBoutiques,boutiques,changeOperation,changeBout
                     <i class="fa-sharp fa-solid fa-trash" onClick={()=>{DeleteBoutique(boutique.id)}} title='supprimer'></i>
                     <i class="fa-sharp fa-solid fa-cart-plus" onClick={()=>{AssignerBoutique(boutique.id)}}></i>
                 </div>
+                <i class="fa-solid fa-store"></i>
            </div>
         </div>
+        
         <div className="card__copy" onClick={()=> {showBoutique(boutique.id)}}>
             <h1 className='card-name'>{boutique.nom}</h1>
             <span className='card-item-title'>Crée le : <span>{boutique.date_de_creation}</span></span>
             <span className='card-item-title'>En congé : <span>{ (boutique.en_conge) ? "oui" : "non"  }</span></span>
-            <span className='card-item-title'>Horraires : </span>
-            <table>
-                {
-                    boutique.horaires_de_ouverture.map( jourObjet => (
-                            <tr>
-                                <td>
-                                {
-                                  Object.keys(jourObjet)[0]                            
-                                }
-                                
-                                </td>	
-                                <td>
-                                   { jourObjet[Object.keys(jourObjet)[0]].matin }
-                                   , 
-                                   { jourObjet[Object.keys(jourObjet)[0]].apreMidi }
-                                </td>
-                         </tr>
-                    ))
-                }
-                 
-            </table>
+            <span className='card-item-title'>Horraires : <i class="fa-solid fa-calendar-days"></i> </span>
+            <div className="horraire_div">
+                <table>
+                    {
+                        boutique.horaires_de_ouverture.map( jourObjet => (
+                                <tr>
+                                    <td>
+                                    {
+                                    Object.keys(jourObjet)[0]                            
+                                    }
+                                    
+                                    </td>	
+                                    <td>
+                                    { jourObjet[Object.keys(jourObjet)[0]].matin }
+                                    , 
+                                    { jourObjet[Object.keys(jourObjet)[0]].apreMidi }
+                                    </td>
+                            </tr>
+                        ))
+                    }
+                    
+                </table>
+            </div>
+            
         </div>
        
     </div>

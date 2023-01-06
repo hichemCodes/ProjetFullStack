@@ -106,7 +106,7 @@ or
 
     public function getProduit($id) {
         $queryBuilder = $this->createQueryBuilder("p")
-        ->select('p.id,p.nom,p.prix,p.description,b.id as boutique,array(c.nom) as categories')
+        ->select('p.id,p.nom,p.prix,p.description,b.id as boutique,c.nom as categories')
         ->leftJoin('p.boutique_id', 'b')
             ->leftJoin('p.categories', 'c')
             ->andWhere('p.id =  :id')
