@@ -16,6 +16,6 @@ nelmio_api_doc:
   areas:
     #default:
     path_patterns: # an array of regexps
-      - ^(?!/_wdt)(?!/_profiler)(?!/_error)(?!/doc)(?!/api/user/me)
+      - ^(?!/_wdt)(?!/_profiler)(?!/_error)(?!/doc)
 
 

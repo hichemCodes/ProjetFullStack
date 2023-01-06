@@ -192,6 +192,52 @@ class AuthController extends ApiController
 
     /**
      * @Route("/api/user/me", name="get_me", methods={"GET"})
+     * @SWG\Tag(name="Authentification")
+     *
+     * @SWG\Parameter(
+     *      name="User",
+     *      in="body",
+     *      required=true,
+     *      @SWG\Schema(
+     *          type="object",
+     *          required={"username", },
+     *              @SWG\Property(property="username", type="string", example="johnwick@email.com"),
+     *              @SWG\Property(property="password", type="string", example="motdepasse2022"),
+     *              )
+     * )
+     *
+     *   @SWG\Response(
+     *     response=201,
+     *     description=" Return the current  user connected",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(
+     *              type="object",
+     *              @SWG\Property(property="email", type="string", example="johnwick@email.com"),
+     *     )
+     * )
+     * )
+     * @SWG\Response(
+     *      response=401,
+     *      description="Returned when the user is not connected",
+     *
+     *      @SWG\Schema(
+     *          type="object",
+     *          @SWG\Property(property="code", type="integer", example=401),
+     *          @SWG\Property(property="message", type="string", example="Invalid credentials."),
+     *      )
+     * )
+     *
+     * @SWG\Response(
+     *      response=422,
+     *      description="Returned when the sent request isn't valid",
+     *
+     *      @SWG\Schema(
+     *          type="object",
+     *          @SWG\Property(property="code", type="integer", example=422),
+     *          @SWG\Property(property="message", type="string", example="Invalid Request."),
+     *      )
+     * )
     */
     public function getUser(): ?JsonResponse
     {
@@ -199,6 +245,27 @@ class AuthController extends ApiController
         $user = $this->em->getRepository(User::class)->findBy(array("email" => $useremail));
         return $this->json($user,Response::HTTP_OK);
          
+    }
+
+    /**
+     * @Route("/api/logout", name="logout", methods={"POST"})
+     * @SWG\Tag(name="Authentification")
+     * @SWG\Response(
+     *      response=200,
+     *      description="Returned when the user logout",
+     *
+     *      @SWG\Schema(
+     *          type="object",
+     *          @SWG\Property(property="code", type="integer", example=200),
+     *          @SWG\Property(property="message", type="string", example="OK"),
+     *      )
+     * )
+     *
+     **/
+    public function logout()
+    {
+        $this->get('security.token_storage')->setToken(null);
+        $this->get('request_stack')->getCurrentRequest()->getSession()->invalidate();
     }
     
 }

@@ -85,18 +85,30 @@ or
     */
     public function getProduits(
         $query,
+        $boutique_id= null,
+        //$categories="",
         $offset = 0,
         $limit = 10
     ) {
         $queryBuilder = $this->createQueryBuilder("p")
-        ->select('p.id,p.nom,p.prix,p.description,c.nom as categories,b.nom as boutique')
+        ->select('p.id,p.nom,p.prix,p.description,c.nom as categories,b.id as boutique')
         ->leftJoin('p.boutique_id', 'b')
             ->leftJoin('p.categories', 'c');
+
+        if($boutique_id != null) {
+            $queryBuilder->andWhere('b.id = :id')
+                ->setParameter('id',$boutique_id);
+        }
 
         if($query != "") {
             $queryBuilder->andWhere('p.nom LIKE :query')
                 ->setParameter('query','%'.$query);
         }
+
+       /* if($categories != "") {
+            $queryBuilder->andWhere('p.categories LIKE :categories')
+                ->setParameter('categories','%'.$categories);
+        }*/
 
         $queryBuilder->setFirstResult($offset)->setMaxResults($limit);
 
@@ -106,7 +118,7 @@ or
 
     public function getProduit($id) {
         $queryBuilder = $this->createQueryBuilder("p")
-        ->select('p.id,p.nom,p.prix,p.description,b.id as boutique,array(c.nom) as categories')
+        ->select('p.id,p.nom,p.prix,p.description,b.id as boutique,c.nom as categories')
         ->leftJoin('p.boutique_id', 'b')
             ->leftJoin('p.categories', 'c')
             ->andWhere('p.id =  :id')

@@ -60,9 +60,14 @@ class ProduitController extends ApiController
         Request $request
     ): JsonResponse {
         $request = $this->transformJsonBody($request);
+        $boutique_id=null;
         $query = "";
         $offset = 0;
         $limit = 10;
+        if($request->query->has('boutique_id')) {
+            $boutique_id = $request->query->get('boutique_id');
+        }
+
         if($request->query->has('query')) {
             $query = $request->query->get('query');
         }
@@ -72,7 +77,8 @@ class ProduitController extends ApiController
         if($request->query->has('limit')) {
             $limit=$request->query->get('limit');
         }
-            $produits = $produitRepository->getProduits($query, $offset, $limit);
+        //dd($request->query->get('boutique_id'));
+            $produits = $produitRepository->getProduits($query,$boutique_id, $offset, $limit);
 
         return $this->json($produits,Response::HTTP_OK);
     }
