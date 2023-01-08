@@ -86,17 +86,14 @@ or
     public function getProduits(
         $query,
         $boutique_id= null,
-        //$categories="",
+        // $categories= "",
         $offset = 0,
         $limit = 10
     ) {
-        $queryBuilder = $this->createQueryBuilder("p")
-        ->select('p.id,p.nom,p.prix,p.description,c.nom as categories,b.id as boutique')
-        ->leftJoin('p.boutique_id', 'b')
-            ->leftJoin('p.categories', 'c');
+        $queryBuilder = $this->createQueryBuilder("p");
 
         if($boutique_id != null) {
-            $queryBuilder->andWhere('b.id = :id')
+            $queryBuilder->andWhere('p.boutique_id = :id')
                 ->setParameter('id',$boutique_id);
         }
 
@@ -105,8 +102,8 @@ or
                 ->setParameter('query','%'.$query);
         }
 
-       /* if($categories != "") {
-            $queryBuilder->andWhere('p.categories LIKE :categories')
+        /*if($categories != "") {
+            $queryBuilder->andWhere('p.categories = :categories')
                 ->setParameter('categories','%'.$categories);
         }*/
 
@@ -118,11 +115,9 @@ or
 
     public function getProduit($id) {
         $queryBuilder = $this->createQueryBuilder("p")
-        ->select('p.id,p.nom,p.prix,p.description,b.id as boutique,c.nom as categories')
-        ->leftJoin('p.boutique_id', 'b')
-            ->leftJoin('p.categories', 'c')
-            ->andWhere('p.id =  :id')
+        ->andWhere('p.id =  :id')
         ->setParameter('id',$id);
+        
         return $queryBuilder->getQuery()->getResult();
     }
 

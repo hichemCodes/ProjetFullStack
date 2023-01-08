@@ -25,7 +25,7 @@ const UpdateProduit = ({operation,produitUpdate,config,api,getAllProduits,change
 
 
 
-  useEffect( () =>{
+  useEffect( () => {
     if(operation != "add") {
         console.log(produitUpdate);
     }
@@ -34,11 +34,11 @@ const UpdateProduit = ({operation,produitUpdate,config,api,getAllProduits,change
 
   const addProduit = () => {
     
-    const datas ={
+    const datas = {
         "nom" : nom,
         "prix" : prix,
     }
-    console.log(datas);
+
     axios.post(`${api}/produits`, datas,config).then(
           response => {
               if( response.status === 201) {
@@ -60,7 +60,7 @@ const UpdateProduit = ({operation,produitUpdate,config,api,getAllProduits,change
             "description" : description
         }
         console.log(datas);
-        axios.put(`${api}/produit/${id}`, datas,config).then(
+        axios.put(`${api}/produits/${id}`, datas,config).then(
             response => {
                 if( response.status === 200) {
                     getAllProduits();

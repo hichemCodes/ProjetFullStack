@@ -5,9 +5,9 @@ import { useNavigate  } from "react-router-dom";
 
   
 
-const Boutique = ({boutique,getAllBoutiques,boutiques,changeOperation,changeBoutiqueUpdate,getAllProduitsNonAssigner}) => {
+const Boutique = ({boutique,getAllBoutiques,boutiques,changeOperation,changeBoutiqueUpdate,getAllProduitsNonAssigner,changeCurrentShowData}) => {
 
-    const [api,setApi] = useState("http://localhost:8000/api");
+    const [api,setApi] = useState("http://localhost:8080/api");
     const [token,setToken] = useState(localStorage.getItem("token"));
     const navigate = useNavigate();
 
@@ -18,7 +18,6 @@ const Boutique = ({boutique,getAllBoutiques,boutiques,changeOperation,changeBout
             confirmButtonText: 'Supprimer',
             cancelButtonText: "Annuler",
           }).then((result) => {
-            /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
                 const config = {
                     headers: { 
@@ -35,7 +34,6 @@ const Boutique = ({boutique,getAllBoutiques,boutiques,changeOperation,changeBout
                             }
                       }
                   )
-             
             } 
           })
     }
@@ -59,8 +57,9 @@ const Boutique = ({boutique,getAllBoutiques,boutiques,changeOperation,changeBout
     }
 
     const showBoutique = (id) => {
-
+        changeCurrentShowData(boutique);
         navigate(`/boutiques/${id}`); 
+      
     }
 
 
@@ -80,13 +79,14 @@ const Boutique = ({boutique,getAllBoutiques,boutiques,changeOperation,changeBout
         
         <div className="card__copy" onClick={()=> {showBoutique(boutique.id)}}>
             <h1 className='card-name'>{boutique.nom}</h1>
-            <span className='card-item-title'>Crée le : <span>{boutique.date_de_creation}</span></span>
-            <span className='card-item-title'>En congé : <span>{ (boutique.en_conge) ? "oui" : "non"  }</span></span>
+            <span className='card-item-title'>Crée le : <span>{boutique.dateDeCreation}</span></span>
+            <span className='card-item-title'>En congé : <span>{ (boutique.enConge) ? "oui" : "non"  }</span></span>
+            <span className='card-item-title'>Nombre de Produits : <span>{ boutique.produits.length}</span></span>
             <span className='card-item-title'>Horraires : <i class="fa-solid fa-calendar-days"></i> </span>
             <div className="horraire_div">
                 <table>
                     {
-                        boutique.horaires_de_ouverture.map( jourObjet => (
+                        boutique.horairesDeOuverture.map( jourObjet => (
                                 <tr>
                                     <td>
                                     {

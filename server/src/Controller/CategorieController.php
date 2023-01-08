@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use App\Entity\Adresse;
 use App\Entity\Boutique;
 use App\Entity\Produit;
@@ -80,7 +80,9 @@ class CategorieController extends ApiController
         $categories = $categorieRepository->getCategories($query, $offset, $limit);
 
         // Last Step : return the data.
-        return $this->json($categories,Response::HTTP_OK);
+        return $this->json($categories,Response::HTTP_OK,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function(){
+            return '';
+        }]);
     }
 
     /**
@@ -179,7 +181,9 @@ class CategorieController extends ApiController
             return $this->respondNotFound();
         }
         $category=$categorieRepository->getCategory($existingCategorie->getId());
-        return $this->json($category,Response::HTTP_OK);
+        return $this->json($category,Response::HTTP_OK,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function(){
+            return '';
+        }]);
     }
 
     /**

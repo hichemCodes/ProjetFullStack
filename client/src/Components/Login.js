@@ -14,11 +14,10 @@ import logo from "../images/shop.png";
 
 
 
-const Login = (props) => {
+const Login = ({api}) => {
 
   const [email,setEmail] = useState("");
   const [password,setPassword] = useState("");
-  const [api,setApi] = useState("http://localhost:8000/api");
   const [token,setToken] = useState("");
   const navigate = useNavigate();
   const theme = createTheme();

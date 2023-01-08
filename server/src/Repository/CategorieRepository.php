@@ -90,9 +90,8 @@ class CategorieRepository extends ServiceEntityRepository
         $offset = 0,
         $limit = 10
     ) {
-        $queryBuilder = $this->createQueryBuilder("c")
-            ->select('c.id,c.nom,p.prix,p.nom as produit')
-            ->leftJoin('c.produits', 'p');
+        $queryBuilder = $this->createQueryBuilder("c");
+          
 
         if($query != "") {
             $queryBuilder->andWhere('c.nom LIKE :query')
@@ -107,8 +106,6 @@ class CategorieRepository extends ServiceEntityRepository
 
     public function getCategory($id) {
         $queryBuilder = $this->createQueryBuilder("c")
-            ->select('c.id,c.nom,p.nom as produit')
-            ->leftJoin('c.produits', 'p')
             ->andWhere('c.id =  :id')
             ->setParameter('id',$id);
         return $queryBuilder->getQuery()->getResult();

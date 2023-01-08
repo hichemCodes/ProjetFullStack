@@ -19,9 +19,8 @@ import '../styles/App.css';
 import '../styles/AppAfterLogIn.css';
 
 
-const Boutiques = ({change_current_page,currentPageSwitch}) => {
+const Boutiques = ({api,config,change_current_page,currentPageSwitch,changeCurrentShowData}) => {
 
-  const [api,setApi] = useState("http://localhost:8000/api");
   const [token,setToken] = useState(localStorage.getItem("token"));
   const [query,setQuery] = useState('');
   const [result,setResult] = useState('');
@@ -44,13 +43,7 @@ const Boutiques = ({change_current_page,currentPageSwitch}) => {
   const [boutiques,setBoutiques] = useState([]);
   const [nonAssigners,setNonAssigner] = useState([]);
 
-  
-  const config = {
-    headers: { 
-      'Authorization': `Bearer ${token}`,
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'}  
-  };
+
 
     const getAllBoutiques = () => {
 
@@ -81,6 +74,7 @@ const Boutiques = ({change_current_page,currentPageSwitch}) => {
         axios.get(`${api}/boutiques`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
           response => {
               if( response.status === 200) {
+                console.log(response.data);
                 setBoutiques(response.data);
                 setIsloading(false);
                 console.log(boutiques)
@@ -160,7 +154,7 @@ const Boutiques = ({change_current_page,currentPageSwitch}) => {
                       changeOperation = {(new_operation)=> {setOperation(new_operation)}}
                       changeBoutiqueUpdate = {(new_update_boutique)=> {setBoutiqueUpdate(new_update_boutique)}}
                       getAllProduitsNonAssigner = {getAllProduitsNonAssigner}
-                       
+                      changeCurrentShowData = {changeCurrentShowData}
                     />
                   ))
                 }

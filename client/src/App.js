@@ -13,7 +13,17 @@ import './styles/App.css';
 function App() {
 
   const [currentPage,setCurrentPage] = useState("");
+  const [currentShowData,setCurrentShowData] = useState("");
   const navigate = useNavigate();
+  const [api,setApi] = useState("http://localhost:8080/api");
+  const [token,setToken] = useState(localStorage.getItem("token"));
+  const config = {
+      headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+      }
+  };
 
   useEffect( () =>{
     if(currentPage == "boutiques") {
@@ -30,10 +40,10 @@ function App() {
        <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/boutiques" element={<Boutiques change_current_page = {(new_page)=> {setCurrentPage(new_page)}} currentPageSwitch={currentPage}/>} />
-          <Route path="/boutiques/:id" element={<ShowBoutique />} />
-          <Route path="/produits" element={<Produits change_current_page = {(new_page)=> {setCurrentPage(new_page)}} currentPageSwitch={currentPage}/>} />
+          <Route path="/login" element={<Login api = {api} />} />
+          <Route path="/boutiques" element={<Boutiques api = {api} confing = {config} change_current_page = {(new_page)=> {setCurrentPage(new_page)}} currentPageSwitch={currentPage} changeCurrentShowData = {(new_data)=>{setCurrentShowData(new_data)}}/>} />
+          <Route path="/boutiques/:id" element={<ShowBoutique currentShowData = {currentShowData}  />} />
+          <Route path="/produits" element={<Produits api = {api} confing = {config} change_current_page = {(new_page)=> {setCurrentPage(new_page)}} currentPageSwitch={currentPage}/>} />
        </Routes>
     </div>
   );

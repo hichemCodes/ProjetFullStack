@@ -19,10 +19,9 @@ import FilterProduit from './FilterProduits';
 import UpdateProduit from './UpdateProduit';
 
 
-const Produits = ({change_current_page,currentPageSwitch}) => {
+const Produits = ({api,config,change_current_page,currentPageSwitch}) => {
 
-  const [api,setApi] = useState("http://localhost:8000/api");
-  const [token,setToken] = useState(localStorage.getItem("token"));
+ 
   const [query,setQuery] = useState('');
   const [is_loading,setIsloading] = useState(true);
   const [orderBy,setOrderBy] = useState('date_de_creation');
@@ -35,13 +34,7 @@ const Produits = ({change_current_page,currentPageSwitch}) => {
   const [produits,setProduits] = useState([]);
   const [produitUpdate,setProduitUpdate] = useState([]);
 
-  
-  const config = {
-    headers: { 
-      'Authorization': `Bearer ${token}`,
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'}  
-  };
+
 
   const getAllProduits = () => {
 
@@ -50,7 +43,6 @@ const Produits = ({change_current_page,currentPageSwitch}) => {
       const datas = {
         "limit" : per_page,
         "offset" : per_page * (page - 1),//a construire
-        "orderBy" : orderBy
       };
 
       
@@ -58,9 +50,10 @@ const Produits = ({change_current_page,currentPageSwitch}) => {
         datas.query = query
       }
 
-      axios.get(`${api}/produits`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
+      axios.get(`${api}/produits`,{ params : datas,config}).then(
         response => {
             if( response.status === 200) {
+              console.log(response.data);
               setProduits(response.data);
               setIsloading(false);
               console.log(produits)
@@ -111,15 +104,16 @@ const Produits = ({change_current_page,currentPageSwitch}) => {
           (is_loading) ? (<Loader/>) 
           : 
             <div className="imgs boutiques produits">
-                { produits.map( (produit) =>  (
+                { 
+                produits.map( (produit) =>  (
                     <Produit
                         produit = {produit}
                         getAllProduits = {getAllProduits}
                         produits = {produits}
                         changeOperation = {(new_operation)=> {setOperation(new_operation)}}
                         changeProduitUpdate = {(new_update_produit)=> {setProduitUpdate(new_update_produit)}}                        
-                   />
-                   
+                    />
+                  
                   ))
                 }
             </div>

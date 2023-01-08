@@ -82,7 +82,14 @@ const Produit = ({produit,getAllProduits,produits,changeOperation,changeProduitU
             </div>
             <div className="card__copy" onClick={()=> {showProduit(produit.id)}}>
                 <h1 className='card-name'>{produit.nom}</h1>
-                <span className='card-item-title'>Catégories : <span>{ produit.categories  }</span></span>
+                <div className='card-item-title'>
+                    Catégories : 
+                    {
+                        produit.categories.map( categorie => (
+                           <span>{ categorie.nom  }, </span> 
+                        ))
+                    }
+                </div>
                 <div className="prix-produit ">
                     <span className='card-item-title'>{produit.prix} € </span>
                 </div>

@@ -19,8 +19,7 @@ use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use Swagger\Annotations as SWG;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-
-
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class ProduitController extends ApiController
 {
@@ -60,10 +59,11 @@ class ProduitController extends ApiController
         Request $request
     ): JsonResponse {
         $request = $this->transformJsonBody($request);
-        $boutique_id=null;
+        $boutique_id = null;
         $query = "";
         $offset = 0;
         $limit = 10;
+        
         if($request->query->has('boutique_id')) {
             $boutique_id = $request->query->get('boutique_id');
         }
@@ -77,10 +77,12 @@ class ProduitController extends ApiController
         if($request->query->has('limit')) {
             $limit=$request->query->get('limit');
         }
-        //dd($request->query->get('boutique_id'));
-            $produits = $produitRepository->getProduits($query,$boutique_id, $offset, $limit);
+        
+        $produits = $produitRepository->getProduits($query,$boutique_id, $offset, $limit);
 
-        return $this->json($produits,Response::HTTP_OK);
+        return $this->json($produits,Response::HTTP_OK,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($object){
+            return $object->getNom();
+        }]);
     }
 
     
@@ -115,7 +117,10 @@ class ProduitController extends ApiController
         if(is_null($existingProduit)) {
             return $this->respondNotFound();
         }
-        return $this->json($produitRepository->getProduit($existingProduit->getId()),Response::HTTP_OK);
+
+        return $this->json($produitRepository->getProduit($existingProduit->getId()),Response::HTTP_OK,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($object){
+            return $object->getNom();
+        }]);
     }
 
     /**
@@ -416,7 +421,10 @@ class ProduitController extends ApiController
             $this->em->persist($categorie);
         }
         $this->em->flush();
-        return $this->json($existingProduit,Response::HTTP_OK);
+
+        return $this->json($existingProduit,Response::HTTP_OK,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($object){
+            return $object->getNom();
+        }]);
     }
 
 

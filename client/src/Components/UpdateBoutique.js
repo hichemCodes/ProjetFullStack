@@ -31,6 +31,7 @@ const UpdateBoutique = ({operation,boutiqueUpdate,config,api,getAllBoutiques,cha
         setNom(boutiqueUpdate.nom);
         setEnConge(boutiqueUpdate.en_conge);
     }
+    console.log(operation);
   },[operation]);
 
   const horaires_de_ouvertureValue = ([{"lundi":{"matin":"8h-12h","apreMidi":"14h-18h"}},{"mardi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"mercredi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"jeudi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"vendredi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"samedi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"dimanche":{"matin":"8h-12h","apreMidi":"14h-20h"}}]);

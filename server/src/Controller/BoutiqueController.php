@@ -20,6 +20,7 @@ use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use Swagger\Annotations as SWG;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 
 class BoutiqueController extends ApiController
@@ -105,6 +106,7 @@ class BoutiqueController extends ApiController
 
         if($request->query->has('query')) {
             $query=$request->query->get('query');
+            $boutiques = $boutiqueRepository->findAll();
         }
 
         if($request->query->has('orderBy')) {
@@ -117,16 +119,9 @@ class BoutiqueController extends ApiController
             $limit=$request->query->get('limit');
         }
 
-        $boutiques= $boutiqueRepository->findAllBoutiquesWithFilter(
-            $enConge,
-            $date_de_creationbefore,
-            $date_de_creationafter,
-            $query,
-            $orderBy,
-            $offset,
-            $limit
-        );
-        $boutiques= $boutiqueRepository->findAllBoutiquesWithFilter(
+        $boutiques = $boutiqueRepository->findAll();
+        
+        $boutiques = $boutiqueRepository->findAllBoutiquesWithFilter(
             $enConge,
             $date_de_creationbefore,
             $date_de_creationafter,
@@ -136,7 +131,13 @@ class BoutiqueController extends ApiController
             $limit
         );
 
-        return $this->json($boutiques,Response::HTTP_OK);
+
+        
+        
+        return $this->json($boutiques,Response::HTTP_OK,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($object){
+            return $object->getId();
+        }]);
+        // return $this->json($boutiques,Response::HTTP_OK);
     }
 
     /**
@@ -458,7 +459,9 @@ class BoutiqueController extends ApiController
         if(is_null($existingBoutique)) {
             return $this->respondNotFound();
         }
-        return $this->json($existingBoutique,Response::HTTP_OK);
+        return $this->json($existingBoutique,Response::HTTP_OK,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($object){
+            return $object->getId();
+        }]);
     }
 
     /**
@@ -494,7 +497,9 @@ class BoutiqueController extends ApiController
             return $this->respondNotFound();
         }
         $details =  $boutiqueRepository->getBoutiquesProduits($existingBoutique->getId());
-        return $this->json($details,Response::HTTP_OK);
+        return $this->json($details,Response::HTTP_OK,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($object){
+            return $object->getId();
+        }]);
     }
 
 
