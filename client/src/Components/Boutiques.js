@@ -1,12 +1,4 @@
 import React, { useState,useEffect } from 'react';
-import { useHistory } from "react-router-dom";
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 import NavBar from "./NavBar";
 import FilterBoutique from "./FilterBoutique";
@@ -14,7 +6,6 @@ import UpdateBoutique from "./UpdateBoutique";
 import Assigner from "./Assigner";
 import Boutique from "./Boutique";
 import Loader from "./loader";
-import logo from "../images/shop.png";
 import '../styles/App.css';
 import '../styles/AppAfterLogIn.css';
 
@@ -44,8 +35,7 @@ const Boutiques = ({user,token,api,config,change_current_page,currentPageSwitch,
 
 
 
-    const getAllBoutiques = () => {
-      console.log(token);
+    const getAllBoutiques =() => {
        setOffest(per_page * (page - 1));
 
         const datas = {
@@ -55,7 +45,7 @@ const Boutiques = ({user,token,api,config,change_current_page,currentPageSwitch,
         };
 
         if(enConge != "") {
-            datas.enConge = 1
+            datas.enConge = 1;
         }
 
         if(createdBefore != "") {
@@ -70,13 +60,12 @@ const Boutiques = ({user,token,api,config,change_current_page,currentPageSwitch,
           datas.query = query
         }
 
-        axios.get(`${api}/boutiques`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
+       axios.get(`${api}/boutiques`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
           response => {
               if( response.status === 200) {
-                console.log(response.data);
-                setBoutiques(response.data);
+                setBoutiques(response.data[0]);
                 setIsloading(false);
-                console.log(boutiques)
+                setAllpages(Math.ceil((response.data[1].allPages) / per_page));
               }
           }
         )
@@ -86,22 +75,13 @@ const Boutiques = ({user,token,api,config,change_current_page,currentPageSwitch,
       axios.get(`${api}/produits/nonAssigner`,{headers: {"Authorization" : `Bearer ${token}`} }).then(
         response => {
             if( response.status === 200) {
-               console.log(response.data);
                setNonAssigner(response.data)
             }
         }
       )
   }
 
-    const synchronizeBoutiqueCount = () => {
-      axios.get(`${api}/boutiquesCount`,{headers: {"Authorization" : `Bearer ${token}`} }).then(
-        response => {
-            if( response.status === 200) {
-              setAllpages(Math.ceil((response.data[0].nombreDeBoutiques) / per_page))
-            }
-        }
-      )
-    }
+   
   
   useEffect( () =>{
     setIsloading(true);
@@ -110,7 +90,6 @@ const Boutiques = ({user,token,api,config,change_current_page,currentPageSwitch,
 
   useEffect( () =>{
     change_current_page("boutiques");
-    synchronizeBoutiqueCount();
   },[]);
 
 

@@ -42,9 +42,9 @@ const FilterProduit = (
                     currentPageSwitch={currentPageSwitch}
                  />
                   <div className="filter-container">
-                    <span className="current_order c_item c_item_en_conge" onClick = {() => {show_boutique() }}>Filtré par boutique</span>
+                    <span className="current_order c_item c_item_en_conge f_boot" onClick = {() => {show_boutique() }}>Filtré par boutique</span>
                     <div className="en_conge filter_produit_boutique">
-                            <div className="o_item"  onClick = {() => {changeFilterParBoutique(null)}}>
+                            <div className="o_item"  onClick = {() => {changeFilterParBoutique(null);change_page(1)}}>
                                 <div className={ (filterParBoutique == null ) ? 'checkbox c_check' : 'checkbox' } >
                                         <div className="white_space"></div>
                                 </div>
@@ -52,7 +52,7 @@ const FilterProduit = (
                             </div>
                             {
                                 allBoutiqueToProduit.map(boutique => (
-                                    <div className="o_item"  onClick = {() => {changeFilterParBoutique(boutique.id)}}>
+                                    <div className="o_item"  onClick = {() => {changeFilterParBoutique(boutique.id);change_page(1)}}>
                                         <div className={ (filterParBoutique == boutique.id ) ? 'checkbox c_check' : 'checkbox' } >
                                                 <div className="white_space"></div>
                                         </div>
@@ -64,9 +64,9 @@ const FilterProduit = (
                     </div>
                 </div>
                 <div className="filter-container">
-                    <span className="current_order c_item"  onClick = {() => {show_categories() }} >filtré par categorie </span>
+                    <span className="current_order c_item f_cat"  onClick = {() => {show_categories() }} >filtré par categorie </span>
                     <div className="en_conge orders-first filter_produit_categories">
-                            <div className="o_item"  onClick = {() => {changeFilterParCategorie(null)}}>
+                            <div className="o_item"  onClick = {() => {changeFilterParCategorie(null);change_page(1)}}>
                                 <div className={ (filterParCategorie == null ) ? 'checkbox c_check' : 'checkbox' } >
                                     <div className="white_space"></div>
                                 </div>
@@ -74,7 +74,7 @@ const FilterProduit = (
                             </div>
                             {
                                 allCategorieToProduit.map(categorie => (
-                                    <div className="o_item"  onClick = {() => {changeFilterParCategorie(categorie.id)}}>
+                                    <div className="o_item"  onClick = {() => {changeFilterParCategorie(categorie.id);change_page(1)}}>
                                         <div className={ (filterParCategorie == categorie.id ) ? 'checkbox c_check' : 'checkbox' } >
                                                 <div className="white_space"></div>
                                         </div>

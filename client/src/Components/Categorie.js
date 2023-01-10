@@ -5,7 +5,7 @@ import { useNavigate  } from "react-router-dom";
 
   
 
-const Categorie = ({api,token,categorie,getAllCategories,categories,changeOperation,changeCtegorieUpdate,changeAllProduitsNotBelongToThisCategorie}) => {
+const Categorie = ({api,token,categorie,getAllCategories,categories,changeOperation,changeCtegorieUpdate,changeAllProduitsNotBelongToThisCategorie,changeCurrentShowData}) => {
 
     const navigate = useNavigate();
 
@@ -50,7 +50,7 @@ const Categorie = ({api,token,categorie,getAllCategories,categories,changeOperat
     }
 
     const showCategorie = (id) => {
-
+        changeCurrentShowData(categorie);
         navigate(`/categories/${id}`); 
     }
 

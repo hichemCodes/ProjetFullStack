@@ -19,7 +19,7 @@ import '../styles/App.css';
 import '../styles/AppAfterLogIn.css';
 import '../styles/produits.css';
 
-const Produits = ({user,token,api,config,change_current_page,currentPageSwitch}) => {
+const Produits = ({user,token,api,config,change_current_page,currentPageSwitch,changeCurrentShowDataProduit}) => {
 
  
   const [query,setQuery] = useState('');
@@ -27,7 +27,7 @@ const Produits = ({user,token,api,config,change_current_page,currentPageSwitch})
   const [orderBy,setOrderBy] = useState('date_de_creation');
   const [page,setPage] = useState(1);
   const [offset,setOffest] = useState(0);
-  const [per_page,setPerpage] = useState(15);
+  const [per_page,setPerpage] = useState(10);
   const [all_pages,setAllpages] = useState(1);
   const [current_action,setCurrentAction] = useState("Tous les produits");
   const [operation,setOperation] = useState("add");
@@ -41,7 +41,7 @@ const Produits = ({user,token,api,config,change_current_page,currentPageSwitch})
 
   const getAllProduits = () => {
 
-    setOffest(per_page * (page - 1));
+      setOffest(per_page * (page - 1));
 
       const datas = {
         "limit" : per_page,
@@ -64,23 +64,13 @@ const Produits = ({user,token,api,config,change_current_page,currentPageSwitch})
       axios.get(`${api}/produits`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
         response => {
             if( response.status === 200) {
-              setProduits(response.data);
+              setProduits(response.data[0]);
               setIsloading(false);
-              console.log(produits)
-            }
+              setAllpages(Math.ceil((response.data[1].allPages) / per_page));
+            } 
         }
       )
   }
-  /*
-  const synchronizeBoutiqueCount = () => {
-    axios.get(`${api}/boutiquesCount`,config).then(
-      response => {
-          if( response.status === 200) {
-            setAllpages(Math.ceil((response.data[0].nombreDeBoutiques) / per_page))
-          }
-      }
-    )
-  }*/
 
   const getAllBoutiqueToFilterProduit = () => {
 
@@ -92,8 +82,7 @@ const Produits = ({user,token,api,config,change_current_page,currentPageSwitch})
     axios.get(`${api}/boutiques`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
       response => {
           if( response.status === 200) {
-            setAllBoutiqueToProduit(response.data);
-            console.log(response.data)
+            setAllBoutiqueToProduit(response.data[0]);
           }
       }
     )
@@ -109,8 +98,7 @@ const Produits = ({user,token,api,config,change_current_page,currentPageSwitch})
     axios.get(`${api}/categories`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
       response => {
           if( response.status === 200) {
-            setAllCategorieToProduit(response.data);
-            console.log(response.data)
+            setAllCategorieToProduit(response.data[0]);
           }
       }
     )
@@ -127,6 +115,10 @@ const Produits = ({user,token,api,config,change_current_page,currentPageSwitch})
     getAllBoutiqueToFilterProduit();
     getAllCategoriesToFilterProduit();
   },[]);
+
+  useEffect( () =>{
+    console.log(allCategiriesOfSelectedProduit);
+},[allCategiriesOfSelectedProduit]);
 
 
   return ( 
@@ -166,7 +158,8 @@ const Produits = ({user,token,api,config,change_current_page,currentPageSwitch})
                         produits = {produits}
                         changeOperation = {(new_operation)=> {setOperation(new_operation)}}
                         changeProduitUpdate = {(new_update_produit)=> {setProduitUpdate(new_update_produit)}}  
-                        changeAllCategiriesOfSelectedProduit = {(new_value) => { setAllCategiriesOfSelectedProduit(new_value)} }                      
+                        changeAllCategiriesOfSelectedProduit = {(new_value) => { setAllCategiriesOfSelectedProduit(new_value)} }     
+                        changeCurrentShowDataProduit = {changeCurrentShowDataProduit}                 
                     />
                   
                   ))
