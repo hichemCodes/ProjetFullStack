@@ -511,4 +511,39 @@ class ProduitController extends ApiController
         return $this->json($produits,Response::HTTP_OK);
      }
 
+    /**
+     * Get a list of all produits Non Assigné to a category
+     * @Route("/api/produits/{id}/produits/nonAssigner", name="produits_non_assigner_to_category", methods={"GET"})
+     * * @SWG\Tag(name="Produit")
+     *
+     *  @SWG\Response(
+     *     response=200,
+     *     description="Returned with the list of products",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(
+     *              type="object",
+     *              @SWG\Property(property="id", type="integer", example="1"),
+     *              @SWG\Property(property="nom", type="string", example="Pomme"),
+     *              @SWG\Property(property="prix", type="float", example="10"),
+     *              @SWG\Property(property="description", type="string", example="alimentaire"),
+     *
+     *     )
+     * )
+     * )
+     * @param ProduitRepository $produitRepository
+     * @return JsonResponse
+     */
+    public function getAllProduitsNonAssignerToCategory(
+        ProduitRepository $produitRepository,
+        Categorie $existingCategory
+
+    ) {
+        if(is_null($existingCategory)) {
+            return $this->respondNotFound();
+        }
+        $produits =  $produitRepository->getAllProduitsNonAssignerToCategory($existingCategory->getId());
+        return $this->json($produits,Response::HTTP_OK);
+    }
+
 }

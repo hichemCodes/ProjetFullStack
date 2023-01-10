@@ -149,4 +149,16 @@ or
 
         return $queryBuilder->getQuery()->getResult();
     }
+    public function getAllProduitsNonAssignerToCategory($idCategory) {
+        $queryBuilder = $this->createQueryBuilder("p")
+            ->select('p.id,p.nom')
+            ->leftJoin('p.categories','c')
+            ->andWhere('c.id = :categories')
+            ->andWhere('c.id = :produits')
+            ->setParameter('categories', null)
+            ->setParameter('produits', null);
+        return $queryBuilder->getQuery()->getResult();
+
+    }
+
 }
