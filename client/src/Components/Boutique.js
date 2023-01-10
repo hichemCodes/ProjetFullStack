@@ -5,10 +5,9 @@ import { useNavigate  } from "react-router-dom";
 
   
 
-const Boutique = ({boutique,getAllBoutiques,boutiques,changeOperation,changeBoutiqueUpdate,getAllProduitsNonAssigner,changeCurrentShowData}) => {
+const Boutique = ({api,token,boutique,getAllBoutiques,boutiques,changeOperation,changeBoutiqueUpdate,getAllProduitsNonAssigner,changeCurrentShowData}) => {
 
-    const [api,setApi] = useState("http://localhost:8080/api");
-    const [token,setToken] = useState(localStorage.getItem("token"));
+   
     const navigate = useNavigate();
 
     const DeleteBoutique = (id) => {
@@ -19,12 +18,6 @@ const Boutique = ({boutique,getAllBoutiques,boutiques,changeOperation,changeBout
             cancelButtonText: "Annuler",
           }).then((result) => {
             if (result.isConfirmed) {
-                const config = {
-                    headers: { 
-                      'Authorization': `Bearer ${token}`,
-                      'Accept': 'application/json',
-                      'Content-Type': 'application/json'}
-                  };
                   boutiques.filter((item) => item.id !== id);
                   Swal.fire('Boutique supprimée avec succès !', '', 'success');
                   axios.delete(`${api}/boutiques/${id}`,{ headers: {"Authorization" : `Bearer ${token}`} }).then(
@@ -96,7 +89,7 @@ const Boutique = ({boutique,getAllBoutiques,boutiques,changeOperation,changeBout
                                     </td>	
                                     <td>
                                     { jourObjet[Object.keys(jourObjet)[0]].matin }
-                                    , 
+                                    <span> / </span>
                                     { jourObjet[Object.keys(jourObjet)[0]].apreMidi }
                                     </td>
                             </tr>

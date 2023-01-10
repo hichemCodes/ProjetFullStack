@@ -1,0 +1,97 @@
+
+
+
+.show_profile .show_profile_card {
+    width: 400px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 10px 10px 30px #BDBDBD;
+    margin-top: 76px;
+}
+.show_profile .show_profile_card .card-header {
+    background: url('../images/png-clipart-e-commercepeople-removebg-preview.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 40%;
+}
+.show_profile  .show_profile_card .card-body {
+    height: 40%;
+    position: relative;
+    width: 100%;
+    border-bottom: 1px solid #80808042;
+}
+.show_profile .show_profile_card .card-body::before {
+    content: "";
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    background: white;
+    transform: translate(-50%, 0);
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+}
+.show_profile  .show_profile_card .logo_show {
+    position: absolute;
+    top: -171%;
+    left: 50%;
+    /* background: url(https://rvs-profile-card-component-main.netlify.app/images/image-victor.jpg) white; */
+    transform: translate(-50%, 0);
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: #ff385c;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo_show span {
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: #fff !important;
+}
+
+.show_profile  .show_profile_card .card-body .inner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.show_profile  .show_profile_card .card-footer {
+    height: 20%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+.show_profile .show_profile_card .card-footer .inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.show_profile  .show_profile_card .card-footer .inner div:first-child {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.show_profile  .show_profile_card .card-footer .inner div:last-child {
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+
+.show_profile  .color__gray {
+    color: gray;
+}
+

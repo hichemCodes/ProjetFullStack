@@ -59,13 +59,18 @@ class ProduitController extends ApiController
         Request $request
     ): JsonResponse {
         $request = $this->transformJsonBody($request);
-        $boutique_id = null;
+        $boutique = null;
+        $categorie = "";
         $query = "";
         $offset = 0;
         $limit = 10;
         
-        if($request->query->has('boutique_id')) {
-            $boutique_id = $request->query->get('boutique_id');
+        if($request->query->has('boutique')) {
+            $boutique = $request->query->get('boutique');
+        }
+
+        if($request->query->has('categorie')) {
+            $categorie = $request->query->get('categorie');
         }
 
         if($request->query->has('query')) {
@@ -78,7 +83,7 @@ class ProduitController extends ApiController
             $limit=$request->query->get('limit');
         }
         
-        $produits = $produitRepository->getProduits($query,$boutique_id, $offset, $limit);
+        $produits = $produitRepository->getProduits($query,$boutique,$categorie, $offset, $limit);
 
         return $this->json($produits,Response::HTTP_OK,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($object){
             return $object->getNom();
@@ -188,7 +193,7 @@ class ProduitController extends ApiController
         $produit = new Produit();
         $produit->setNom($nom);
         $produit->setPrix($prix);
-    
+        $produit->setDateDeCreation(new \DateTime());
         $this->em->persist($produit);
         $this->em-> flush();
 
@@ -250,7 +255,7 @@ class ProduitController extends ApiController
 
      /**
      * update produit E_PRD_20 E_PRD_30
-     * @Route("/api/produits/{id}", name="update_produit", methods={"PATCH"})
+     * @Route("/api/produits/{id}", name="update_produit", methods={"PUT"})
       * @SWG\Tag(name="Produit")
       *
       * @SWG\Parameter(
@@ -320,10 +325,10 @@ class ProduitController extends ApiController
         $nom = $request->get('nom');
         $prix = $request->get('prix');
         $description = $request->get('description');
-        $boutique = $request->get('boutique_id');
+        
 
         if (empty($nom) || empty($prix)) {
-            return $this->respondValidationError("Invalid request");
+            return $this->respondValidationError("Le nom et le prix sont obligatoires !!");
         }
         $existingProduit->setNom($nom);
         $existingProduit->setPrix($prix);
@@ -331,21 +336,23 @@ class ProduitController extends ApiController
         if(!empty($description)) {
             $existingProduit->setDescription($description);
         }
-        if(!empty($boutique)) {
+        /*if(!empty($boutique)) {
             $boutiqueRepository = $this->em->getRepository(Boutique::class);
             $existingProduit->setBoutiqueId($boutiqueRepository->find($boutique));
-        }
+        }*/
 
         $this->em->persist($existingProduit);
         $this->em->flush();
 
-        return $this->json($existingProduit,Response::HTTP_OK);
+        return $this->json($existingProduit,Response::HTTP_OK,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($object){
+            return $object->getNom();
+        }]);
     }
 
     
      /**
      * associer produit. to categories E_BTQ_50
-     * @Route("/api/produits/{id}/categories", name="associer_categories_produit", methods={"PUT"})
+     * @Route("/api/produits/{id}/categories", name="associer_categories_produit", methods={"PATCH"})
       * @SWG\Tag(name="Produit")
       * @SWG\Parameter(
       *      name="produit",
@@ -413,6 +420,9 @@ class ProduitController extends ApiController
             return $this->respondValidationError("Invalid request");
         }
         $categorieRepository = $this->em->getRepository(Categorie::class);
+
+        $existingProduit->clearCategories();
+
         foreach($categories as $element) {
             $categorie = $categorieRepository->find($element);
             $existingProduit->addCategory($categorie);

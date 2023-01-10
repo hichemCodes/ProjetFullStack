@@ -27,7 +27,7 @@ final class Version20221219133615 extends AbstractMigration
         $this->addSql('CREATE TABLE produit_categorie (produit_id INT NOT NULL, categorie_id INT NOT NULL, INDEX IDX_CDEA88D8F347EFB (produit_id), INDEX IDX_CDEA88D8BCF5E72D (categorie_id), PRIMARY KEY(produit_id, categorie_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE ville (id INT AUTO_INCREMENT NOT NULL, code_postale INT NOT NULL, nom VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('ALTER TABLE boutique ADD CONSTRAINT FK_A1223C541004EF61 FOREIGN KEY (adresse_id_id) REFERENCES adresse (id)');
-        $this->addSql('ALTER TABLE produit ADD CONSTRAINT FK_29A5EC27D4333D4F FOREIGN KEY (boutique_id_id) REFERENCES boutique (id)');
+        $this->addSql('ALTER TABLE produit ADD CONSTRAINT FK_29A5EC27D4333D4F FOREIGN KEY (boutique_id_id) REFERENCES boutique (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE produit_categorie ADD CONSTRAINT FK_CDEA88D8F347EFB FOREIGN KEY (produit_id) REFERENCES produit (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE produit_categorie ADD CONSTRAINT FK_CDEA88D8BCF5E72D FOREIGN KEY (categorie_id) REFERENCES categorie (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE user ADD adresse_id_id INT DEFAULT NULL, ADD boutique_id_id INT DEFAULT NULL, DROP date_de_naissance');

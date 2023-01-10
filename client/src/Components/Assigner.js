@@ -8,8 +8,10 @@ import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
+import Swal from 'sweetalert2';
 
-const Assigner = ({config,api,nonAssigners,changeNonAssigner}) => {
+
+const Assigner = ({token,api,nonAssigners,changeNonAssigner,getAllBoutiques}) => {
      
 
     const close_pop_up = ()=> {
@@ -26,15 +28,18 @@ const Assigner = ({config,api,nonAssigners,changeNonAssigner}) => {
 
         if(allSelected.length > 0) {
             if(allSelected.length > 1) {
-                //nomber de produit sélectionné > 1 on peut pas faire l'assignation
-                //un toast pour le message d'erreure
-                console.log("tu peux pas !")
+                //un toast apres 
             } else  {
+                const datas = {};
                 let idProduit = parseInt(allSelected[0].id);
-                axios.patch(`${api}/boutiques/${boutique_id}/produit/${idProduit}`,config).then(
+                
+                axios.patch(`${api}/boutiques/${boutique_id}/produit/${idProduit}`,datas,{headers: {"Authorization" : `Bearer ${token}`} }).then(
                     response => {
                         if( response.status === 200) {
-                           console.log(response.data);
+                            getAllBoutiques();
+                            Swal.fire('Produit Assigné avec succès !', '', 'success');
+                            document.querySelector(".pop-up-assigner").classList.toggle('show_me');
+                            document.querySelector(".cover_add").classList.toggle('fade');
                            
                         }
                     }

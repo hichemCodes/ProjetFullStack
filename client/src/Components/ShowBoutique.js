@@ -29,10 +29,6 @@ const ShowBoutique = ({currentShowData}) => {
         currentShowData.produits.map(curr => {
             console.log(curr);
         });
-        
-
-
-
     },[]);
     
         

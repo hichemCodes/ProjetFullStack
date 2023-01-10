@@ -14,68 +14,57 @@ import FormGroup from '@mui/material/FormGroup';
 import Checkbox from '@mui/material/Checkbox';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import HorrairesDouverture from './HorrairesDouverture';
 
 
-const UpdateBoutique = ({operation,boutiqueUpdate,token,api,getAllBoutiques,changeOperation}) => {
+const UpdateCategorie = ({operation,categorieUpdate,token,api,getAllCategorie,changeOperation}) => {
 
   const theme = createTheme();
   const [nom,setNom] = useState('');
-  const [enConge,setEnConge] = useState(false);
-  const [horaires_de_ouverture,setHorrairesDeOuverture] = useState([]);
-  
 
 
-  useEffect( () =>{
+  useEffect( () => {
+
     if(operation != "add") {
-        console.log(boutiqueUpdate);
-        setNom(boutiqueUpdate.nom);
-        setEnConge(boutiqueUpdate.enConge);
+        setNom(categorieUpdate.nom);
     } else {
-        setEnConge(false)
+        setNom("");
     }
-    console.log(operation);
+
   },[operation]);
 
 
-  const addBoutique = () => {
+  const addProduit = () => {
     
-    const datas ={
+    const datas = {
         "nom" : nom,
-        "en_conge" : enConge,
-        "horaires_de_ouverture" : horaires_de_ouverture
     }
-    console.log(datas);
-    axios.post(`${api}/boutiques`, datas,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
+
+    axios.post(`${api}/categories`, datas, {headers: {"Authorization" : `Bearer ${token}`} }).then(
           response => {
               if( response.status === 201) {
-                  getAllBoutiques();
+                  getAllCategorie();
                   close_pop_up();
-                  setNom("");
-                  setEnConge("");
-                  Swal.fire('Boutique ajoutée avec succès !', '', 'success');
+                  Swal.fire('Categorie ajoutée avec succès !', '', 'success');
               }
           }
     );
       
     };
 
-    //modifier boutique
-    const updateSelectedBoutique = (id) => {
-        const datas ={
+    //modifier categotie
+    const updateSelectedCategorie = (id) => {
+        
+        const datas = {
             "nom" : nom,
-            "en_conge" : enConge,
-            "horaires_de_ouverture" : horaires_de_ouverture
         }
-        console.log(datas);
-        axios.put(`${api}/boutiques/${id}`, datas,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
+
+        axios.put(`${api}/categories/${id}`,datas, {headers: {"Authorization" : `Bearer ${token}`} }).then(
             response => {
                 if( response.status === 200) {
-                    getAllBoutiques();
+                    getAllCategorie();
                     setNom("");
-                    setEnConge("");
                     close_pop_up();
-                    Swal.fire('Boutique Modifiée avec succès !', '', 'success');
+                    Swal.fire('Categorie Modifiée avec succès !', '', 'success');
                   
                 }
             }
@@ -86,12 +75,13 @@ const UpdateBoutique = ({operation,boutiqueUpdate,token,api,getAllBoutiques,chan
 
   const close_pop_up = ()=> {
     setNom("")
-    setEnConge(false);
     changeOperation("");
     document.querySelector(".pop-up-update-add").classList.toggle('show_me');
     document.querySelector(".cover_add").classList.toggle('fade');
    
   }
+
+
    
     return (
         <div className="pop-up-update-add">
@@ -100,32 +90,20 @@ const UpdateBoutique = ({operation,boutiqueUpdate,token,api,getAllBoutiques,chan
             <Grid container component="main">
                     
                 <Typography component="h1" variant="h5">
-                {(operation == "add") ? "Ajouter" : "Modifier" } une Boutique
+                {(operation == "add") ? "Ajouter" : "Modifier" } une categorie
                 </Typography>
                 <TextField
                     margin="normal"
                     required
                     fullWidth
                     name="nom"
-                    label="Nom du boutique"
+                    label="Nom du categorie"
                     type="text"
-                    id="nom_boutique"
+                    id="nom_categorie"
                     value={nom}
                     onChange={(e)=> {setNom(e.target.value)}}
                     focused
-                />
-                <div className="body_form_containter">
-                    <FormGroup>
-                        <FormControlLabel label="En congé" control={<Checkbox id="check_boutique" checked={enConge}  onChange={(e)=> {setEnConge(e.target.checked)}} />}  />
-                    </FormGroup>
-
-                    <HorrairesDouverture
-                        changeHorrairesDeOuverture = {(new_horraires)=> {setHorrairesDeOuverture(new_horraires)}}
-                        boutiqueUpdate = {boutiqueUpdate}
-                    />
-
-                </div>
-                
+                />  
                 {
                     (operation == "add") ? 
                         <Button
@@ -134,26 +112,28 @@ const UpdateBoutique = ({operation,boutiqueUpdate,token,api,getAllBoutiques,chan
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
-                            onClick = {()=> {addBoutique()}}
+                            onClick = {()=> {addProduit()}}
                         >
                             Ajouter
                         </Button>  
                     : 
-                    <Button
+                     
+                        <Button
                             type="submit"
                             id="boutique_btn_update"
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
-                            onClick = {()=> { updateSelectedBoutique(boutiqueUpdate.id)}}
+                            onClick = {()=> { updateSelectedCategorie(categorieUpdate.id)}}
                         >
                             Modifier
-                    </Button>  
-                    }
+                        </Button>  
+                    
+                }
               
             </Grid>
         </div>
     )
 }
 
-export default UpdateBoutique
+export default UpdateCategorie
