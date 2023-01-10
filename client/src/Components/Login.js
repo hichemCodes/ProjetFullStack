@@ -29,7 +29,7 @@ const Login = ({changeToken,api}) => {
       "password": password,
     };
 
-    axios.post(`${api}/login_check`, datas).then(
+    axios.post(`${api}/login_check`, datas,).then(
         response => {
           console.log(response.status);
              if( response.status === 200) {

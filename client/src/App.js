@@ -33,7 +33,7 @@ function App() {
 
   useEffect( () =>{
     //get current user 
-    /*const datas = {};
+    const datas = {};
     axios.get(`${api}/user/me`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
       response => {
           if( response.status === 200) {
@@ -41,7 +41,7 @@ function App() {
             console.log(user);
           }
       }
-    )*/
+    )
   },[]);
 
   useEffect( () =>{
