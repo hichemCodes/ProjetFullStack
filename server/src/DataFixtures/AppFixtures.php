@@ -51,15 +51,15 @@ class AppFixtures extends Fixture
 
         //create boutiques
 
-            $boutique = new Boutique();
-            $boutique->setNom("Tech Store");
-            $horraires = '[{"lundi":{"matin":"8h-12h","apreMidi":"14h-18h"}},{"mardi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"mercredi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"jeudi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"vendredi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"samedi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"dimanche":{"matin":"8h-12h","apreMidi":"14h-20h"}}]';
-            $boutique->setHorairesDeOuverture(
-                array(json_encode($horraires))
-            );
-                $boutique->setEnConge(false);
-            $boutique->setDateDeCreation(new \DateTime());
-            $manager->persist($boutique);
+        $boutique = new Boutique();
+        $boutique->setNom("Tech Store");
+        $horraires = '[{"lundi":{"matin":"8h-12h","apreMidi":"14h-18h"}},{"mardi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"mercredi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"jeudi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"vendredi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"samedi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"dimanche":{"matin":"8h-12h","apreMidi":"14h-20h"}}]';
+        $boutique->setHorairesDeOuverture(
+            array(json_encode($horraires))
+        );
+        $boutique->setEnConge(false);
+        $boutique->setDateDeCreation(new \DateTime());
+        $manager->persist($boutique);
 
         $boutique1 = new Boutique();
         $boutique1->setNom("Chico Home");
