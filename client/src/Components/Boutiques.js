@@ -19,9 +19,8 @@ import '../styles/App.css';
 import '../styles/AppAfterLogIn.css';
 
 
-const Boutiques = ({api,config,change_current_page,currentPageSwitch,changeCurrentShowData}) => {
+const Boutiques = ({user,token,api,config,change_current_page,currentPageSwitch,changeCurrentShowData}) => {
 
-  const [token,setToken] = useState(localStorage.getItem("token"));
   const [query,setQuery] = useState('');
   const [result,setResult] = useState('');
   const [is_loading,setIsloading] = useState(true);
@@ -46,7 +45,7 @@ const Boutiques = ({api,config,change_current_page,currentPageSwitch,changeCurre
 
 
     const getAllBoutiques = () => {
-
+      console.log(token);
        setOffest(per_page * (page - 1));
 
         const datas = {
@@ -84,7 +83,7 @@ const Boutiques = ({api,config,change_current_page,currentPageSwitch,changeCurre
     }
 
     const getAllProduitsNonAssigner = () => {
-      axios.get(`${api}/produits/nonAssigner`,config).then(
+      axios.get(`${api}/produits/nonAssigner`,{headers: {"Authorization" : `Bearer ${token}`} }).then(
         response => {
             if( response.status === 200) {
                console.log(response.data);
@@ -95,7 +94,7 @@ const Boutiques = ({api,config,change_current_page,currentPageSwitch,changeCurre
   }
 
     const synchronizeBoutiqueCount = () => {
-      axios.get(`${api}/boutiquesCount`,config).then(
+      axios.get(`${api}/boutiquesCount`,{headers: {"Authorization" : `Bearer ${token}`} }).then(
         response => {
             if( response.status === 200) {
               setAllpages(Math.ceil((response.data[0].nombreDeBoutiques) / per_page))
@@ -120,6 +119,7 @@ const Boutiques = ({api,config,change_current_page,currentPageSwitch,changeCurre
         <NavBar
            query = {query}
            change_query = {(new_query)=> { setQuery(new_query)}}
+           user = {user}
         />
         <span id="current_action">{current_action} { (query != "") ? `(recherche : ${query} )` : ""}</span>
         <FilterBoutique 
@@ -148,6 +148,8 @@ const Boutiques = ({api,config,change_current_page,currentPageSwitch,changeCurre
                 { boutiques.map( (boutique) =>  (
 
                   <Boutique
+                      api = {api}
+                      token = {token}
                       boutique = {boutique}
                       getAllBoutiques = {getAllBoutiques}
                       boutiques = {boutiques}
@@ -164,7 +166,7 @@ const Boutiques = ({api,config,change_current_page,currentPageSwitch,changeCurre
           <UpdateBoutique
             operation={operation}
             boutiqueUpdate={boutiqueUpdate}
-            config = {config}
+            token = {token}
             api = {api}
             getAllBoutiques = {getAllBoutiques}
             changeOperation = {(new_operation)=> {setOperation(new_operation)}}
@@ -172,10 +174,11 @@ const Boutiques = ({api,config,change_current_page,currentPageSwitch,changeCurre
           <div className="cover_add fade"></div>
 
           <Assigner 
-             config = {config}
+             token = {token}
              api = {api}
              nonAssigners = {nonAssigners}
              changeNonAssigner = {(new_non_assigner)=> { setNonAssigner(new_non_assigner)}}
+             getAllBoutiques = {getAllBoutiques}
           />
     </React.Fragment>
   );

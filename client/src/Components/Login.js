@@ -14,11 +14,10 @@ import logo from "../images/shop.png";
 
 
 
-const Login = ({api}) => {
+const Login = ({changeToken,api}) => {
 
   const [email,setEmail] = useState("");
   const [password,setPassword] = useState("");
-  const [token,setToken] = useState("");
   const navigate = useNavigate();
   const theme = createTheme();
 
@@ -34,7 +33,7 @@ const Login = ({api}) => {
         response => {
           console.log(response.status);
              if( response.status === 200) {
-              setToken(response.data.token);
+              changeToken(response.data.token);
               localStorage.setItem('token',response.data.token);
               navigate("/boutiques");       
             }

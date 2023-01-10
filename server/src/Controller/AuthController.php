@@ -266,6 +266,8 @@ class AuthController extends ApiController
     {
         $this->get('security.token_storage')->setToken(null);
         $this->get('request_stack')->getCurrentRequest()->getSession()->invalidate();
+
+        return $this->json([],Response::HTTP_OK);
     }
     
 }

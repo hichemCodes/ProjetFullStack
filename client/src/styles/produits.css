@@ -16,6 +16,7 @@
 }
 .produits .card__image {  
   background-image: none;
+  height: 165px;
 }
 
 .produits .card__image:hover .cover_option {
@@ -26,7 +27,11 @@
     position: absolute;
     top: 31%;
     left: 47%;
-    transform: scale(8.5);
+    transform: scale(7.2);
     color:var(--main-bg-color);
 
+}
+
+.css-1sumxir-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
+    color : rgba(0, 0, 0, 0.6) !important;
 }

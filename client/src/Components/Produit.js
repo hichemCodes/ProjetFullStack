@@ -5,10 +5,7 @@ import { useNavigate  } from "react-router-dom";
 
   
 
-const Produit = ({produit,getAllProduits,produits,changeOperation,changeProduitUpdate}) => {
-
-    const [api,setApi] = useState("http://localhost:8000/api");
-    const [token,setToken] = useState(localStorage.getItem("token"));
+const Produit = ({api,token,produit,getAllProduits,produits,changeOperation,changeProduitUpdate,changeAllCategiriesOfSelectedProduit}) => {
 
     const navigate = useNavigate();
 
@@ -21,15 +18,9 @@ const Produit = ({produit,getAllProduits,produits,changeOperation,changeProduitU
           }).then((result) => {
             
             if (result.isConfirmed) {
-                const config = {
-                    headers: { 
-                      'Authorization': `Bearer ${token}`,
-                      'Accept': 'application/json',
-                      'Content-Type': 'application/json'}
-                  };
                   produits.filter((item) => item.id !== id);
                   Swal.fire('Produit supprimée avec succès !', '', 'success');
-                  axios.delete(`${api}/produits/${id}`,{ headers: {"Authorization" : `Bearer ${token}`} }).then(
+                  axios.delete(`${api}/produits/${id}`,{headers: {"Authorization" : `Bearer ${token}`} }).then(
                       response => {
                             if( response.status === 200) {
                                getAllProduits();
@@ -50,20 +41,19 @@ const Produit = ({produit,getAllProduits,produits,changeOperation,changeProduitU
         
     }
 
-    const AssignerProduit = (id) => {
-        /*
-        /*document.querySelector(".pop-up-assigner").classList.toggle('show_me');
+    const assignerProduitToCategories = (produit) => {
+        
+        document.querySelector(".pop-up-assigner").classList.toggle('show_me');
         document.querySelector(".cover_add").classList.toggle('fade');
-        getAllProduitsNonAssigner();
-        localStorage.setItem("boutique_to_assigner",id)
-        */
+        changeAllCategiriesOfSelectedProduit(produit.categories);
+        localStorage.setItem("produit_to_assigner",produit.id)
+        
     }
 
     const showProduit = (id) => {
 
         navigate(`/boutiques/${id}`); 
     }
-
 
     return (
 
@@ -75,7 +65,7 @@ const Produit = ({produit,getAllProduits,produits,changeOperation,changeProduitU
                         <div className="cover_option">
                             <i class="fa-solid fa-pen-to-square" title='modifier' onClick={()=>{updateProduit(produit.id,produit,"update")}}></i>
                             <i class="fa-sharp fa-solid fa-trash" onClick={()=>{DeleteProduit(produit.id)}} title='supprimer'></i>
-                            <i class="fa-sharp fa-solid fa-cart-plus" onClick={()=>{AssignerProduit(produit.id)}}></i>
+                            <i class="fa-sharp fa-solid fa-cart-plus" onClick={()=>{assignerProduitToCategories(produit)}}></i>
                         </div>
                 </div>
                 
@@ -84,12 +74,22 @@ const Produit = ({produit,getAllProduits,produits,changeOperation,changeProduitU
                 <h1 className='card-name'>{produit.nom}</h1>
                 <div className='card-item-title'>
                     Catégories : 
-                    {
+                    { 
                         produit.categories.map( categorie => (
-                           <span>{ categorie.nom  }, </span> 
+                           <span>{  `${categorie.nom}` }  </span> 
                         ))
                     }
+                    
                 </div>
+                { (produit.boutiqueId == null) ? "" 
+                        : (
+                            <div className='card-item-title'>
+                                Boutique : 
+                                 <span>{produit.boutiqueId.nom}</span>
+                            </div>
+                        ) 
+                }
+              
                 <div className="prix-produit ">
                     <span className='card-item-title'>{produit.prix} € </span>
                 </div>

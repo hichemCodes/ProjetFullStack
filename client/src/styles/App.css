@@ -32,7 +32,6 @@
     background-color: var(--oficial) !important;
     border: none;
     border-radius: 7px;
-    line-height: 37px;
     box-shadow: none;
     text-transform: capitalize;
 }

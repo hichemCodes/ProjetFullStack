@@ -85,30 +85,31 @@ or
     */
     public function getProduits(
         $query,
-        $boutique_id= null,
-        // $categories= "",
+        $boutique = null,
+        $categories= "",
         $offset = 0,
         $limit = 10
     ) {
-        $queryBuilder = $this->createQueryBuilder("p");
+        $queryBuilder = $this->createQueryBuilder("p")
+        ->leftJoin('p.categories','c');
 
-        if($boutique_id != null) {
+        if($boutique != null) {
             $queryBuilder->andWhere('p.boutique_id = :id')
-                ->setParameter('id',$boutique_id);
+                ->setParameter('id',$boutique);
         }
 
         if($query != "") {
             $queryBuilder->andWhere('p.nom LIKE :query')
-                ->setParameter('query','%'.$query);
+                ->setParameter('query','%'.$query.'%');
         }
 
-        /*if($categories != "") {
-            $queryBuilder->andWhere('p.categories = :categories')
-                ->setParameter('categories','%'.$categories);
-        }*/
+        if($categories != "") {
+            $queryBuilder->andWhere('c.id = :categories')
+                ->setParameter('categories', $categories);
+        }
 
         $queryBuilder->setFirstResult($offset)->setMaxResults($limit);
-
+        $queryBuilder->orderBy('p.date_de_creation', 'DESC');
 
         return $queryBuilder->getQuery()->getResult();
     }

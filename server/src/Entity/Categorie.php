@@ -78,4 +78,10 @@ class Categorie
 
         return $this;
     }
+    public function clearProduits(): self
+    {
+        $this->produits = new ArrayCollection();
+        
+        return $this;
+    }
 }

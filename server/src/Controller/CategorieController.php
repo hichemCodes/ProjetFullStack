@@ -188,7 +188,7 @@ class CategorieController extends ApiController
 
     /**
      * Update category
-     * @Route("/api/categories/{id}", name="update_categorie", methods={"PATCH"})
+     * @Route("/api/categories/{id}", name="update_categorie", methods={"PUT"})
      * @SWG\Tag(name="Categorie")
      *
      * @SWG\Parameter(
@@ -263,7 +263,9 @@ class CategorieController extends ApiController
         $this->em->flush();
 
         // Last step : Return no data as confirmation.
-        return $this->json($existingCategory,Response::HTTP_OK);
+        return $this->json($existingCategory,Response::HTTP_OK,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function(){
+            return '';
+        }]);
 
     }
 
@@ -312,13 +314,15 @@ class CategorieController extends ApiController
         $this->em->flush();
 
         // Last step : Return no data as confirmation.
-        return $this->json('Catégorie supprimée',Response::HTTP_OK);
+        return $this->json('Catégorie supprimée',Response::HTTP_OK,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function(){
+            return '';
+        }]);
 
     }
 
     /**
-     * Associate  category to product E_CAT_40
-     * @Route("/api/categories/{id}/produit/{idProduit}", name="associate_category_product", methods={"PATCH"})
+     * Associate categorie to products E_CAT_40
+     * @Route("/api/categories/{id}/produits", name="associate_category_product", methods={"PATCH"})
      * @SWG\Tag(name="Categorie")
      *
      *  @SWG\Response(
@@ -346,26 +350,39 @@ class CategorieController extends ApiController
      *      )
      * )
      * @noinspection PhpOptionalBeforeRequiredParametersInspection
-     * @param Boutique|null $existingBoutique
-     * @param Produit|null $exsitingProduit
+     * @param Categorie|null $existingCategory
+     * @param Request $request
      * @return JsonResponse
      */
-    public function associateCategoryToProduct(
+    public function associateCategoriesToProduct(
         Categorie $existingCategory = null,
-        Produit  $exsitingProduct =null
+        Request $request
     ): JsonResponse {
+        
         if(is_null($existingCategory)) {
             return $this->respondNotFound();
         }
-        if (empty($exsitingProduct) || empty($existingCategory)) {
-            return $this->respondValidationError("Invalid request");
+        $request = $this->transformJsonBody($request);
+        $produits = $request->get('produits');
+        
+        if (empty($produits)) {
+            return $this->respondValidationError("Invalid request : vous devez ou moin spécifié un produit !");
         }
-        $existingCategory->addProduit($exsitingProduct);
-        $exsitingProduct->addCategory($existingCategory);
-        $this->em->persist($existingCategory);
+        $produitRepository = $this->em->getRepository(Produit::class);
+        $existingCategory->clearProduits();
+
+        foreach($produits as $element) {
+            $produit = $produitRepository->find($element);
+            $existingCategory->addProduit($produit);
+            $produit->addCategory($existingCategory);
+            $this->em->persist($existingCategory);
+            $this->em->persist($produit);
+        }
 
         $this->em->flush();
-        return $this->json($existingCategory,Response::HTTP_OK);
+        return $this->json($existingCategory,Response::HTTP_OK,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function(){
+            return '';
+        }]);
 
 
     }

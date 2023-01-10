@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect, useRef } from 'react';
 import { useHistory } from "react-router-dom";
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -10,16 +10,16 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 import NavBar from "./NavBar";
 import Loader from "./loader";
+import Produit from './Produit';
+import FilterProduit from './FilterProduits';
+import UpdateProduit from './UpdateProduit';
+import AssignerCategorieToProduit from './AssignerCategorieToProduit';
+
 import '../styles/App.css';
 import '../styles/AppAfterLogIn.css';
 import '../styles/produits.css';
 
-import Produit from './Produit';
-import FilterProduit from './FilterProduits';
-import UpdateProduit from './UpdateProduit';
-
-
-const Produits = ({api,config,change_current_page,currentPageSwitch}) => {
+const Produits = ({user,token,api,config,change_current_page,currentPageSwitch}) => {
 
  
   const [query,setQuery] = useState('');
@@ -27,18 +27,21 @@ const Produits = ({api,config,change_current_page,currentPageSwitch}) => {
   const [orderBy,setOrderBy] = useState('date_de_creation');
   const [page,setPage] = useState(1);
   const [offset,setOffest] = useState(0);
-  const [per_page,setPerpage] = useState(10);
+  const [per_page,setPerpage] = useState(15);
   const [all_pages,setAllpages] = useState(1);
   const [current_action,setCurrentAction] = useState("Tous les produits");
   const [operation,setOperation] = useState("add");
   const [produits,setProduits] = useState([]);
   const [produitUpdate,setProduitUpdate] = useState([]);
-
-
+  const [allBoutiqueToProduit,setAllBoutiqueToProduit] = useState([]);
+  const [allCategorieToProduit,setAllCategorieToProduit] = useState([]);
+  const [filterParBoutique,setFilterParBoutique] = useState(null);
+  const [filterParCategorie,setFilterParCategorie] = useState(null);
+  const [allCategiriesOfSelectedProduit,setAllCategiriesOfSelectedProduit] = useState([]);
 
   const getAllProduits = () => {
 
-      setOffest(per_page * (page - 1));
+    setOffest(per_page * (page - 1));
 
       const datas = {
         "limit" : per_page,
@@ -47,13 +50,20 @@ const Produits = ({api,config,change_current_page,currentPageSwitch}) => {
 
       
       if(query != "") {
-        datas.query = query
+        datas.query = query;
       }
 
-      axios.get(`${api}/produits`,{ params : datas,config}).then(
+      if(filterParBoutique != null) {
+          datas.boutique = filterParBoutique;
+      }
+
+      if(filterParCategorie != null) {
+          datas.categorie = filterParCategorie;
+      }
+
+      axios.get(`${api}/produits`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
         response => {
             if( response.status === 200) {
-              console.log(response.data);
               setProduits(response.data);
               setIsloading(false);
               console.log(produits)
@@ -71,15 +81,51 @@ const Produits = ({api,config,change_current_page,currentPageSwitch}) => {
       }
     )
   }*/
-  
+
+  const getAllBoutiqueToFilterProduit = () => {
+
+    const datas = {
+      "limit" : 100,
+      "offset" : 0
+    };
+
+    axios.get(`${api}/boutiques`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
+      response => {
+          if( response.status === 200) {
+            setAllBoutiqueToProduit(response.data);
+            console.log(response.data)
+          }
+      }
+    )
+  }
+
+  const getAllCategoriesToFilterProduit = () => {
+
+    const datas = {
+      "limit" : 100,
+      "offset" : 0
+    };
+
+    axios.get(`${api}/categories`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
+      response => {
+          if( response.status === 200) {
+            setAllCategorieToProduit(response.data);
+            console.log(response.data)
+          }
+      }
+    )
+  }
+
   useEffect( () =>{
     setIsloading(true);
     getAllProduits();
-  },[page,query]);
+  },[page,query,filterParBoutique,filterParCategorie]);
+
 
   useEffect( () =>{
     change_current_page("produits");
-    //synchronizeBoutiueCount();
+    getAllBoutiqueToFilterProduit();
+    getAllCategoriesToFilterProduit();
   },[]);
 
 
@@ -88,10 +134,10 @@ const Produits = ({api,config,change_current_page,currentPageSwitch}) => {
         <NavBar
            query = {query}
            change_query = {(new_query)=> { setQuery(new_query)}}
+           user = {user}
         />
         <span id="current_action">{current_action} { (query != "") ? `(recherche : ${query} )` : ""}</span>
         <FilterProduit 
-                
                 current_page = {page} 
                 all_pages = {all_pages }
                 change_page = { (new_page)=> { setPage(new_page)}}
@@ -99,6 +145,12 @@ const Produits = ({api,config,change_current_page,currentPageSwitch}) => {
                 currentPageSwitch= {currentPageSwitch}
                 changeOperation = {(new_operation)=> {setOperation(new_operation)}}
                 changeProduitUpdate = {(new_update_produit)=> {setProduitUpdate(new_update_produit)}}
+                changeFilterParBoutique = {(new_filter) => {setFilterParBoutique(new_filter)}}
+                changeFilterParCategorie = {(new_filter) => {setFilterParCategorie(new_filter)}}
+                allBoutiqueToProduit = {allBoutiqueToProduit}
+                allCategorieToProduit = {allCategorieToProduit}
+                filterParBoutique = {filterParBoutique}
+                filterParCategorie = {filterParCategorie}
         />
         {
           (is_loading) ? (<Loader/>) 
@@ -107,11 +159,14 @@ const Produits = ({api,config,change_current_page,currentPageSwitch}) => {
                 { 
                 produits.map( (produit) =>  (
                     <Produit
+                        api = {api}
+                        token = {token}
                         produit = {produit}
                         getAllProduits = {getAllProduits}
                         produits = {produits}
                         changeOperation = {(new_operation)=> {setOperation(new_operation)}}
-                        changeProduitUpdate = {(new_update_produit)=> {setProduitUpdate(new_update_produit)}}                        
+                        changeProduitUpdate = {(new_update_produit)=> {setProduitUpdate(new_update_produit)}}  
+                        changeAllCategiriesOfSelectedProduit = {(new_value) => { setAllCategiriesOfSelectedProduit(new_value)} }                      
                     />
                   
                   ))
@@ -121,12 +176,19 @@ const Produits = ({api,config,change_current_page,currentPageSwitch}) => {
          <UpdateProduit
             operation={operation}
             produitUpdate={produitUpdate}
-            config = {config}
+            token = {token}
             api = {api}
             getAllProduits = {getAllProduits}
             changeOperation = {(new_operation)=> {setOperation(new_operation)}}
           />
           <div className="cover_add fade"></div>
+          <AssignerCategorieToProduit 
+              api = {api}
+              token = {token}
+              allCategorieToProduit = {allCategorieToProduit}
+              allCategiriesOfSelectedProduit = {allCategiriesOfSelectedProduit}
+              getAllProduits = {getAllProduits}
+          />
         
          
     </React.Fragment>

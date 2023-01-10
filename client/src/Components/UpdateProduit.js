@@ -16,7 +16,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 
 
-const UpdateProduit = ({operation,produitUpdate,config,api,getAllProduits,changeOperation}) => {
+const UpdateProduit = ({operation,produitUpdate,token,api,getAllProduits,changeOperation}) => {
 
   const theme = createTheme();
   const [nom,setNom] = useState('');
@@ -26,9 +26,18 @@ const UpdateProduit = ({operation,produitUpdate,config,api,getAllProduits,change
 
 
   useEffect( () => {
+
     if(operation != "add") {
-        console.log(produitUpdate);
+        setNom(produitUpdate.nom);
+        setDescription(produitUpdate.description);
+        setPrix(produitUpdate.prix);
+        console.log(produitUpdate)
+    } else {
+        setNom("");
+        setDescription("");
+        setPrix(0);
     }
+
   },[operation]);
 
 
@@ -39,7 +48,7 @@ const UpdateProduit = ({operation,produitUpdate,config,api,getAllProduits,change
         "prix" : prix,
     }
 
-    axios.post(`${api}/produits`, datas,config).then(
+    axios.post(`${api}/produits`, datas,{ headers: {"Authorization" : `Bearer ${token}`} }).then(
           response => {
               if( response.status === 201) {
                   getAllProduits();
@@ -60,7 +69,7 @@ const UpdateProduit = ({operation,produitUpdate,config,api,getAllProduits,change
             "description" : description
         }
         console.log(datas);
-        axios.put(`${api}/produits/${id}`, datas,config).then(
+        axios.put(`${api}/produits/${id}`, datas,{ headers: {"Authorization" : `Bearer ${token}`} }).then(
             response => {
                 if( response.status === 200) {
                     getAllProduits();
@@ -120,6 +129,8 @@ const UpdateProduit = ({operation,produitUpdate,config,api,getAllProduits,change
                     onChange={(e)=> {setPrix(e.target.value)}}
                     focused
                 />
+              
+
                 
                 {
                     (operation == "add") ? 
@@ -134,7 +145,20 @@ const UpdateProduit = ({operation,produitUpdate,config,api,getAllProduits,change
                             Ajouter
                         </Button>  
                     : 
-                    <Button
+                     <React.Fragment>
+                        <TextField
+                        margin="normal"
+                        id="outlined-multiline-static"
+                        multiline
+                        name="description"
+                        label="Description du produit"
+                        value={description}
+                        onChange={(e)=> {setDescription(e.target.value)}}
+                        focused
+                        rows={6}
+                        
+                        />
+                        <Button
                             type="submit"
                             id="boutique_btn_update"
                             fullWidth
@@ -143,7 +167,8 @@ const UpdateProduit = ({operation,produitUpdate,config,api,getAllProduits,change
                             onClick = {()=> { updateSelectedProduit(produitUpdate.id)}}
                         >
                             Modifier
-                    </Button>  
+                        </Button>  
+                    </React.Fragment>
                 }
               
             </Grid>

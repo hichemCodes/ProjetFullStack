@@ -12,14 +12,14 @@ import logo from "../images/logo.PNG";
 import { useNavigate  } from "react-router-dom";
 
 
-const NavBar = ({query,change_query}) => {
+const NavBar = ({query,change_query,user}) => {
 
   const navigate = useNavigate();
 
 
   const deconnexion = () => {
     localStorage.removeItem('token');
-    navigate("/login");    
+    navigate("/");    
   };
 
   const switchPopUp = () => {
@@ -36,12 +36,17 @@ const NavBar = ({query,change_query}) => {
                     <input type="text" onInput={(e)=> {change_query(e.target.value)}}  value={query} id="search_input" />
                 </div>           
         </form>
-        <div class="avatar-user" onClick={switchPopUp}></div>
+        <div class="avatar-user" onClick={switchPopUp}>
+           <span>HL</span>
+        </div>
         <div className="pop-up-fav ">
             
             <span> 
-                  Hichem LAOUAR
+                  { (user.length != 0) ? `${user.email} (${user.roles[0]})` :  "Annonyme" }
             </span>  
+            <span onClick={()=> {navigate('/me')}} > 
+                 Mon Profile
+            </span>   
             <span onClick={deconnexion} > 
                  Se Déconecter
             </span>   
