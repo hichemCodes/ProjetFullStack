@@ -45,7 +45,7 @@ const Boutiques = ({user,token,api,config,change_current_page,currentPageSwitch,
 
 
     const getAllBoutiques = () => {
-
+      console.log(token);
        setOffest(per_page * (page - 1));
 
         const datas = {

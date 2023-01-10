@@ -63,7 +63,7 @@ function App() {
        <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login  api = {api} />} />
+          <Route path="/login" element={<Login changeToken = {(newToken) => { setToken(newToken)}} api = {api} />} />
           <Route path="/boutiques" element={<Boutiques user = {user} token = {token} api = {api} confing = {config} change_current_page = {(new_page)=> {setCurrentPage(new_page)}} currentPageSwitch={currentPage} changeCurrentShowData = {(new_data)=>{setCurrentShowData(new_data)}}/>} />
           <Route path="/boutiques/:id" element={<ShowBoutique user = {user}  currentShowData = {currentShowData}  />} />
           <Route path="/produits" element={<Produits user = {user} api = {api} token = {token} confing = {config} change_current_page = {(new_page)=> {setCurrentPage(new_page)}} currentPageSwitch={currentPage}/>} />
