@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Produit;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * @extends ServiceEntityRepository<Produit>
@@ -107,11 +108,12 @@ or
             $queryBuilder->andWhere('c.id = :categories')
                 ->setParameter('categories', $categories);
         }
-
-        $queryBuilder->setFirstResult($offset)->setMaxResults($limit);
         $queryBuilder->orderBy('p.date_de_creation', 'DESC');
-
-        return $queryBuilder->getQuery()->getResult();
+        $queryBuilder->setFirstResult($offset)->setMaxResults($limit);
+        $paginator = new Paginator($queryBuilder, $fetchJoinCollection = true);
+        $count = count($paginator);
+       
+        return [$queryBuilder->getQuery()->getResult(),array("allPages" => $count)];
     }
 
     public function getProduit($id) {
@@ -135,7 +137,6 @@ or
             ->select('p.id,p.nom,p.prix,p.description')
             ->andWhere('p.boutique_id is NULL');
         return $queryBuilder->getQuery()->getResult();
-
     }
 
      //associateProduitToBoutique

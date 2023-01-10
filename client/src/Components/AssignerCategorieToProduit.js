@@ -32,17 +32,19 @@ const AssignerCategorieToProduit = ({api,token,allCategorieToProduit,allCategiri
         const datas = {
             "categories" : allSelectedCategories
         };
-
         axios.patch(`${api}/produits/${produit_id}/categories`,datas,{headers: {"Authorization" : `Bearer ${token}`} }).then(
             response => {
                 if( response.status === 200) {
 
                     Swal.fire('Produit Assigné avec succès !', '', 'success');
                     getAllProduits();
+                    allSelected.forEach(elem => {
+                        elem.checked = false;
+                    });
                     document.querySelector(".pop-up-assigner").classList.toggle('show_me');
                     document.querySelector(".cover_add").classList.toggle('fade');
 
-
+                    
                 }
             }
         )
@@ -50,7 +52,8 @@ const AssignerCategorieToProduit = ({api,token,allCategorieToProduit,allCategiri
 
     useEffect( () =>{
         
-      },[allCategiriesOfSelectedProduit]);
+      },[allCategorieToProduit]);
+   
 
     return (
         <div className="pop-up-assigner">
@@ -60,16 +63,16 @@ const AssignerCategorieToProduit = ({api,token,allCategorieToProduit,allCategiri
 
                 { 
                     allCategorieToProduit.map(categorie => {
-                        // console.log(categorie);
+                       
                         const labelId = `${categorie.id}`;
-                        const amIChecked = allCategiriesOfSelectedProduit.some(elem => elem.id == categorie.id)
+                        const amIChecked = allCategiriesOfSelectedProduit.some(elem => elem.id == categorie.id);
                         console.log(amIChecked);
                         return (
                         <ListItem
                             key={categorie.id}
                             disablePadding
                             >
-                            <ListItemButton role={undefined}  dense>
+                            <ListItemButton role={undefined} >
                             <ListItemIcon>
                                 <Checkbox
                                 edge="start"

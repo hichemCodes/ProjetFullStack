@@ -10,13 +10,15 @@ import axios from 'axios';
 import Categories from "./Components/Categories";
 import ShowProfile from "./Components/ShowProfile";
 import './styles/App.css';
+import ShowProduit from "./Components/ShowProduit";
+import ShowCategorie from "./Components/ShowCategorie";
 
 
 
 function App() {
 
   const [currentPage,setCurrentPage] = useState("");
-  const [currentShowData,setCurrentShowData] = useState("");
+  const [currentShowData,setCurrentShowData] = useState([]);
   const navigate = useNavigate();
   const [api,setApi] = useState("http://localhost:8080/api");
   const [token,setToken] = useState(localStorage.getItem("token"));
@@ -33,7 +35,7 @@ function App() {
 
   useEffect( () =>{
     //get current user 
-    const datas = {};
+    /*const datas = {};
     axios.get(`${api}/user/me`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
       response => {
           if( response.status === 200) {
@@ -41,8 +43,9 @@ function App() {
             console.log(user);
           }
       }
-    )
-  },[]);
+    )*/
+    console.log(currentShowData);
+  },[currentShowData]);
 
   useEffect( () =>{
   
@@ -65,9 +68,11 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login changeToken = {(newToken) => { setToken(newToken)}} api = {api} />} />
           <Route path="/boutiques" element={<Boutiques user = {user} token = {token} api = {api} confing = {config} change_current_page = {(new_page)=> {setCurrentPage(new_page)}} currentPageSwitch={currentPage} changeCurrentShowData = {(new_data)=>{setCurrentShowData(new_data)}}/>} />
-          <Route path="/boutiques/:id" element={<ShowBoutique user = {user}  currentShowData = {currentShowData}  />} />
-          <Route path="/produits" element={<Produits user = {user} api = {api} token = {token} confing = {config} change_current_page = {(new_page)=> {setCurrentPage(new_page)}} currentPageSwitch={currentPage}/>} />
-          <Route path="/categories" element={<Categories user = {user} token = {token} api = {api} confing = {config} change_current_page = {(new_page)=> {setCurrentPage(new_page)}} currentPageSwitch={currentPage}/>} />
+          <Route path="/boutiques/:id"  element={<ShowBoutique  currentShowData = {currentShowData} token = {token} api = {api} changeCurrentShowData = {(new_data)=>{setCurrentShowData(new_data)}} />} />
+          <Route path="/produits" element={<Produits user = {user} api = {api} token = {token} confing = {config} change_current_page = {(new_page)=> {setCurrentPage(new_page)}} currentPageSwitch={currentPage} changeCurrentShowDataProduit = {(new_data)=>{setCurrentShowData(new_data)}}/>}  />
+          <Route path="/produits/:id" element={<ShowProduit currentShowData = {currentShowData} token = {token} api = {api} changeCurrentShowData = {(new_data)=>{setCurrentShowData(new_data)}}  />} />
+          <Route path="/categories" element={<Categories user = {user} token = {token} api = {api} confing = {config} change_current_page = {(new_page)=> {setCurrentPage(new_page)}} currentPageSwitch={currentPage}  changeCurrentShowData = {(new_data)=>{setCurrentShowData(new_data)}} />} />
+          <Route path="/categories/:id" element={<ShowCategorie currentShowData = {currentShowData} token = {token} api = {api} changeCurrentShowData = {(new_data)=>{setCurrentShowData(new_data)}}  />} />
           <Route path="/me" element={<ShowProfile  user = {user}/>} />
        </Routes>
     </div>

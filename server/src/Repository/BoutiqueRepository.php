@@ -7,6 +7,7 @@ use Cassandra\Date;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Mapping\OrderBy;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * @extends ServiceEntityRepository<Boutique>
@@ -138,9 +139,10 @@ class BoutiqueRepository extends ServiceEntityRepository
             //$queryBuilder->orderBy('Count(b.id)', 'DESC');
         }
         $queryBuilder->setFirstResult($offset)->setMaxResults($limit);
-
-        return $queryBuilder->getQuery()->getResult();
-
+        $paginator = new Paginator($queryBuilder, $fetchJoinCollection = true);
+        $count = count($paginator);
+       
+        return [$queryBuilder->getQuery()->getResult(),array("allPages" => $count)];
     }
 
     //get boutiques details

@@ -5,7 +5,7 @@ import { useNavigate  } from "react-router-dom";
 
   
 
-const Produit = ({api,token,produit,getAllProduits,produits,changeOperation,changeProduitUpdate,changeAllCategiriesOfSelectedProduit}) => {
+const Produit = ({api,token,produit,getAllProduits,produits,changeOperation,changeProduitUpdate,changeAllCategiriesOfSelectedProduit,changeCurrentShowDataProduit}) => {
 
     const navigate = useNavigate();
 
@@ -51,8 +51,9 @@ const Produit = ({api,token,produit,getAllProduits,produits,changeOperation,chan
     }
 
     const showProduit = (id) => {
-
-        navigate(`/boutiques/${id}`); 
+        changeCurrentShowDataProduit(produit);
+        console.log(produit);
+        navigate(`/produits/${id}`); 
     }
 
     return (

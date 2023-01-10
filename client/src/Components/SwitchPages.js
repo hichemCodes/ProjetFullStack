@@ -10,7 +10,7 @@ const SwitchPages = ({change_current_page,currentPageSwitch}) => {
 
     return (
         <React.Fragment>
-            <div className="filter-contain">
+            <div className="filter-container">
                     <span className="current_order c_item" onClick = {show_change_page}>Page Actuelle :  <strong> {currentPageSwitch} </strong> </span>
                  <div className="change_page">
                        <div className="o_item"  onClick = {() => {change_current_page('boutiques')}}>

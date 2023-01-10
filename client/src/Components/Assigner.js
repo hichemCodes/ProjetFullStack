@@ -32,7 +32,7 @@ const Assigner = ({token,api,nonAssigners,changeNonAssigner,getAllBoutiques}) =>
             } else  {
                 const datas = {};
                 let idProduit = parseInt(allSelected[0].id);
-                
+                console.log(idProduit);
                 axios.patch(`${api}/boutiques/${boutique_id}/produit/${idProduit}`,datas,{headers: {"Authorization" : `Bearer ${token}`} }).then(
                     response => {
                         if( response.status === 200) {

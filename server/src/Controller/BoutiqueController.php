@@ -217,7 +217,9 @@ class BoutiqueController extends ApiController
         $this->em-> flush();
 
         // Last Step : return the data.
-        return $this->json($boutique,Response::HTTP_CREATED, array());
+        return $this->json($boutique,Response::HTTP_CREATED,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($object){
+            return $object->getId();
+        }]);
 
 
     }
@@ -275,7 +277,9 @@ class BoutiqueController extends ApiController
         $this->em->flush();
 
         // Last step : Return no data as confirmation.
-        return $this->json('Boutique supprimée',Response::HTTP_OK);
+        return $this->json('Boutique supprimée',Response::HTTP_OK,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($object){
+            return $object->getId();
+        }]);
 
     }
 
@@ -366,7 +370,9 @@ class BoutiqueController extends ApiController
         $this->em->flush();
 
         // Last step : Return no data as confirmation.
-        return $this->json($existingBoutique,Response::HTTP_OK);
+        return $this->json($existingBoutique,Response::HTTP_OK,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($object){
+            return $object->getId();
+        }]);
 
     }
 
@@ -423,7 +429,9 @@ class BoutiqueController extends ApiController
         $this->em->getRepository(Produit::class)->associateProduitToBoutique($boutique->getId(),$produit->getId());
 
         $produitAfterUpdate = $this->em->getRepository(Produit::class)->getProduit($produit->getId());
-        return $this->json($produitAfterUpdate,Response::HTTP_OK);
+        return $this->json($produitAfterUpdate,Response::HTTP_OK,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($object){
+            return $object->getId();
+        }]);
 
 
     }
@@ -501,42 +509,6 @@ class BoutiqueController extends ApiController
             return $object->getId();
         }]);
     }
-
-
-    /**
-     * Get the number of boutiques
-     * @Route("/api/boutiquesCount", name="boutique_count", methods={"GET"})
-     * @SWG\Tag(name="Boutique")
-     *
-     * @SWG\Response(
-     *     response=200,
-     *     description=" Return with the number of boutique",
-     *     @SWG\Schema(
-     *         type="array",
-     *         @SWG\Items(
-     *              type="object",
-     *              @SWG\Property(property="id", type="integer", example="1"),
-     *              @SWG\Property(property="nom", type="string", example="Lidl"),
-     *              @SWG\Property(property="horaires_de_ouverture", type="json", example="[{'lundi':{'matin':'8h-12h'}}]"),
-     *              @SWG\Property(property="en_conge", type="boolean", example="1"),
-     *              @SWG\Property(property="date_de_creation", type="datetime", example="1"),
-     *              @SWG\Property(property="users", type="integer", example="1"),
-     *              @SWG\Property(property="adresse_id", type="integer", example="1"),
-     *              @SWG\Property(property="produits", type="string", example="Pomme"),
-     *     )
-     * )
-     * )
-     * @param BoutiqueRepository $boutiqueRepository
-     * @return JsonResponse
-     */
-    public function getBoutiqueCount(
-        BoutiqueRepository $boutiqueRepository
-    ): JsonResponse {
-        
-        $count =  $boutiqueRepository->getBoutiquesCount();
-        return $this->json($count,Response::HTTP_OK);
-    }
-
     
 
 }

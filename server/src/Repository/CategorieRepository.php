@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Categorie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * @extends ServiceEntityRepository<Categorie>
@@ -99,9 +100,10 @@ class CategorieRepository extends ServiceEntityRepository
         }
 
         $queryBuilder->setFirstResult($offset)->setMaxResults($limit);
-
-
-        return $queryBuilder->getQuery()->getResult();
+        $paginator = new Paginator($queryBuilder, $fetchJoinCollection = true);
+        $count = count($paginator);
+       
+        return [$queryBuilder->getQuery()->getResult(),array("allPages" => $count)];
     }
 
     public function getCategory($id) {

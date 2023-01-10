@@ -269,9 +269,10 @@ body{
     width: 98%;
     display: flex;
     justify-content: flex-start;
-    align-items: center;
+    align-items: unset;
     padding-bottom: 15px;
     position: relative;
+    height: 60px !important;
  }
  .choices .c_item{
    padding: 10.5px 14px;
@@ -282,12 +283,12 @@ body{
    transition: .2s ease-in;
    cursor: pointer;
    margin-right: 8px;
+   height: fit-content;
  }
 
- .c_item_en_conge {
-  width: 144px !important;
+ .f_boot, .f_cat {
+  width: 96% !important;
  }
-
  .orders button {
   border-radius: 23px;
   line-height: 0px;
@@ -304,9 +305,14 @@ body{
  }
  .filter-container {
   position: relative;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  height: 350px;
  }
  .orders,.all_pages,.en_conge,.change_page{
-    width: 180px;
+    width: fit-content;
     height: auto;
     display: none;
     flex-direction: column;
@@ -314,10 +320,8 @@ body{
     border:1px solid rgba(118, 118, 118, 0.28);
     border-radius: 10px;
     padding: 15px 20px;
-    position: absolute;
-    z-index: 100;
     background: #fff;
-    top:132%;
+  
  }
 
  .orders-first {
@@ -340,32 +344,33 @@ body{
 
  }
  .orders {
-    width: 280px;
+    width: fit-content;
 }
 .orders_by {
 }
 
  .all_pages{
-     width: 120px !important;
-     overflow-y: scroll;
-     justify-content: flex-start;
-     padding: 2px 0px 5px 0px;
-     left: auto !important;
+  
+  padding: 3px 5px;
+  height: -moz-fit-content;
+  height: fit-content;
+  max-height: 200px;
+  overflow-y: overlay;
  }
- .all_pages::-webkit-scrollbar{
+ .all_pages::-webkit-scrollbar,.filter_produit_categories::-webkit-scrollbar, .filter_produit_boutique::-webkit-scrollbar{
       width: 8px;
      
  }
- .all_pages::-webkit-scrollbar-thumb{
+ .all_pages::-webkit-scrollbar-thumb,.filter_produit_categories::-webkit-scrollbar-thumb, .filter_produit_boutique::-webkit-scrollbar-thumb{
      background:#bcc0c4;
      border-radius: 5px;
  }
- .all_pages::-webkit-scrollbar-track{
+ .all_pages::-webkit-scrollbar-track,.filter_produit_categories::-webkit-scrollbar-track, .filter_produit_boutique::-webkit-scrollbar-track{
    background: transparent;
    border-radius: 5px;
  }
  .all_pages span{
-     padding: 9px 0px;
+     padding: 10px 9px;
      text-align: center;
      cursor: pointer;
  }
@@ -403,12 +408,10 @@ body{
  }
  .show_me{
    display: flex !important;
+   z-index: 1500;
    
  }
 
-.change_page {
-  top: 70% !important;
-}
 
  .orders .o_item label,.en_conge .o_item label{
  text-transform: capitalize;
@@ -472,7 +475,7 @@ body{
  }
  .show_img{
     width: 100%;
-    height: 100%;
+    height:fit-content;
     background: #fff;
     z-index: 5000;
     display: flex;
@@ -718,9 +721,6 @@ body{
 
 }
 
-.add_boutique {
-padding: 8px 14px !important;
-}
 
 .cover_add.fade {
 display: none;

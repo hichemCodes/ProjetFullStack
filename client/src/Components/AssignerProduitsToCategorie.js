@@ -34,7 +34,7 @@ const AssignerProduitsToCategorie = ({api,token,allProduitsToCategorie,allProdui
             "produits" : allSelectedProduits
         };
 
-        axios.patch(`${api}/categories/${categorie_id}/categories`,datas,{headers: {"Authorization" : `Bearer ${token}`} }).then(
+        axios.patch(`${api}/categories/${categorie_id}/produits`,datas,{headers: {"Authorization" : `Bearer ${token}`} }).then(
             response => {
                 if( response.status === 200) {
 

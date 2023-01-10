@@ -14,14 +14,14 @@ import AssignerProduitsToCategorie from './AssignerProduitsToCategorie';
 
 
 
-const Categories = ({user,token,api,config,change_current_page,currentPageSwitch}) => {
+const Categories = ({user,token,api,config,change_current_page,currentPageSwitch,changeCurrentShowData}) => {
 
  
   const [query,setQuery] = useState('');
   const [is_loading,setIsloading] = useState(true);
   const [page,setPage] = useState(1);
   const [offset,setOffest] = useState(0);
-  const [per_page,setPerpage] = useState(15);
+  const [per_page,setPerpage] = useState(10);
   const [all_pages,setAllpages] = useState(1);
   const [current_action,setCurrentAction] = useState("Toutes les categories");
   const [operation,setOperation] = useState("add");
@@ -48,23 +48,13 @@ const Categories = ({user,token,api,config,change_current_page,currentPageSwitch
       axios.get(`${api}/categories`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
         response => {
             if( response.status === 200) {
-              setCategories(response.data);
+              setCategories(response.data[0]);
               setIsloading(false);
-              console.log(response.data)
+              setAllpages(Math.ceil((response.data[1].allPages) / per_page));
             }
         }
       )
   }
-  /*
-  const synchronizeBoutiqueCount = () => {
-    axios.get(`${api}/boutiquesCount`,config).then(
-      response => {
-          if( response.status === 200) {
-            setAllpages(Math.ceil((response.data[0].nombreDeBoutiques) / per_page))
-          }
-      }
-    )
-  }*/
 
   const UpdateCategorieAdd = (operation)=> {
     setOperation("add");
@@ -84,7 +74,7 @@ const Categories = ({user,token,api,config,change_current_page,currentPageSwitch
     axios.get(`${api}/produits`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
       response => {
           if( response.status === 200) {
-            setAllProduitsToCategorie(response.data);
+            setAllProduitsToCategorie(response.data[0]);
           }
       }
     )
@@ -144,6 +134,7 @@ const Categories = ({user,token,api,config,change_current_page,currentPageSwitch
                         changeOperation = {(new_operation)=> {setOperation(new_operation)}}
                         changeCtegorieUpdate = {(new_value)=> {setCategorieUpdate(new_value)}}  
                         changeAllProduitsNotBelongToThisCategorie = {(new_value) => { setAllProduitsNotBelongToThisCategorie(new_value)} }                      
+                        changeCurrentShowData = {changeCurrentShowData}
                     />
                   
                   ))
