@@ -14,46 +14,46 @@ import FormGroup from '@mui/material/FormGroup';
 import Checkbox from '@mui/material/Checkbox';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import HorrairesDouverture from './HorrairesDouverture';
 
 
-const UpdateBoutique = ({operation,boutiqueUpdate,token,api,getAllBoutiques,changeOperation}) => {
+const UpdateProduit = ({operation,produitUpdate,token,api,getAllProduits,changeOperation}) => {
 
   const theme = createTheme();
   const [nom,setNom] = useState('');
-  const [enConge,setEnConge] = useState(false);
-  const [horaires_de_ouverture,setHorrairesDeOuverture] = useState([]);
-  
+  const [prix,setPrix] = useState(0);
+  const [description,setDescription] = useState("");
 
 
-  useEffect( () =>{
+
+  useEffect( () => {
+
     if(operation != "add") {
-        console.log(boutiqueUpdate);
-        setNom(boutiqueUpdate.nom);
-        setEnConge(boutiqueUpdate.enConge);
+        setNom(produitUpdate.nom);
+        setDescription(produitUpdate.description);
+        setPrix(produitUpdate.prix);
+        console.log(produitUpdate)
     } else {
-        setEnConge(false)
+        setNom("");
+        setDescription("");
+        setPrix(0);
     }
-    console.log(operation);
+
   },[operation]);
 
 
-  const addBoutique = () => {
+  const addProduit = () => {
     
-    const datas ={
+    const datas = {
         "nom" : nom,
-        "en_conge" : enConge,
-        "horaires_de_ouverture" : horaires_de_ouverture
+        "prix" : prix,
     }
-    console.log(datas);
-    axios.post(`${api}/boutiques`, datas,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
+
+    axios.post(`${api}/produits`, datas,{ headers: {"Authorization" : `Bearer ${token}`} }).then(
           response => {
               if( response.status === 201) {
-                  getAllBoutiques();
+                  getAllProduits();
                   close_pop_up();
-                  setNom("");
-                  setEnConge("");
-                  Swal.fire('Boutique ajoutée avec succès !', '', 'success');
+                  Swal.fire('Produit ajoutée avec succès !', '', 'success');
               }
           }
     );
@@ -61,21 +61,23 @@ const UpdateBoutique = ({operation,boutiqueUpdate,token,api,getAllBoutiques,chan
     };
 
     //modifier boutique
-    const updateSelectedBoutique = (id) => {
+    const updateSelectedProduit = (id) => {
+        
         const datas ={
             "nom" : nom,
-            "en_conge" : enConge,
-            "horaires_de_ouverture" : horaires_de_ouverture
+            "prix" : prix,
+            "description" : description
         }
         console.log(datas);
-        axios.put(`${api}/boutiques/${id}`, datas,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
+        axios.put(`${api}/produits/${id}`, datas,{ headers: {"Authorization" : `Bearer ${token}`} }).then(
             response => {
                 if( response.status === 200) {
-                    getAllBoutiques();
+                    getAllProduits();
                     setNom("");
-                    setEnConge("");
+                    setPrix("");
+                    setDescription("");
                     close_pop_up();
-                    Swal.fire('Boutique Modifiée avec succès !', '', 'success');
+                    Swal.fire('Produit Modifiée avec succès !', '', 'success');
                   
                 }
             }
@@ -86,7 +88,8 @@ const UpdateBoutique = ({operation,boutiqueUpdate,token,api,getAllBoutiques,chan
 
   const close_pop_up = ()=> {
     setNom("")
-    setEnConge(false);
+    setPrix(0);
+    setDescription(0);
     changeOperation("");
     document.querySelector(".pop-up-update-add").classList.toggle('show_me');
     document.querySelector(".cover_add").classList.toggle('fade');
@@ -100,31 +103,34 @@ const UpdateBoutique = ({operation,boutiqueUpdate,token,api,getAllBoutiques,chan
             <Grid container component="main">
                     
                 <Typography component="h1" variant="h5">
-                {(operation == "add") ? "Ajouter" : "Modifier" } une Boutique
+                {(operation == "add") ? "Ajouter" : "Modifier" } un Produit
                 </Typography>
                 <TextField
                     margin="normal"
                     required
                     fullWidth
                     name="nom"
-                    label="Nom du boutique"
+                    label="Nom du produit"
                     type="text"
-                    id="nom_boutique"
+                    id="nom_produit"
                     value={nom}
                     onChange={(e)=> {setNom(e.target.value)}}
                     focused
                 />
-                <div className="body_form_containter">
-                    <FormGroup>
-                        <FormControlLabel label="En congé" control={<Checkbox id="check_boutique" checked={enConge}  onChange={(e)=> {setEnConge(e.target.checked)}} />}  />
-                    </FormGroup>
+               <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="prix"
+                    label="Prix du produit"
+                    type="number"
+                    id="prix_produit"
+                    value={prix}
+                    onChange={(e)=> {setPrix(e.target.value)}}
+                    focused
+                />
+              
 
-                    <HorrairesDouverture
-                        changeHorrairesDeOuverture = {(new_horraires)=> {setHorrairesDeOuverture(new_horraires)}}
-                        boutiqueUpdate = {boutiqueUpdate}
-                    />
-
-                </div>
                 
                 {
                     (operation == "add") ? 
@@ -134,26 +140,40 @@ const UpdateBoutique = ({operation,boutiqueUpdate,token,api,getAllBoutiques,chan
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
-                            onClick = {()=> {addBoutique()}}
+                            onClick = {()=> {addProduit()}}
                         >
                             Ajouter
                         </Button>  
                     : 
-                    <Button
+                     <React.Fragment>
+                        <TextField
+                        margin="normal"
+                        id="outlined-multiline-static"
+                        multiline
+                        name="description"
+                        label="Description du produit"
+                        value={description}
+                        onChange={(e)=> {setDescription(e.target.value)}}
+                        focused
+                        rows={6}
+                        
+                        />
+                        <Button
                             type="submit"
                             id="boutique_btn_update"
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
-                            onClick = {()=> { updateSelectedBoutique(boutiqueUpdate.id)}}
+                            onClick = {()=> { updateSelectedProduit(produitUpdate.id)}}
                         >
                             Modifier
-                    </Button>  
-                    }
+                        </Button>  
+                    </React.Fragment>
+                }
               
             </Grid>
         </div>
     )
 }
 
-export default UpdateBoutique
+export default UpdateProduit

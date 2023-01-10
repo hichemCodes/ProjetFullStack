@@ -11,6 +11,7 @@ import axios from 'axios';
 import NavBar from "./NavBar";
 import FilterBoutique from "./FilterBoutique";
 import UpdateBoutique from "./UpdateBoutique";
+import Assigner from "./Assigner";
 import Boutique from "./Boutique";
 import Loader from "./loader";
 import logo from "../images/shop.png";
@@ -18,10 +19,8 @@ import '../styles/App.css';
 import '../styles/AppAfterLogIn.css';
 
 
-const Boutiques = ({change_current_page,currentPageSwitch}) => {
+const Boutiques = ({user,token,api,config,change_current_page,currentPageSwitch,changeCurrentShowData}) => {
 
-  const [api,setApi] = useState("http://localhost:8000/api");
-  const [token,setToken] = useState(localStorage.getItem("token"));
   const [query,setQuery] = useState('');
   const [result,setResult] = useState('');
   const [is_loading,setIsloading] = useState(true);
@@ -41,20 +40,17 @@ const Boutiques = ({change_current_page,currentPageSwitch}) => {
   const [operation,setOperation] = useState("add");
   const [boutiqueUpdate,setBoutiqueUpdate] = useState([]);
   const [boutiques,setBoutiques] = useState([]);
-  
-  
-  const config = {
-    headers: { 
-      'Authorization': `Bearer ${token}`,
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'}
-    };
+  const [nonAssigners,setNonAssigner] = useState([]);
+
+
 
     const getAllBoutiques = () => {
-      
+
+       setOffest(per_page * (page - 1));
+
         const datas = {
           "limit" : per_page,
-          "offset" : offset,
+          "offset" : per_page * (page - 1),//a construire
           "orderBy" : orderBy
         };
 
@@ -77,32 +73,53 @@ const Boutiques = ({change_current_page,currentPageSwitch}) => {
         axios.get(`${api}/boutiques`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
           response => {
               if( response.status === 200) {
-                setAllpages(Math.ceil((response.data.length) / per_page))
+                console.log(response.data);
                 setBoutiques(response.data);
                 setIsloading(false);
+                console.log(boutiques)
               }
           }
+        )
+    }
+
+    const getAllProduitsNonAssigner = () => {
+      axios.get(`${api}/produits/nonAssigner`,{headers: {"Authorization" : `Bearer ${token}`} }).then(
+        response => {
+            if( response.status === 200) {
+               console.log(response.data);
+               setNonAssigner(response.data)
+            }
+        }
+      )
+  }
+
+    const synchronizeBoutiqueCount = () => {
+      axios.get(`${api}/boutiquesCount`,{headers: {"Authorization" : `Bearer ${token}`} }).then(
+        response => {
+            if( response.status === 200) {
+              setAllpages(Math.ceil((response.data[0].nombreDeBoutiques) / per_page))
+            }
+        }
       )
     }
   
-  
-
   useEffect( () =>{
     setIsloading(true);
     getAllBoutiques();
-  },[orderBy,page,enConge,createdBefore,createdAfter]);
+  },[orderBy,page,enConge,createdBefore,createdAfter,query]);
 
   useEffect( () =>{
     change_current_page("boutiques");
+    synchronizeBoutiqueCount();
   },[]);
 
-  return (is_loading) ? (<Loader/>) : ( 
+
+  return ( 
     <React.Fragment>
         <NavBar
            query = {query}
            change_query = {(new_query)=> { setQuery(new_query)}}
-           getAllBoutiques = {()=>{getAllBoutiques()}}
-           setIsloading = {(new_is_loading)=>{setIsloading(new_is_loading)}}
+           user = {user}
         />
         <span id="current_action">{current_action} { (query != "") ? `(recherche : ${query} )` : ""}</span>
         <FilterBoutique 
@@ -121,27 +138,48 @@ const Boutiques = ({change_current_page,currentPageSwitch}) => {
                 createdAfterInput = {createdAfterInput}
                 changeCreatedBeforeInput = { (new_date_before_input)=> { setCreatedBeforeInput(new_date_before_input)}}
                 changeCreatedafterInput = { (new_date_after_input)=> { setCreatedAfterInput(new_date_after_input)}}
+                changeOperation = {(new_operation)=> {setOperation(new_operation)}}
+                changeBoutiqueUpdate = {(new_update_boutique)=> {setBoutiqueUpdate(new_update_boutique)}}
         />  
-        
-         <div className="imgs boutiques">
-             { boutiques.map( (boutique) =>  (
+        {
+          (is_loading) ? (<Loader/>) 
+          : 
+            <div className="imgs boutiques">
+                { boutiques.map( (boutique) =>  (
 
-                <Boutique
-                    boutique = {boutique}
-                    getAllBoutiques = {getAllBoutiques}
-                    boutiques = {boutiques}
-                  />
-                ))
-              }
-          </div>
+                  <Boutique
+                      api = {api}
+                      token = {token}
+                      boutique = {boutique}
+                      getAllBoutiques = {getAllBoutiques}
+                      boutiques = {boutiques}
+                      changeOperation = {(new_operation)=> {setOperation(new_operation)}}
+                      changeBoutiqueUpdate = {(new_update_boutique)=> {setBoutiqueUpdate(new_update_boutique)}}
+                      getAllProduitsNonAssigner = {getAllProduitsNonAssigner}
+                      changeCurrentShowData = {changeCurrentShowData}
+                    />
+                  ))
+                }
+            </div>
+        }
+        
           <UpdateBoutique
             operation={operation}
             boutiqueUpdate={boutiqueUpdate}
-            config = {config}
+            token = {token}
             api = {api}
             getAllBoutiques = {getAllBoutiques}
+            changeOperation = {(new_operation)=> {setOperation(new_operation)}}
           />
           <div className="cover_add fade"></div>
+
+          <Assigner 
+             token = {token}
+             api = {api}
+             nonAssigners = {nonAssigners}
+             changeNonAssigner = {(new_non_assigner)=> { setNonAssigner(new_non_assigner)}}
+             getAllBoutiques = {getAllBoutiques}
+          />
     </React.Fragment>
   );
 }

@@ -82,13 +82,71 @@ or
     /**
      * Find all the product with name  passed in parameter.
      *
-     */
+    */
+    public function getProduits(
+        $query,
+        $boutique = null,
+        $categories= "",
+        $offset = 0,
+        $limit = 10
+    ) {
+        $queryBuilder = $this->createQueryBuilder("p")
+        ->leftJoin('p.categories','c');
+
+        if($boutique != null) {
+            $queryBuilder->andWhere('p.boutique_id = :id')
+                ->setParameter('id',$boutique);
+        }
+
+        if($query != "") {
+            $queryBuilder->andWhere('p.nom LIKE :query')
+                ->setParameter('query','%'.$query.'%');
+        }
+
+        if($categories != "") {
+            $queryBuilder->andWhere('c.id = :categories')
+                ->setParameter('categories', $categories);
+        }
+
+        $queryBuilder->setFirstResult($offset)->setMaxResults($limit);
+        $queryBuilder->orderBy('p.date_de_creation', 'DESC');
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    public function getProduit($id) {
+        $queryBuilder = $this->createQueryBuilder("p")
+        ->andWhere('p.id =  :id')
+        ->setParameter('id',$id);
+        
+        return $queryBuilder->getQuery()->getResult();
+    }
+
     public function searchbyName(string $query) {
-        $queryBuilder = $this->createQueryBuilder("b")
-            ->andWhere('b.nom LIKE :query')
+        $queryBuilder = $this->createQueryBuilder("p")
+            ->andWhere('p.nom LIKE :query')
             ->setParameter('query','%'.$query);
-        //->orderBy('b.date_de_creation', 'ASC');
         return $queryBuilder->getQuery()->getResult();
 
+    }
+
+    public function getAllProduitsNonAssigner() {
+        $queryBuilder = $this->createQueryBuilder("p")
+            ->select('p.id,p.nom,p.prix,p.description')
+            ->andWhere('p.boutique_id is NULL');
+        return $queryBuilder->getQuery()->getResult();
+
+    }
+
+     //associateProduitToBoutique
+     public function associateProduitToBoutique($idBoutique,$idProduit) {
+        $queryBuilder = $this->createQueryBuilder("p")
+        ->update()
+        ->set('p.boutique_id', ':idBoutique')
+        ->where('p.id = :idProduit')
+        ->setParameter('idBoutique', $idBoutique)
+        ->setParameter('idProduit', $idProduit);
+
+        return $queryBuilder->getQuery()->getResult();
     }
 }

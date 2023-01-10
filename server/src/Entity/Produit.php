@@ -41,8 +41,14 @@ class Produit
 
     /**
      * @ORM\ManyToMany(targetEntity=Categorie::class, inversedBy="produits")
+     * @ORM\JoinTable(name="produit_categorie")
      */
     private $categories;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $date_de_creation;
 
     public function __construct()
     {
@@ -123,6 +129,25 @@ class Produit
     {
         $this->categories->removeElement($category);
 
+        return $this;
+    }
+
+    public function getDateDeCreation(): ?\DateTimeInterface
+    {
+        return $this->date_de_creation;
+    }
+
+    public function setDateDeCreation(\DateTimeInterface $date_de_creation): self
+    {
+        $this->date_de_creation = $date_de_creation;
+
+        return $this;
+    }
+
+    public function clearCategories(): self
+    {
+        $this->categories = new ArrayCollection();
+        
         return $this;
     }
 }

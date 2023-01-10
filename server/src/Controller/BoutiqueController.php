@@ -7,6 +7,7 @@ use App\Entity\Boutique;
 use App\Entity\Produit;
 use App\Entity\Ville;
 use App\Repository\BoutiqueRepository;
+use App\Repository\ProduitRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,6 +16,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use Swagger\Annotations as SWG;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 
 class BoutiqueController extends ApiController
@@ -29,6 +35,46 @@ class BoutiqueController extends ApiController
     /**
      * Get a list of all boutiques.
      * @Route("/api/boutiques", name="boutiques", methods={"GET"})
+     * @SWG\Tag(name="Boutique")
+     *
+     * @SWG\Parameter(
+     *      name="boutique",
+     *      in="body",
+     *      required=false,
+     *      @SWG\Schema(
+     *          type="object",
+     *          required={"nom", "horaires_de_ouverture", "en_conge"},
+     *          @SWG\Property(property="enConge", type="bool", example="true"),
+     *          @SWG\Property(property="createdBefore", type="string", example="12/12/2022"),
+     *          @SWG\Property(property="createdAfter", type="string", example="18/12/2022"),
+     *          @SWG\Property(property="query", type="string", example="nom du boutique"),
+     *          @SWG\Property(property="orderBy", type="string", example="date_de_creation"),
+     *          @SWG\Property(property="offset", type="int", example="0"),
+     *          @SWG\Property(property="limit", type="int", example="10"),
+
+     *          @SWG\Property(property="en_conge", type="boolean", example="1")
+     *
+     *              )
+     * )
+     * 
+     *  @SWG\Response(
+     *     response=200,
+     *     description="Returned with the list of boutiques",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(
+     *              type="object",
+     *              @SWG\Property(property="id", type="integer", example="1"),
+     *              @SWG\Property(property="nom", type="string", example="Lidl"),
+     *              @SWG\Property(property="horaires_de_ouverture", type="json", example="[{'lundi':{'matin':'8h-12h'}}]"),
+     *              @SWG\Property(property="en_conge", type="boolean", example="1"),
+     *              @SWG\Property(property="date_de_creation", type="datetime", example="1"),
+     *              @SWG\Property(property="users", type="integer", example="1"),
+     *              @SWG\Property(property="adresse_id", type="integer", example="1"),
+     *              @SWG\Property(property="produits", type="string", example="Pomme"),
+     *     )
+     * )
+     * )
      * @param BoutiqueRepository $boutiqueRepository
      * @return JsonResponse
      */
@@ -60,6 +106,7 @@ class BoutiqueController extends ApiController
 
         if($request->query->has('query')) {
             $query=$request->query->get('query');
+            $boutiques = $boutiqueRepository->findAll();
         }
 
         if($request->query->has('orderBy')) {
@@ -72,7 +119,9 @@ class BoutiqueController extends ApiController
             $limit=$request->query->get('limit');
         }
 
-        $boutiques= $boutiqueRepository->findAllBoutiquesWithFilter(
+        $boutiques = $boutiqueRepository->findAll();
+        
+        $boutiques = $boutiqueRepository->findAllBoutiquesWithFilter(
             $enConge,
             $date_de_creationbefore,
             $date_de_creationafter,
@@ -82,12 +131,63 @@ class BoutiqueController extends ApiController
             $limit
         );
 
-        return $this->json($boutiques,Response::HTTP_OK);
+
+        
+        
+        return $this->json($boutiques,Response::HTTP_OK,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($object){
+            return $object->getId();
+        }]);
+        // return $this->json($boutiques,Response::HTTP_OK);
     }
 
     /**
      * Create boutique.
      * @Route("/api/boutiques", name="create_boutique", methods={"POST"})
+     * @SWG\Tag(name="Boutique")
+     *
+     * @SWG\Parameter(
+     *      name="boutique",
+     *      in="body",
+     *      required=true,
+     *      @SWG\Schema(
+     *          type="object",
+     *          required={"nom", "horaires_de_ouverture", "en_conge"},
+     *          @SWG\Property(property="nom", type="string", example="Lidl"),
+     *          @SWG\Property(property="horaires_de_ouverture", type="json", example="[{'lundi':{'matin':'8h-12h'}}]"),
+     *          @SWG\Property(property="en_conge", type="boolean", example="1")
+     *
+     *              )
+     * )
+     *
+     *   @SWG\Response(
+     *     response=201,
+     *     description=" Return when the boutique has been created",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(
+     *              type="object",
+     *              @SWG\Property(property="id", type="integer", example="1"),
+     *              @SWG\Property(property="nom", type="string", example="Lidl"),
+     *              @SWG\Property(property="horaires_de_ouverture", type="json", example="[{'lundi':{'matin':'8h-12h'}}]"),
+     *              @SWG\Property(property="en_conge", type="boolean", example="1"),
+     *              @SWG\Property(property="date_de_creation", type="datetime", example="1"),
+     *              @SWG\Property(property="users", type="integer", example="1"),
+     *              @SWG\Property(property="adresse_id", type="integer", example="1"),
+     *              @SWG\Property(property="produits", type="string", example="Pomme"),
+     *     )
+     * )
+     * )
+     *
+     * @SWG\Response(
+     *      response=422,
+     *      description="Returned when the sent request isn't valid",
+     *
+     *      @SWG\Schema(
+     *          type="object",
+     *          @SWG\Property(property="code", type="integer", example=400),
+     *          @SWG\Property(property="message", type="string", example="Invalid Request."),
+     *      )
+     * )
      * @param BoutiqueRepository $boutiqueRepository
      * @param Request $request
      * @return JsonResponse
@@ -103,7 +203,7 @@ class BoutiqueController extends ApiController
         $horaires_de_ouverture = $request->get('horaires_de_ouverture');
         $en_conge = $request->get('en_conge');
 
-         if (empty($nom) /*|| empty($horaires_de_ouverture)*/) {
+         if (empty($nom) || empty($horaires_de_ouverture)) {
             return $this->respondValidationError("Invalid request");
         }
 
@@ -127,6 +227,37 @@ class BoutiqueController extends ApiController
      *
      *
      * @Route("/api/boutiques/{id}", name="delete_boutique", methods={"DELETE"})
+     * @SWG\Tag(name="Boutique")
+     *
+     *  @SWG\Response(
+     *     response=204,
+     *     description="Returned when the boutique has been deleted",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(
+     *              type="object",
+     *              @SWG\Property(property="id", type="integer", example="1"),
+     *              @SWG\Property(property="nom", type="string", example="Lidl"),
+     *              @SWG\Property(property="horaires_de_ouverture", type="json", example="[{'lundi':{'matin':'8h-12h'}}]"),
+     *              @SWG\Property(property="en_conge", type="boolean", example="1"),
+     *              @SWG\Property(property="date_de_creation", type="datetime", example="1"),
+     *              @SWG\Property(property="users", type="integer", example="1"),
+     *              @SWG\Property(property="adresse_id", type="integer", example="1"),
+     *              @SWG\Property(property="produits", type="string", example="Pomme"),
+     *     )
+     * )
+     * )
+     *
+     *  @SWG\Response(
+     *      response=404,
+     *      description="Returned when the boutique isn't found",
+     *
+     *      @SWG\Schema(
+     *          type="object",
+     *          @SWG\Property(property="status", type="integer", example=404),
+     *          @SWG\Property(property="errors", type="string", example="Not found!")
+     *      )
+     * )
      * @noinspection PhpOptionalBeforeRequiredParametersInspection
      * @param Boutique|null $existingBoutique
      * @param EntityManagerInterface $entityManager
@@ -150,7 +281,61 @@ class BoutiqueController extends ApiController
 
     /**
      * Update boutique
-     * @Route("/api/boutiques/{id}", name="update_boutique", methods={"PATCH"})
+     * @Route("/api/boutiques/{id}", name="update_boutique", methods={"PUT"})
+     * @SWG\Tag(name="Boutique")
+     *
+     * @SWG\Parameter(
+     *      name="nom",
+     *      in="body",
+     *      required=true,
+     *      @SWG\Schema(
+     *          type="object",
+     *          required={"nom", "horaires_de_ouverture", "en_conge"},
+     *          @SWG\Property(property="nom", type="string", example="Lidl"),
+     *          @SWG\Property(property="horaires_de_ouverture", type="json", example="[{'lundi':{'matin':'8h-12h'}}]"),
+     *          @SWG\Property(property="en_conge", type="boolean", example="1")
+     *              )
+     * )
+     *
+     *   @SWG\Response(
+     *     response=204,
+     *     description=" Return when the boutique has been changed",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(
+     *              type="object",
+     *              @SWG\Property(property="id", type="integer", example="1"),
+     *              @SWG\Property(property="nom", type="string", example="Lidl"),
+     *              @SWG\Property(property="horaires_de_ouverture", type="json", example="[{'lundi':{'matin':'8h-12h'}}]"),
+     *              @SWG\Property(property="en_conge", type="boolean", example="1"),
+     *              @SWG\Property(property="date_de_creation", type="datetime", example="1"),
+     *              @SWG\Property(property="users", type="integer", example="1"),
+     *              @SWG\Property(property="adresse_id", type="integer", example="1"),
+     *              @SWG\Property(property="produits", type="string", example="Pomme"),
+     *     )
+     * )
+     * )
+     *
+     * @SWG\Response(
+     *      response=422,
+     *      description="Returned when the sent request isn't valid",
+     *
+     *      @SWG\Schema(
+     *          type="object",
+     *          @SWG\Property(property="code", type="integer", example=400),
+     *          @SWG\Property(property="message", type="string", example="Invalid Request."),
+     *      )
+     * )
+     * @SWG\Response(
+     *      response=404,
+     *      description="Returned when the boutique isn't found",
+     *
+     *      @SWG\Schema(
+     *          type="object",
+     *          @SWG\Property(property="status", type="integer", example=404),
+     *          @SWG\Property(property="errors", type="string", example="Not found!")
+     *      )
+     * )
      * @noinspection PhpOptionalBeforeRequiredParametersInspection
      * @param Boutique|null $existingBoutique
      * @param BoutiqueRepository $boutiqueRepository
@@ -170,7 +355,7 @@ class BoutiqueController extends ApiController
         $horaires_de_ouverture = $request->get('horaires_de_ouverture');
         $en_conge = $request->get('en_conge');
 
-        if (empty($nom) || empty($prix)) {
+        if (empty($nom) || empty($horaires_de_ouverture)) {
             return $this->respondValidationError("Invalid request");
         }
         $existingBoutique->setNom($nom);
@@ -187,35 +372,58 @@ class BoutiqueController extends ApiController
 
     /**
      * Associate  produit to boutique E_BTQ_40
-     * @Route("/api/boutiques/{id}/produit/{idProduit}", name="associate_produit_boutique", methods={"PATCH"})
+     * @Route("/api/boutiques/{boutique}/produit/{produit}", name="associate_produit_boutique", methods={"PATCH"})
+     * @SWG\Tag(name="Boutique")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returned when the product has been associated to the boutique ",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(
+     *              type="object",
+     *              @SWG\Property(property="id", type="integer", example="1"),
+     *              @SWG\Property(property="nom", type="string", example="Lidl"),
+     *              @SWG\Property(property="horaires_de_ouverture", type="json", example="[{'lundi':{'matin':'8h-12h'}}]"),
+     *              @SWG\Property(property="en_conge", type="boolean", example="1"),
+     *              @SWG\Property(property="date_de_creation", type="datetime", example="1"),
+     *              @SWG\Property(property="users", type="integer", example="1"),
+     *              @SWG\Property(property="adresse_id", type="integer", example="1"),
+     *              @SWG\Property(property="produits", type="string", example="Pomme"),
+     *     )
+     * )
+     * )
+     *
+     *  @SWG\Response(
+     *      response=404,
+     *      description="Returned when the boutique or the product isn't found",
+     *
+     *      @SWG\Schema(
+     *          type="object",
+     *          @SWG\Property(property="status", type="integer", example=404),
+     *          @SWG\Property(property="errors", type="string", example="Not found!")
+     *      )
+     * )
      * @noinspection PhpOptionalBeforeRequiredParametersInspection
-     * @param Boutique|null $existingBoutique
-     * @param Produit|null $exsitingProduit
+     * @param Boutique $existingBoutique
+     * @param Produit $exsitingProduit
      * @return JsonResponse
      */
     public function associateProduitToBoutique(
-        Boutique $existingBoutique = null,
-        Produit  $exsitingProduit =null
+        Boutique $boutique,
+        Produit  $produit
+        
     ): JsonResponse {
-        if(is_null($existingBoutique)) {
+        if(is_null($boutique)) {
             return $this->respondNotFound();
         }
-        //$request = $this->transformJsonBody($request);
-        //$produit = $request->get('produit');
-
-        if (empty($exsitingProduit) || empty($existingBoutique)) {
+        if (empty($boutique) || empty($produit)) {
             return $this->respondValidationError("Invalid request");
         }
-        //$produitRepository = $this->em->getRepository(Produit::class);
-        //$produitAdded = $produitRepository->find($produit);
-        $existingBoutique->addProduit($exsitingProduit);
-        //$produit->addProduit($existingBoutique);
-        $exsitingProduit->setBoutiqueId($existingBoutique);
-        $this->em->persist($existingBoutique);
-        //$this->em->persist($produit);
+       
+        $this->em->getRepository(Produit::class)->associateProduitToBoutique($boutique->getId(),$produit->getId());
 
-        $this->em->flush();
-        return $this->json($existingBoutique,Response::HTTP_OK);
+        $produitAfterUpdate = $this->em->getRepository(Produit::class)->getProduit($produit->getId());
+        return $this->json($produitAfterUpdate,Response::HTTP_OK);
 
 
     }
@@ -223,6 +431,26 @@ class BoutiqueController extends ApiController
     /**
      * Get specific boutique.
      * @Route("/api/boutiques/{id}", name="boutique", methods={"GET"})
+     * @SWG\Tag(name="Boutique")
+     *
+     *   @SWG\Response(
+     *     response=200,
+     *     description=" Return with the details of boutique",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(
+     *              type="object",
+     *              @SWG\Property(property="id", type="integer", example="1"),
+     *              @SWG\Property(property="nom", type="string", example="Lidl"),
+     *              @SWG\Property(property="horaires_de_ouverture", type="json", example="[{'lundi':{'matin':'8h-12h'}}]"),
+     *              @SWG\Property(property="en_conge", type="boolean", example="1"),
+     *              @SWG\Property(property="date_de_creation", type="datetime", example="1"),
+     *              @SWG\Property(property="users", type="integer", example="1"),
+     *              @SWG\Property(property="adresse_id", type="integer", example="1"),
+     *              @SWG\Property(property="produits", type="string", example="Pomme"),
+     *     )
+     * )
+     * )
      * @return JsonResponse
      */
     public function getBoutiqueDetails(
@@ -231,12 +459,34 @@ class BoutiqueController extends ApiController
         if(is_null($existingBoutique)) {
             return $this->respondNotFound();
         }
-        return $this->json($existingBoutique,Response::HTTP_OK);
+        return $this->json($existingBoutique,Response::HTTP_OK,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($object){
+            return $object->getId();
+        }]);
     }
 
     /**
-     * Get specific boutique.
+     * Get specific boutique with all details product and stuff E_BTQ_80.
      * @Route("/api/boutiques/{id}/produits", name="boutique_produits", methods={"GET"})
+     * @SWG\Tag(name="Boutique")
+     *
+     *   @SWG\Response(
+     *     response=200,
+     *     description=" Return with the details of boutique",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(
+     *              type="object",
+     *              @SWG\Property(property="id", type="integer", example="1"),
+     *              @SWG\Property(property="nom", type="string", example="Lidl"),
+     *              @SWG\Property(property="horaires_de_ouverture", type="json", example="[{'lundi':{'matin':'8h-12h'}}]"),
+     *              @SWG\Property(property="en_conge", type="boolean", example="1"),
+     *              @SWG\Property(property="date_de_creation", type="datetime", example="1"),
+     *              @SWG\Property(property="users", type="integer", example="1"),
+     *              @SWG\Property(property="adresse_id", type="integer", example="1"),
+     *              @SWG\Property(property="produits", type="string", example="Pomme"),
+     *     )
+     * )
+     * )
      * @return JsonResponse
      */
     public function getBoutiqueProduits(
@@ -247,6 +497,46 @@ class BoutiqueController extends ApiController
             return $this->respondNotFound();
         }
         $details =  $boutiqueRepository->getBoutiquesProduits($existingBoutique->getId());
-        return $this->json($details,Response::HTTP_OK);
+        return $this->json($details,Response::HTTP_OK,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($object){
+            return $object->getId();
+        }]);
     }
+
+
+    /**
+     * Get the number of boutiques
+     * @Route("/api/boutiquesCount", name="boutique_count", methods={"GET"})
+     * @SWG\Tag(name="Boutique")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description=" Return with the number of boutique",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(
+     *              type="object",
+     *              @SWG\Property(property="id", type="integer", example="1"),
+     *              @SWG\Property(property="nom", type="string", example="Lidl"),
+     *              @SWG\Property(property="horaires_de_ouverture", type="json", example="[{'lundi':{'matin':'8h-12h'}}]"),
+     *              @SWG\Property(property="en_conge", type="boolean", example="1"),
+     *              @SWG\Property(property="date_de_creation", type="datetime", example="1"),
+     *              @SWG\Property(property="users", type="integer", example="1"),
+     *              @SWG\Property(property="adresse_id", type="integer", example="1"),
+     *              @SWG\Property(property="produits", type="string", example="Pomme"),
+     *     )
+     * )
+     * )
+     * @param BoutiqueRepository $boutiqueRepository
+     * @return JsonResponse
+     */
+    public function getBoutiqueCount(
+        BoutiqueRepository $boutiqueRepository
+    ): JsonResponse {
+        
+        $count =  $boutiqueRepository->getBoutiquesCount();
+        return $this->json($count,Response::HTTP_OK);
+    }
+
+    
+
 }
