@@ -64,7 +64,7 @@ const FilterProduit = (
                     </div>
                 </div>
                 <div className="filter-container">
-                    <span className="current_order c_item f_cat"  onClick = {() => {show_categories() }} >filtré par categorie </span>
+                    <span className="current_order c_item f_cat"  onClick = {() => {show_categories() }} >Filtré par categorie </span>
                     <div className="en_conge orders-first filter_produit_categories">
                             <div className="o_item"  onClick = {() => {changeFilterParCategorie(null);change_page(1)}}>
                                 <div className={ (filterParCategorie == null ) ? 'checkbox c_check' : 'checkbox' } >

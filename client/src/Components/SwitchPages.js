@@ -24,7 +24,7 @@ const SwitchPages = ({change_current_page,currentPageSwitch}) => {
                                     <div className={(currentPageSwitch == 'produits' ) ? 'checkbox c_check' : 'checkbox' } id="produits">
                                         <div className="white_space"></div>
                                     </div>
-                                    <label htmlFor="produits" >Prodiuts</label>
+                                    <label htmlFor="produits" >Produits</label>
                         </div>
                         <div className="o_item" onClick = {() => {change_current_page('categories')}}>
                                     <div className={(currentPageSwitch == 'categories' ) ? 'checkbox c_check' : 'checkbox' } id="categories">
