@@ -85,7 +85,7 @@ const ShowBoutique = ({currentShowData,token,api,changeCurrentShowData}) => {
                      )}
                   
                     </div>
-                    <span className='show_boutique_title'> Catégories (2)</span>
+                    {/*<span className='show_boutique_title'> Catégories (2)</span>
                     <div className="show_boutique_categories">
                             {/*
                                 currentShowData.produits.map(produit => (
@@ -93,11 +93,11 @@ const ShowBoutique = ({currentShowData,token,api,changeCurrentShowData}) => {
                                         <i class="fa-solid fa-basket-shopping"></i>
                                         Alimentation
                                     </div>
-                                ))
+                                ))</div>
                                 */}
                        
                        
-                    </div>
+                    
                     <span className='show_boutique_title'>
                          Produits 
                          {(currentShowData.produits != null) ? ` (${currentShowData.produits.length})` : ''}     

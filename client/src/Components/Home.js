@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import '../styles/AppAfterLogIn.css';
 import logo from "../images/shop.png";
 import img from "../images/global-ecommerce-market-removebg-preview.png"
+import Button from '@mui/material/Button';
 
 
 const Home = ()=> {
@@ -15,8 +16,12 @@ const Home = ()=> {
       <div className="mini-nav">
           
           <div className="nav_interactoin">
-            <a href="http://">Se Connecter</a>
-            <a href="http://">S'inscrire</a>
+            <Link to="/login">
+              <Button variant="text">Se Connecter</Button>
+            </Link>
+            <Link to="/register">
+              <Button variant="text">S'inscrire</Button>
+            </Link>
           </div>
       </div>
       

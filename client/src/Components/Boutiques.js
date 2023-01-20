@@ -23,7 +23,7 @@ const Boutiques = ({user,token,api,config,change_current_page,currentPageSwitch,
   const [per_page,setPerpage] = useState(10);
   const [all_pages,setAllpages] = useState(1);
   const [current_action,setCurrentAction] = useState("Toutes les boutiques");
-  const [enConge,setenConge] = useState("");
+  const [enConge,setenConge] = useState(0);
   const [createdBefore,setCreatedBefore] = useState("");
   const [createdAfter,setCreatedAfter] = useState("");
   const [createdBeforeInput,setCreatedBeforeInput] = useState("");
@@ -44,9 +44,9 @@ const Boutiques = ({user,token,api,config,change_current_page,currentPageSwitch,
           "orderBy" : orderBy
         };
 
-        if(enConge != "") {
-            datas.enConge = 1;
-        }
+        
+        datas.enConge = enConge;
+        
 
         if(createdBefore != "") {
           datas.createdBefore = createdBefore
@@ -59,6 +59,7 @@ const Boutiques = ({user,token,api,config,change_current_page,currentPageSwitch,
         if(query != "") {
           datas.query = query
         }
+        console.log(datas);
 
        axios.get(`${api}/boutiques`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
           response => {

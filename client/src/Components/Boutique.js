@@ -55,6 +55,28 @@ const Boutique = ({api,token,boutique,getAllBoutiques,boutiques,changeOperation,
       
     }
 
+    const convertDate = (timestamp) => {
+        var date_not_formatted = new Date(timestamp);
+        console.log(date_not_formatted);
+        var formatted_string = "";
+
+        if(date_not_formatted.getDate() < 10) {
+            formatted_string += "0";
+        }
+        formatted_string += date_not_formatted.getDate()+ "-";;
+
+
+        if (date_not_formatted.getMonth() < 9) {
+            formatted_string += "0";
+        }
+
+        formatted_string += (date_not_formatted.getMonth() + 1);
+        formatted_string += "-" + date_not_formatted.getFullYear();
+
+        return formatted_string;
+      }
+      
+
 
     return (
 
@@ -72,7 +94,7 @@ const Boutique = ({api,token,boutique,getAllBoutiques,boutiques,changeOperation,
         
         <div className="card__copy" onClick={()=> {showBoutique(boutique.id)}}>
             <h1 className='card-name'>{boutique.nom}</h1>
-            <span className='card-item-title'>Crée le : <span>{boutique.dateDeCreation}</span></span>
+            <span className='card-item-title'>Crée le : <span>{convertDate(Date.parse(boutique.dateDeCreation))}</span></span>
             <span className='card-item-title'>En congé : <span>{ (boutique.enConge) ? "oui" : "non"  }</span></span>
             <span className='card-item-title'>Nombre de Produits : <span>{ boutique.produits.length}</span></span>
             <span className='card-item-title'>Horraires : <i class="fa-solid fa-calendar-days"></i> </span>
