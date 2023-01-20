@@ -63,7 +63,7 @@ const AssignerProduitsToCategorie = ({api,token,allProduitsToCategorie,allProdui
                     allProduitsToCategorie.map(produit => {
                         // console.log(produit);
                         const labelId = `${produit.id}`;
-                        const amIChecked = allProduitsNotBelongToThisCategorie.some(elem => elem.id == produit.id)
+                        const amIChecked = false;//allProduitsNotBelongToThisCategorie.some(elem => elem.id == produit.id)
                         console.log(amIChecked);
                         return (
                         <ListItem

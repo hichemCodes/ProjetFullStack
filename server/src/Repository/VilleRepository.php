@@ -63,4 +63,11 @@ class VilleRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function getVilles() {
+        $queryBuilder = $this->createQueryBuilder("v")
+        ->select('v.id,v.code_postale,v.nom');
+        
+        return $queryBuilder->getQuery()->getResult();
+    }
 }

@@ -110,7 +110,8 @@ class BoutiqueRepository extends ServiceEntityRepository
         $limit = 10
 
     ) {
-        $queryBuilder = $this->createQueryBuilder("b");
+        $queryBuilder = $this->createQueryBuilder("b")
+        ->leftJoin("b.produits", "p");
 
         if($enConge != null) {
             $queryBuilder->andWhere('b.en_conge = :param')
@@ -136,7 +137,8 @@ class BoutiqueRepository extends ServiceEntityRepository
             $queryBuilder->orderBy('b.nom', 'ASC');
         }
         if($orderBy == "nombre_de_produits") {
-            //$queryBuilder->orderBy('Count(b.id)', 'DESC');
+            $queryBuilder->addOrderby('COUNT(p.id)', 'DESC')
+            ->groupBy('b.id');
         }
         $queryBuilder->setFirstResult($offset)->setMaxResults($limit);
         $paginator = new Paginator($queryBuilder, $fetchJoinCollection = true);

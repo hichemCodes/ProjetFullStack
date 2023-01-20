@@ -14,7 +14,10 @@
     padding: 10.6px 5px 10.6px 10px !important;
     font-size: 1rem;
 }
-
+#demo-simple-select-role,#demo-simple-select {
+    padding: 10.6px 5px 10.6px 10px !important;
+    font-size: 1rem;
+}
 
 
 .register-right-section .css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline
@@ -43,6 +46,10 @@
 .register-right-section .css-ag7rrr-MuiTypography-root {
     font-size: 1.8rem !important;
     margin-bottom: 17px !important;
+}
+
+.css-q8hpuo-MuiFormControl-root {
+margin-top: 13px !important;
 }
 
 .flex-inputs {

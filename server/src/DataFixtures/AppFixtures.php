@@ -346,14 +346,18 @@ class AppFixtures extends Fixture
         for($i = 1;$i<11;$i++) {
 
             $user = new User();
-            $user->setNom("nom_utilisateur ".$i);
-            $user->setPrenom("prenom_utilisateur ".$i);
-            $user->setEmail("email".$i."@gmail.com");
+            
 
             if($i % 2 == 0) {
                 $user->setRoles(["ROLE_ADMIN"]);
+                $user->setNom("nom_admin ".$i);
+                $user->setPrenom("prenom_admin ".$i);
+                $user->setEmail("email_admin".$i."@gmail.com");
             } else {
                 $user->setRoles(["ROLE_LIVREUR_VENDEUR"]);
+                $user->setNom("nom_livreur ".$i);
+                $user->setPrenom("prenom_livreur ".$i);
+                $user->setEmail("email_livreur".$i."@gmail.com");
             }
             $hash = $this->hasher->hashPassword($user,"123456mM");
             $user->setPassword($hash);

@@ -48,12 +48,12 @@ class Adresse
 
     public function getVilleId(): ?Ville
     {
-        return $this->vile_id;
+        return $this->ville_id;
     }
 
-    public function setVilleId(?Ville $vile_id): self
+    public function setVilleId(?Ville $ville_id): self
     {
-        $this->vile_id = $vile_id;
+        $this->ville_id = $ville_id;
 
         return $this;
     }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate  } from "react-router-dom";
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -28,14 +28,22 @@ const Register = (props) => {
   const [prenom,setPrenom] = useState("");
   const [password,setPassword] = useState("");
   const [passwordConfirm,setPasswordConfirm] = useState("");
-  const [vile, setVile] = useState('Sélectionner une vile');
+  const [adresse, setAdresse] = useState("");
+  const [role,setRole] = useState("ROLE_LIVREUR_VENDEUR");
+  const [ville, setVille] = useState(7);
+  const [villes, setVilles] = useState([]);
+
   const navigate = useNavigate();
 
 
   const handleChange = (event) => {
-    setVile(event.target.value);
+    setVille(event.target.value);
   };
 
+  const handleChangeRole = (event) => {
+    setRole(event.target.value);
+  };
+  
   //inscription 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -48,9 +56,11 @@ const Register = (props) => {
           "email": email,
           "password": password,
           "nom": nom,
-          "prenom": prenom
+          "prenom": prenom,
+          "roles" : role,
+          "ville_id": ville,
+          "complement_adresse": adresse
         }
-        console.log(datas);
 
         axios.post(`${props.api}/register`, datas,).then(
           response => {
@@ -63,6 +73,22 @@ const Register = (props) => {
     }
   
   }
+
+  useEffect( () =>{
+    //get all villes 
+    const datas = {};
+    axios.get(`${props.api}/villes`,{ params : datas}).then(
+      response => {
+          if( response.status === 200) {
+            setVilles(response.data);
+            setVille(response.data[0].id);
+            console.log(response.data[0].id);
+          }
+      }
+    )
+  },[]);
+  
+
 
 
   return (
@@ -127,7 +153,7 @@ const Register = (props) => {
                 required
                 fullWidth
                 name="password"
-                label="Mo de passe"
+                label="Mot de passe"
                 type="password"
                 id="password"
                 onChange={(e)=> {setPassword(e.target.value)}}
@@ -146,35 +172,51 @@ const Register = (props) => {
                 autoComplete="current-password"
                 focused
               />
+               <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">Role</InputLabel>
+                    <Select
+                        id="demo-simple-select-role"
+                        label="Role"
+                        type="text"
+                        margin="normal"
+                        value = {role}
+                        defaultValue= {role}
+                        fullWidth
+                        required
+                        onChange={handleChangeRole}
+                        focused
+                      >
+                        <MenuItem value={'ROLE_ADMIN'}>ADMIN</MenuItem>
+                        <MenuItem value={'ROLE_LIVREUR_VENDEUR'}>LIVREUR / VENDEUR</MenuItem>
+                    </Select>
+                  </FormControl>
                <TextField
                     margin="normal"
                     name="adresse"
                     label="Adresse"
-                    id="codePostal"
+                    onChange={(e)=> {setAdresse(e.target.value)}}
                     fullWidth
                     focused
                 />
               <div className='flex-inputs'>
-                <TextField
-                    margin="normal"
-                    name="codePostal"
-                    label="Code Postal"
-                    id="codePostal"
-                    focused
-                />
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    label="Vile"
-                    value = {vile}
-                    onChange={handleChange}
-                    focused
-                    
-                  >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
+               
+                 <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">Ville</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        label="Ville"
+                        value = {ville}
+                        defaultValue= {ville}
+                        onChange={handleChange}
+                        margin="normal"
+                        
+                      >
+                      {villes.map ( v => (
+                          <MenuItem value={v.id}>{`${v.nom} (${v.code_postale})`}</MenuItem>
+                      ))}
                   </Select>
+                  </FormControl>
               </div>
     
               <Button
