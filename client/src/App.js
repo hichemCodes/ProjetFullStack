@@ -12,6 +12,7 @@ import ShowProfile from "./Components/ShowProfile";
 import './styles/App.css';
 import ShowProduit from "./Components/ShowProduit";
 import ShowCategorie from "./Components/ShowCategorie";
+import Footer from "./Components/Footer";
 
 
 
@@ -75,6 +76,7 @@ function App() {
           <Route path="/categories/:id" element={<ShowCategorie currentShowData = {currentShowData} token = {token} api = {api} changeCurrentShowData = {(new_data)=>{setCurrentShowData(new_data)}}  />} />
           <Route path="/me" element={<ShowProfile  user = {user}/>} />
        </Routes>
+       <Footer/>
     </div>
   );
 }

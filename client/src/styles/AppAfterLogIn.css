@@ -448,6 +448,7 @@ body{
  .a-git a,.licences a {
     text-decoration: none;
     padding-bottom: 3px;
+    color: #222222 !important;
  }
  .a-git a:hover,.licences a:hover{
    border-bottom: 1.5px solid var(--main-bg-color);
@@ -634,9 +635,21 @@ body{
   transition: all .2s ease-out;
 
 }
+
+.footer_logo {
+  width: 200px;
+  margin-bottom: 10px;
+}
+
+
 .card-name {
   margin-bottom: 11px !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 218px;
 }
+
 .card__copy {
   padding : 19px 24px;
   display: flex;
@@ -933,7 +946,7 @@ h1,h2,h3 {
 
 .container-fluid {
   background-color: var(--main-bg-color);
-  height: 100vh;
+  height: 104vh;
 }
 .text-lg-left {
   text-align: left !important;

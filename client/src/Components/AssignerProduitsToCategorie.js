@@ -63,28 +63,31 @@ const AssignerProduitsToCategorie = ({api,token,allProduitsToCategorie,allProdui
                     allProduitsToCategorie.map(produit => {
                         // console.log(produit);
                         const labelId = `${produit.id}`;
-                        const amIChecked = false;//allProduitsNotBelongToThisCategorie.some(elem => elem.id == produit.id)
-                        console.log(amIChecked);
+                        const amIChecked = allProduitsNotBelongToThisCategorie.some(elem => elem.id == produit.id)
+                        console.log(allProduitsNotBelongToThisCategorie.length);
                         return (
-                        <ListItem
-                            key={produit.id}
-                            disablePadding
-                            >
-                            <ListItemButton role={undefined}  dense>
-                            <ListItemIcon>
-                                <Checkbox
-                                edge="start"
-                                tabIndex={-1}
-                                inputProps={{ 'id': labelId }}
-                                defaultChecked={amIChecked}
-                               
-                                />
-                            </ListItemIcon>
-                            <ListItemText id={labelId} primary={`${produit.nom}`} />
-                            </ListItemButton>
-                        </ListItem>
-                    
-                    )})
+                            (!amIChecked) ? (
+                                <ListItem
+                                    key={produit.id}
+                                    disablePadding
+                                    >
+                                    <ListItemButton role={undefined}  dense>
+                                    <ListItemIcon>
+                                        <Checkbox
+                                        edge="start"
+                                        tabIndex={-1}
+                                        inputProps={{ 'id': labelId }}
+                                        defaultChecked={amIChecked}
+                                    
+                                        />
+                                    </ListItemIcon>
+                                    <ListItemText id={labelId} primary={`${produit.nom}`} />
+                                    </ListItemButton>
+                                </ListItem>
+                            ) 
+                            : ""
+                        )
+                        })
                 }
                 </List>
                 <Button

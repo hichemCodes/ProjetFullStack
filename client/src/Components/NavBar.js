@@ -29,7 +29,7 @@ const NavBar = ({query,change_query,user}) => {
 
   return (
     <div className="navbar">
-        <img src={logo} alt="shop"  className="logo"/>
+        <img src={logo} alt="shop"  className="logo" onClick = {()=> {navigate("/boutiques")}}/>
         <form onSubmit={(e)=> {e.preventDefault()}} >
                 <div className="search_input">
                     <i class="fas fa-search"></i>
