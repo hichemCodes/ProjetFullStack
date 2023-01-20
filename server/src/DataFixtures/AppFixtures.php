@@ -563,6 +563,7 @@ class AppFixtures extends Fixture
         $produit->setPrix(85);
         $produit->setDescription("Sans fil et rechargeable, la Magic Mouse présente un design optimisé au niveau de sa base, qui lui permet de mieux se déplacer sur votre bureau");
         $produit->setDateDeCreation(new \DateTime());
+        $produit->addCategory($categorie1);
         //$produit->setBoutiqueId();
         $manager->persist($produit);
 
@@ -572,6 +573,7 @@ class AppFixtures extends Fixture
         $produit->setDateDeCreation(new \DateTime());
         $produit->setDescription("Profitez du Silence : Avec le même clic et plus de 90% de réduction du bruit (1) du clic");
         //$produit->setBoutiqueId();
+        $produit->addCategory($categorie1);
         $manager->persist($produit);
 
         $produit= new Produit();
@@ -588,6 +590,7 @@ class AppFixtures extends Fixture
         $produit->setDateDeCreation(new \DateTime());
         $produit->setDescription("Le Magic Keyboard avec pavé numérique est un clavier étendu sans fil qui offre des commandes de navigation pour un défilement rapide ");
         //$produit->setBoutiqueId();
+        $produit->addCategory($categorie2);
         $manager->persist($produit);
 
         $produit= new Produit();
@@ -596,6 +599,7 @@ class AppFixtures extends Fixture
         $produit->setDateDeCreation(new \DateTime());
         $produit->setDescription("Plug and Play Fiable : Le récepteur USB offre une connexion sans fil fiable ");
         //$produit->setBoutiqueId();
+        $produit->addCategory($categorie3);
         $manager->persist($produit);
 
         $produit= new Produit();

@@ -369,7 +369,7 @@ class CategorieController extends ApiController
             return $this->respondValidationError("Invalid request : vous devez ou moin spécifié un produit !");
         }
         $produitRepository = $this->em->getRepository(Produit::class);
-        $existingCategory->clearProduits();
+        // $existingCategory->clearProduits();
 
         foreach($produits as $element) {
             $produit = $produitRepository->find($element);

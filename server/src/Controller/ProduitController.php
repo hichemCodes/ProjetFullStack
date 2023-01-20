@@ -421,7 +421,7 @@ class ProduitController extends ApiController
         }
         $categorieRepository = $this->em->getRepository(Categorie::class);
 
-        $existingProduit->clearCategories();
+        //$existingProduit->clearCategories();
 
         foreach($categories as $element) {
             $categorie = $categorieRepository->find($element);
