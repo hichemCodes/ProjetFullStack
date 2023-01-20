@@ -21,7 +21,7 @@ const UpdateBoutique = ({operation,boutiqueUpdate,token,api,getAllBoutiques,chan
 
   const theme = createTheme();
   const [nom,setNom] = useState('');
-  const [enConge,setEnConge] = useState(false);
+  const [enConge,setEnConge] = useState(0);
   const [horaires_de_ouverture,setHorrairesDeOuverture] = useState([]);
   
 
@@ -30,9 +30,9 @@ const UpdateBoutique = ({operation,boutiqueUpdate,token,api,getAllBoutiques,chan
     if(operation != "add") {
         console.log(boutiqueUpdate);
         setNom(boutiqueUpdate.nom);
-        setEnConge(boutiqueUpdate.enConge);
+        setEnConge( (boutiqueUpdate.enConge) ? 1 : 0 );
     } else {
-        setEnConge(false)
+        setEnConge(0)
     }
     console.log(operation);
   },[operation]);
@@ -116,7 +116,7 @@ const UpdateBoutique = ({operation,boutiqueUpdate,token,api,getAllBoutiques,chan
                 />
                 <div className="body_form_containter">
                     <FormGroup>
-                        <FormControlLabel label="En congé" control={<Checkbox id="check_boutique" checked={enConge}  onChange={(e)=> {setEnConge(e.target.checked)}} />}  />
+                        <FormControlLabel label="En congé" control={<Checkbox id="check_boutique" checked={enConge == 0 ? false : true}  onChange={(e)=> {setEnConge(e.target.checked == true ? 1 : 0)}} />}  />
                     </FormGroup>
 
                     <HorrairesDouverture

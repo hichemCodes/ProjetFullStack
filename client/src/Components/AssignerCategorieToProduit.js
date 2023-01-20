@@ -41,6 +41,7 @@ const AssignerCategorieToProduit = ({api,token,allCategorieToProduit,allCategiri
                     allSelected.forEach(elem => {
                         elem.checked = false;
                     });
+                    allCategiriesOfSelectedProduit = [];
                     document.querySelector(".pop-up-assigner").classList.toggle('show_me');
                     document.querySelector(".cover_add").classList.toggle('fade');
 
@@ -68,25 +69,29 @@ const AssignerCategorieToProduit = ({api,token,allCategorieToProduit,allCategiri
                         const amIChecked = allCategiriesOfSelectedProduit.some(elem => elem.id == categorie.id);
                         console.log(amIChecked);
                         return (
-                        <ListItem
-                            key={categorie.id}
-                            disablePadding
-                            >
-                            <ListItemButton role={undefined} >
-                            <ListItemIcon>
-                                <Checkbox
-                                edge="start"
-                                tabIndex={-1}
-                                inputProps={{ 'id': labelId }}
-                                defaultChecked={amIChecked}
-                               
-                                />
-                            </ListItemIcon>
-                            <ListItemText id={labelId} primary={`${categorie.nom}`} />
-                            </ListItemButton>
-                        </ListItem>
-                    
-                    )})
+                            (!amIChecked) ? (
+                                <ListItem
+                                key={categorie.id}
+                                disablePadding
+                                >
+                                <ListItemButton role={undefined} >
+                                <ListItemIcon>
+                                    <Checkbox
+                                    edge="start"
+                                    tabIndex={-1}
+                                    inputProps={{ 'id': labelId }}
+                                    defaultChecked={amIChecked}
+                                   
+                                    />
+                                </ListItemIcon>
+                                <ListItemText id={labelId} primary={`${categorie.nom}`} />
+                                </ListItemButton>
+                            </ListItem>
+                            ) 
+                            : ""
+                        )
+                      
+                       })
                 }
                 </List>
                 <Button

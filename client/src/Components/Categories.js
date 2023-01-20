@@ -154,7 +154,7 @@ const Categories = ({user,token,api,config,change_current_page,currentPageSwitch
               api = {api}
               token = {token}
               allProduitsToCategorie = {allProduitsToCategorie}
-              allProduitsNotBelongToThisCategorie = {allProduitsToCategorie}// a changé apres
+              allProduitsNotBelongToThisCategorie = {allProduitsNotBelongToThisCategorie}// a changé apres
               getAllCategorie = {getAllCategorie}
           />
     
