@@ -126,7 +126,8 @@ body{
    background: #fff;
    display: none;
    overflow: hidden;
-   padding: 12px 12px;
+   padding: 15px 20px;
+   cursor: pointer;
  }
  
  .pop-up-fav span{
@@ -172,7 +173,7 @@ body{
  #current_action{
    font-size: 2.2rem;
    margin: 45px 0px 20px 1%;
-   width: 98%;
+   width: 91.78%;
    
  
  }
@@ -266,7 +267,7 @@ body{
    color: black;
  }
  .choices{
-    width: 98%;
+    width: 91.78%;
     display: flex;
     justify-content: flex-start;
     align-items: unset;
@@ -988,9 +989,18 @@ div [class^="col-"] {
   top: 0px;
   left: 0px;
   width: 100%;
-  padding: 10px 15px;
+  padding: 17px 15px;
   background-color: var(--main-bg-color);
   display: flex;
   align-items: center;
   justify-content: flex-end;
+}
+
+.nav_interactoin a,.nav_interactoin a button {
+  text-decoration: none;
+  color: #fff !important; 
+}
+.nav_interactoin a button {
+  padding: 12px;
+  
 }

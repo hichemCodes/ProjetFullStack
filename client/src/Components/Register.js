@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React, { useState } from 'react';
+import { useNavigate  } from "react-router-dom";
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -11,15 +12,58 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
+import axios from 'axios';
+import logo from "../images/shop.png";
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 const theme = createTheme();
 
-const Register = () => {
+const Register = (props) => {
+  
+  const [email,setEmail] = useState("");
+  const [nom,setNom] = useState("");
+  const [prenom,setPrenom] = useState("");
+  const [password,setPassword] = useState("");
+  const [passwordConfirm,setPasswordConfirm] = useState("");
+  const [vile, setVile] = useState('Sélectionner une vile');
+  const navigate = useNavigate();
+
+
+  const handleChange = (event) => {
+    setVile(event.target.value);
+  };
+
+  //inscription 
   const handleSubmit = (event) => {
     event.preventDefault();
-    
-  };
+    const isValid = true;
+    //validation
+
+
+    if(isValid) {
+        const datas = {
+          "email": email,
+          "password": password,
+          "nom": nom,
+          "prenom": prenom
+        }
+        console.log(datas);
+
+        axios.post(`${props.api}/register`, datas,).then(
+          response => {
+            console.log(response.status);
+              if( response.status === 200) {
+                navigate("/login");       
+              }
+          }
+      )
+    }
+  
+  }
+
 
   return (
     <ThemeProvider theme={theme}>
@@ -41,9 +85,10 @@ const Register = () => {
               flexDirection: 'column',
               alignItems: 'center',
             }}
+            className='regiter-box'
           >
+            <img src={logo} alt="shop"  className="appLogo appLogoRegiter"/>
             <Typography component="h1" variant="h5">
-              Inscription
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
               <div className="flex-inputs">
@@ -53,6 +98,7 @@ const Register = () => {
                     id="nom"
                     label="Nom"
                     name="nom"
+                    onChange={(e)=> {setNom(e.target.value)}}
                     focused 
                 />
                 <TextField
@@ -61,6 +107,7 @@ const Register = () => {
                     name="prenom"
                     label="Prenom"
                     id="prenom"
+                    onChange={(e)=> {setPrenom(e.target.value)}}
                     focused
                 />
               </div>
@@ -72,6 +119,7 @@ const Register = () => {
                 label="Email"
                 type="email"
                 id="email"
+                onChange={(e)=> {setEmail(e.target.value)}}
                 focused
               />
               <TextField
@@ -82,6 +130,7 @@ const Register = () => {
                 label="Mo de passe"
                 type="password"
                 id="password"
+                onChange={(e)=> {setPassword(e.target.value)}}
                 autoComplete="current-password"
                 focused
               />
@@ -93,25 +142,39 @@ const Register = () => {
                 label="Confirmation du mot de passe"
                 type="password"
                 id="passwordConfirm"
+                onChange={(e)=> {setPasswordConfirm(e.target.value)}}
                 autoComplete="current-password"
                 focused
               />
+               <TextField
+                    margin="normal"
+                    name="adresse"
+                    label="Adresse"
+                    id="codePostal"
+                    fullWidth
+                    focused
+                />
               <div className='flex-inputs'>
                 <TextField
                     margin="normal"
-                    required
                     name="codePostal"
                     label="Code Postal"
                     id="codePostal"
                     focused
                 />
-                <TextField
-                    margin="normal"
-                    name="vile"
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
                     label="Vile"
-                    id="vile"
+                    value = {vile}
+                    onChange={handleChange}
                     focused
-                />
+                    
+                  >
+                    <MenuItem value={10}>Ten</MenuItem>
+                    <MenuItem value={20}>Twenty</MenuItem>
+                    <MenuItem value={30}>Thirty</MenuItem>
+                  </Select>
               </div>
     
               <Button

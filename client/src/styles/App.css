@@ -55,5 +55,13 @@
 }
 
 .appLogo{
-    margin-bottom: -57px
+    margin-bottom: -6% !important
+}
+
+.appLogoRegiter {
+    margin-bottom: -12% !important
+}
+
+.regiter-box{
+    margin-top: 1% !important;
 }
