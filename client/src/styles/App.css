@@ -1,0 +1,74 @@
+:root {
+    --oficial: #ff385c;
+  }
+
+.register-left-section {
+    background-image: url("../images/online-shopping-retail.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+
+.register-right-section input {
+    padding: 10.6px 5px 10.6px 10px !important;
+    font-size: 1rem;
+}
+#demo-simple-select-role,#demo-simple-select {
+    padding: 10.6px 5px 10.6px 10px !important;
+    font-size: 1rem;
+}
+
+
+.register-right-section .css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline
+,.register-right-section .css-md26zr-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline
+{
+    border-color:rgba(0, 0, 0, 0.23);
+    border-width: 1px;
+}
+
+.register-right-section  .css-1sumxir-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.register-right-section button,.orders button {
+    background-color: var(--oficial) !important;
+    border: none;
+    border-radius: 7px;
+    box-shadow: none;
+    text-transform: capitalize;
+}
+
+.register-right-section .css-164r41r {
+    width: 78vh;
+}
+
+.register-right-section .css-ag7rrr-MuiTypography-root {
+    font-size: 1.8rem !important;
+    margin-bottom: 17px !important;
+}
+
+.css-q8hpuo-MuiFormControl-root {
+margin-top: 13px !important;
+}
+
+.flex-inputs {
+    display: flex;
+    justify-content: space-between;
+}
+
+#nom,#prenom,#codePostal,#vile {
+    width: 35vh;
+}
+
+.appLogo{
+    margin-bottom: -6% !important
+}
+
+.appLogoRegiter {
+    margin-bottom: -12% !important
+}
+
+.regiter-box{
+    margin-top: 1% !important;
+}

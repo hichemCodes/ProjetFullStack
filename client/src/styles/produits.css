@@ -1,0 +1,37 @@
+:root {
+    --main-bg-color: rgb(255, 56, 92);;
+}
+
+.produits .card {
+    width: 283px;
+    position: relative;
+}
+.prix-produit {
+    position: absolute;
+    right :11%;
+    font-size: 1.05rem !important;
+}
+.produits .cover_description {
+    display: none;
+}
+.produits .card__image {  
+  background-image: none;
+  height: 165px;
+}
+
+.produits .card__image:hover .cover_option {
+    /* display: none; */
+}
+
+.produits .card .fa-shopify{
+    position: absolute;
+    top: 31%;
+    left: 47%;
+    transform: scale(7.2);
+    color:var(--main-bg-color);
+
+}
+
+.css-1sumxir-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
+    color : rgba(0, 0, 0, 0.6) !important;
+}
