@@ -16,4 +16,19 @@ RUN docker-php-ext-configure intl
 RUN docker-php-ext-install pdo pdo_mysql gd opcache intl zip calendar dom mbstring zip gd xsl
 RUN pecl install apcu && docker-php-ext-enable apcu
 
+ENV COMPOSER_ALLOW_SUPERUSER=1
 WORKDIR /var/www/
+#COPY ../client .
+
+#RUN composer install --no-dev --optimize-autoloader
+
+#COPY entrypoint.sh .
+#RUN chmod +x entrypoint.sh
+# Must be JSON-array syntax; includes the "seed" step
+#RUN ["./entrypoint.sh"]
+#WORKDIR /var/www/server/
+#COPY composer.json composer.lock ./
+#RUN composer install;php bin/console doctrine:migrations:migrate;
+
+
+#WORKDIR /var/www/

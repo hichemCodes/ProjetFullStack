@@ -9,8 +9,11 @@ services:
             - db-data:/var/lib/mysql
         environment:
             - MYSQL_DATABASE=UE_Full_Stack
-            - MYSQL_USER=root
-            - MYSQL_PASSWORD=
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_USER=user
+            - MYSQL_PASSWORD=user
+        ports:
+            - 3306:80
         networks:
             - dev
 
@@ -21,7 +24,7 @@ services:
         depends_on:
             - db
         ports:
-            - 8080:80
+            - 8000:80
         environment:
             PMA_HOST: db
         networks:
@@ -41,13 +44,14 @@ services:
         build: php
         container_name: www_docker_symfony
         ports:
-          - "8741:80"
+          - "8080:80"
         volumes:
             - ./php/vhosts:/etc/apache2/sites-enabled
             - ./:/var/www
         restart: always
         networks:
             - dev
+       
 networks:
     dev:
 
