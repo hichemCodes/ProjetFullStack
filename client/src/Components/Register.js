@@ -58,8 +58,6 @@ const Register = (props) => {
           "nom": nom,
           "prenom": prenom,
           "roles" : role,
-          "ville_id": ville,
-          "complement_adresse": adresse
         }
 
         axios.post(`${props.api}/register`, datas,).then(
@@ -117,12 +115,13 @@ const Register = (props) => {
             <Typography component="h1" variant="h5">
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
-              <div className="flex-inputs">
+             
                 <TextField
                     margin="normal"
                     required
                     id="nom"
                     label="Nom"
+                    fullWidth
                     name="nom"
                     onChange={(e)=> {setNom(e.target.value)}}
                     focused 
@@ -130,13 +129,13 @@ const Register = (props) => {
                 <TextField
                     margin="normal"
                     required
+                    fullWidth
                     name="prenom"
                     label="Prenom"
                     id="prenom"
                     onChange={(e)=> {setPrenom(e.target.value)}}
                     focused
                 />
-              </div>
               <TextField
                 margin="normal"
                 required
@@ -190,34 +189,7 @@ const Register = (props) => {
                         <MenuItem value={'ROLE_LIVREUR_VENDEUR'}>LIVREUR / VENDEUR</MenuItem>
                     </Select>
                   </FormControl>
-               <TextField
-                    margin="normal"
-                    name="adresse"
-                    label="Adresse"
-                    onChange={(e)=> {setAdresse(e.target.value)}}
-                    fullWidth
-                    focused
-                />
-              <div className='flex-inputs'>
-               
-                 <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">Ville</InputLabel>
-                    <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        label="Ville"
-                        value = {ville}
-                        defaultValue= {ville}
-                        onChange={handleChange}
-                        margin="normal"
-                        
-                      >
-                      {villes.map ( v => (
-                          <MenuItem value={v.id}>{`${v.nom} (${v.code_postale})`}</MenuItem>
-                      ))}
-                  </Select>
-                  </FormControl>
-              </div>
+            
     
               <Button
                 type="submit"

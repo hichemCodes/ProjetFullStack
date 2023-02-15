@@ -5,7 +5,7 @@ import { useNavigate  } from "react-router-dom";
 
   
 
-const Categorie = ({api,token,categorie,getAllCategories,categories,changeOperation,changeCtegorieUpdate,changeAllProduitsNotBelongToThisCategorie,changeCurrentShowData}) => {
+const Categorie = ({api,token,categorie,getAllCategories,categories,changeOperation,changeCtegorieUpdate,changeAllProduitsNotBelongToThisCategorie,changeCurrentShowData,myCategories,role}) => {
 
     const navigate = useNavigate();
 
@@ -62,9 +62,15 @@ const Categorie = ({api,token,categorie,getAllCategories,categories,changeOperat
             
                 <div className="show_option">
                         <div className="cover_option">
+                    { ((myCategories.some(c=> c.id === categorie.id) && myCategories !== []) || (myCategories == [] && role == "ROLE_ADMIN"))
+                      ? 
+                      <React.Fragment>
                             <i class="fa-solid fa-pen-to-square" title='modifier' onClick={()=>{updateCategorie(categorie.id,categorie,"update")}}></i>
                             <i class="fa-sharp fa-solid fa-trash" onClick={()=>{DeleteCategorie(categorie.id)}} title='supprimer'></i>
                             <i class="fa-sharp fa-solid fa-cart-plus" onClick={()=>{assignerCategorieToProduits(categorie)}}></i>
+                            </React.Fragment>  
+                      : ''
+                    }
                         </div>
                 </div>
                 
