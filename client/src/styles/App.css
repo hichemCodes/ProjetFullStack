@@ -72,3 +72,10 @@ margin-top: 13px !important;
 .regiter-box{
     margin-top: 1% !important;
 }
+
+.delete-user,.edit-user {
+    color: var(--oficial);
+    transform: scale(1.5);
+    cursor: pointer;
+    margin: 13px;
+}

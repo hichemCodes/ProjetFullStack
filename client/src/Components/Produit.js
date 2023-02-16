@@ -5,7 +5,7 @@ import { useNavigate  } from "react-router-dom";
 
   
 
-const Produit = ({api,token,produit,getAllProduits,produits,changeOperation,changeProduitUpdate,changeAllCategiriesOfSelectedProduit,changeCurrentShowDataProduit}) => {
+const Produit = ({api,token,produit,getAllProduits,produits,changeOperation,changeProduitUpdate,changeAllCategiriesOfSelectedProduit,changeCurrentShowDataProduit,myProducts,role}) => {
 
     const navigate = useNavigate();
 
@@ -63,10 +63,16 @@ const Produit = ({api,token,produit,getAllProduits,produits,changeOperation,chan
             <div className="card__image">
             
                 <div className="show_option">
-                        <div className="cover_option">
+               <div className="cover_option">
+                { ((myProducts.some(p => p.id === produit.id) && myProducts !== []) || (myProducts == [] && role == "ROLE_ADMIN"))
+                      ? 
+                      <React.Fragment>
                             <i class="fa-solid fa-pen-to-square" title='modifier' onClick={()=>{updateProduit(produit.id,produit,"update")}}></i>
                             <i class="fa-sharp fa-solid fa-trash" onClick={()=>{DeleteProduit(produit.id)}} title='supprimer'></i>
                             <i class="fa-sharp fa-solid fa-cart-plus" onClick={()=>{assignerProduitToCategories(produit)}}></i>
+                            </React.Fragment>  
+                      : ''
+                    }
                         </div>
                 </div>
                 

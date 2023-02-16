@@ -10,7 +10,7 @@ import '../styles/App.css';
 import '../styles/AppAfterLogIn.css';
 
 
-const Boutiques = ({user,token,api,config,change_current_page,currentPageSwitch,changeCurrentShowData}) => {
+const Boutiques = ({token,api,config,change_current_page,currentPageSwitch,changeCurrentShowData,changeUser}) => {
 
   const [query,setQuery] = useState('');
   const [result,setResult] = useState('');
@@ -32,8 +32,9 @@ const Boutiques = ({user,token,api,config,change_current_page,currentPageSwitch,
   const [boutiqueUpdate,setBoutiqueUpdate] = useState([]);
   const [boutiques,setBoutiques] = useState([]);
   const [nonAssigners,setNonAssigner] = useState([]);
-
-
+  const [myBoutique,setMyBoutique] = useState(0);
+  const [user,setUser] = useState([]);
+  const [userRole,setUserRole] = useState([]);
 
     const getAllBoutiques =() => {
        setOffest(per_page * (page - 1));
@@ -82,15 +83,43 @@ const Boutiques = ({user,token,api,config,change_current_page,currentPageSwitch,
       )
   }
 
-   
-  
+  const getMyBoutique = () => {
+    console.log(user);
+    axios.get(`${api}/users/${user.id}/boutique`,{headers: {"Authorization" : `Bearer ${token}`} }).then(
+      response => {
+          if( response.status === 200) {
+             console.log(response);
+             setMyBoutique(response.data[0].id);
+          }
+      }
+    )
+  }
+
+  const getCurrentUser = ()=> {
+    const datas = {};
+    axios.get(`${api}/users/me`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
+      response => {
+          if( response.status === 200) {
+            setUser(response.data[0]);
+            setUser(response.data[0]);
+            setUserRole(response.data[0].roles[0])
+          }
+      }
+    )
+  }
+
+
   useEffect( () =>{
     setIsloading(true);
+    getCurrentUser();
     getAllBoutiques();
+    getMyBoutique();
   },[orderBy,page,enConge,createdBefore,createdAfter,query]);
 
   useEffect( () =>{
     change_current_page("boutiques");
+    getCurrentUser();
+    getMyBoutique();
   },[]);
 
 
@@ -100,6 +129,7 @@ const Boutiques = ({user,token,api,config,change_current_page,currentPageSwitch,
            query = {query}
            change_query = {(new_query)=> { setQuery(new_query)}}
            user = {user}
+           changeUser = {changeUser}
         />
         <span id="current_action">{current_action} { (query != "") ? `(recherche : ${query} )` : ""}</span>
         <FilterBoutique 
@@ -120,6 +150,9 @@ const Boutiques = ({user,token,api,config,change_current_page,currentPageSwitch,
                 changeCreatedafterInput = { (new_date_after_input)=> { setCreatedAfterInput(new_date_after_input)}}
                 changeOperation = {(new_operation)=> {setOperation(new_operation)}}
                 changeBoutiqueUpdate = {(new_update_boutique)=> {setBoutiqueUpdate(new_update_boutique)}}
+                userRole = {userRole}
+                api={api}
+                token={token}
         />  
         {
           (is_loading) ? (<Loader/>) 
@@ -137,6 +170,8 @@ const Boutiques = ({user,token,api,config,change_current_page,currentPageSwitch,
                       changeBoutiqueUpdate = {(new_update_boutique)=> {setBoutiqueUpdate(new_update_boutique)}}
                       getAllProduitsNonAssigner = {getAllProduitsNonAssigner}
                       changeCurrentShowData = {changeCurrentShowData}
+                      myBoutique = {myBoutique}
+                      role = {userRole}
                     />
                   ))
                 }

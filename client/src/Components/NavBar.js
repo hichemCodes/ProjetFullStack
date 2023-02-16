@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import { useHistory } from "react-router-dom";
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,20 +12,37 @@ import logo from "../images/logo.PNG";
 import { useNavigate  } from "react-router-dom";
 
 
-const NavBar = ({query,change_query,user}) => {
+const NavBar = ({query,change_query,changeUser}) => {
 
   const navigate = useNavigate();
+  const [user,setUser] = useState([]);
+  const [api,setApi] = useState("http://localhost:8080/api");
+  const [token,setToken] = useState(localStorage.getItem("token"));
 
-
+  const getCurrentUser = ()=> {
+    const datas = {};
+    axios.get(`${api}/users/me`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
+      response => {
+          if( response.status === 200) {
+            setUser(response.data[0]);
+            setUser(response.data[0]);
+          }
+      }
+    )
+  }
   const deconnexion = () => {
     localStorage.removeItem('token');
+    changeUser([]);
     navigate("/");    
   };
 
   const switchPopUp = () => {
     document.querySelector(".pop-up-fav").classList.toggle("show_me");
-
   }
+
+  useEffect( () =>{
+    getCurrentUser();
+  },[]);
 
   return (
     <div className="navbar">
@@ -42,7 +59,7 @@ const NavBar = ({query,change_query,user}) => {
         <div className="pop-up-fav ">
             
             <span> 
-                  { (user.length != 0) ? `${user.email} (${user.roles[0]})` :  "Annonyme" }
+                  { (user.length != 0) ? `${user.nom} ${user.prenom} (${user.roles[0] == "ROLE_ADMIN"  ? "Administrateur" : "Vendeur-livreur"})` :  "Annonyme" }
             </span>  
             <span onClick={()=> {navigate('/me')}} > 
                  Mon Profile

@@ -9,6 +9,10 @@ use App\Entity\Ville;
 use App\Repository\BoutiqueRepository;
 use App\Repository\ProduitRepository;
 use DateTime;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,15 +25,25 @@ use Nelmio\ApiDocBundle\Annotation\Security;
 use Swagger\Annotations as SWG;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use App\Entity\User;
 
 
 class BoutiqueController extends ApiController
 {
     private $em;
+    private $tokenStorage = null;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em,TokenStorageInterface $tokenStorage)
     {
         $this->em = $em;
+        $this->tokenStorage = $tokenStorage;
+    }
+
+    public function getCurrentUser() {
+        $useremail = $this->get('security.token_storage')->getToken()->getUser()->getUserIdentifier();
+        $user = $this->em->getRepository(User::class)->findBy(array("email" => $useremail));
+
+        return $user[0]->getRoles()[0];
     }
 
     /**
@@ -119,7 +133,7 @@ class BoutiqueController extends ApiController
             $limit=$request->query->get('limit');
         }
 
-        $boutiques = $boutiqueRepository->findAll();
+        //$boutiques = $boutiqueRepository->findAll();
         
         $boutiques = $boutiqueRepository->findAllBoutiquesWithFilter(
             $enConge,
@@ -131,8 +145,6 @@ class BoutiqueController extends ApiController
             $limit
         );
 
-
-        
         
         return $this->json($boutiques,Response::HTTP_OK,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($object){
             return $object->getId();
@@ -197,8 +209,12 @@ class BoutiqueController extends ApiController
         Request $request
     ): JsonResponse {
 
-        $request = $this->transformJsonBody($request);
        
+        if($this->getCurrentUser() !=  "ROLE_ADMIN") {
+            return $this->respondForbidden();
+        }
+
+        $request = $this->transformJsonBody($request);
         $nom = $request->get('nom');
         $horaires_de_ouverture = $request->get('horaires_de_ouverture');
         $en_conge = $request->get('en_conge');

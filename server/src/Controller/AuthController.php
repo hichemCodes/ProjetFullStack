@@ -7,7 +7,10 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Entity\Adresse;
 use App\Entity\Ville;
+use App\Repository\CategorieRepository;
+use App\Repository\ProduitRepository;
 use App\Repository\VilleRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,17 +25,25 @@ use Symfony\Component\HttpFoundation\Response;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 
 class AuthController extends ApiController
 {
-    private $tokenStorage   = null;
+    private $tokenStorage = null;
     private $em;
 
     public function __construct(EntityManagerInterface $em,TokenStorageInterface $tokenStorage)
     {
         $this->em = $em;
         $this->tokenStorage = $tokenStorage;
+    }
+
+    public function getCurrentUser() {
+        $useremail = $this->get('security.token_storage')->getToken()->getUser()->getUserIdentifier();
+        $user = $this->em->getRepository(User::class)->findBy(array("email" => $useremail));
+
+        return $user[0]->getRoles()[0];
     }
 
     /**
@@ -115,8 +126,9 @@ class AuthController extends ApiController
                 $this->em->persist($userAdress);
                 $this->em-> flush();
             } 
+            $user->setAdresseId($userAdress);
         }
-        $user->setAdresseId($userAdress);
+       
         $this->em->persist($user);
         $this->em-> flush();
         return $this->respondWithSuccess(sprintf('User %s successfully created', $user->getUsername()));
@@ -191,8 +203,8 @@ class AuthController extends ApiController
     }
 
     /**
-     * @Route("/api/user/me", name="get_me", methods={"GET"})
-     * @SWG\Tag(name="Authentification")
+     * @Route("/api/users/me", name="get_me", methods={"GET"})
+     * @SWG\Tag(name="User")
      *
      * @SWG\Parameter(
      *      name="User",
@@ -243,7 +255,9 @@ class AuthController extends ApiController
     {
         $useremail = $this->get('security.token_storage')->getToken()->getUser()->getUserIdentifier();
         $user = $this->em->getRepository(User::class)->findBy(array("email" => $useremail));
-        return $this->json($user,Response::HTTP_OK);
+        return $this->json($user,Response::HTTP_OK,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($object){
+            return "";
+        }]);
          
     }
 
@@ -269,5 +283,194 @@ class AuthController extends ApiController
 
         return $this->json([],Response::HTTP_OK);
     }
+
+     /**
+     * @Route("/api/users/{id}/boutique", name="boutique_livreur", methods={"get"})
+     * @SWG\Tag(name="Livreur / Vendeur")
+     * @SWG\Response(
+     *      response=200,
+     *      description="Returned when we fetch all livreur boutique",
+     *
+     *      @SWG\Schema(
+     *          type="object",
+     *          @SWG\Property(property="code", type="integer", example=200),
+     *          @SWG\Property(property="message", type="string", example="OK"),
+     *      )
+     * )
+     *
+     **/
+    public function getBoutique(
+        User $existingUser = null,
+        UserRepository $userRepository
+    )
+    {
+        $boutique = $userRepository->getBoutiqueOfLivreur(
+            $existingUser->getId()
+        );
+
+        return $this->json($boutique,Response::HTTP_OK,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($object){
+            return "";
+        }]);
+    }
     
+    /**
+     * @Route("/api/users/{id}/produits", name="produits_livreur", methods={"get"})
+     * @SWG\Tag(name="Livreur / Vendeur")
+     * @SWG\Response(
+     *      response=200,
+     *      description="Returned when we fetch all livreur boutique",
+     *
+     *      @SWG\Schema(
+     *          type="object",
+     *          @SWG\Property(property="code", type="integer", example=200),
+     *          @SWG\Property(property="message", type="string", example="OK"),
+     *      )
+     * )
+     *
+     **/
+    public function getProduits(
+        User $existingUser = null,
+        UserRepository $userRepository
+    )
+    {
+        $produits = $userRepository->getProduitsOfLivreur(
+            $existingUser->getId()
+        );
+
+        return $this->json($produits,Response::HTTP_OK,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($object){
+            return "";
+        }]);
+    }
+
+
+    /**
+     * @Route("/api/users/{id}/categories", name="categories_livreur", methods={"get"})
+     * @SWG\Tag(name="Livreur / Vendeur")
+     * @SWG\Response(
+     *      response=200,
+     *      description="Returned when we fetch all livreur categories",
+     *
+     *      @SWG\Schema(
+     *          type="object",
+     *          @SWG\Property(property="code", type="integer", example=200),
+     *          @SWG\Property(property="message", type="string", example="OK"),
+     *      )
+     * )
+     *
+     **/
+    public function getCategories(
+        User $existingUser = null,
+        userRepository $userRepository
+    )
+    {
+        $categories = $userRepository->getCategoriesOfLivreur(
+            $existingUser->getId()
+        );
+
+        return $this->json($categories,Response::HTTP_OK,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($object){
+            return "";
+        }]);
+    }
+
+     /**
+     * Get a list of all users.
+     * @Route("/api/users", name="users", methods={"GET"})
+     * @SWG\Tag(name="User")
+     *
+     *  @SWG\Response(
+     *     response=200,
+     *     description="Returned with the list of categories",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(
+     *              type="object",
+     *              @SWG\Property(property="id", type="integer", example="1"),
+     *              @SWG\Property(property="nom", type="string", example="admin"),
+     *              @SWG\Property(property="prenom", type="string", example="nom"),
+     *              @SWG\Property(property="email", type="string", example="admin@gmail.com"),
+     *              @SWG\Property(property="role", type="string", example="ROLE_ADMIN"),
+     *     )
+     * )
+     * )
+     * @param UserRepository $categorieRepository
+     * @return JsonResponse
+     */
+    public function getAllUsers(
+        UserRepository $userRepository,
+        Request $request
+    ): JsonResponse {
+
+        if($this->getCurrentUser() != "ROLE_ADMIN") {
+            return $this->respondForbidden();
+        }
+        
+        $users = $userRepository->findAll();
+
+        return $this->json($users,Response::HTTP_OK,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function(){
+            return '';
+        }]);
+    }
+
+
+        /**
+     * Delete user.
+     * @Route("/api/users/{id}", name="delete_user", methods={"DELETE"})
+     * @SWG\Tag(name="User")
+     *
+     *  @SWG\Response(
+     *     response=204,
+     *     description="Returned when the User has been deleted",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(
+     *              type="object",
+     *              @SWG\Property(property="id", type="integer", example="1"),
+     *              @SWG\Property(property="nom", type="string", example="nom"),
+     *              @SWG\Property(property="prenom", type="string", example="prenom"),
+     *     )
+     * )
+     * )
+     *
+     *  @SWG\Response(
+     *      response=404,
+     *      description="Returned when the user isn't found",
+     *
+     *      @SWG\Schema(
+     *          type="object",
+     *          @SWG\Property(property="status", type="integer", example=404),
+     *          @SWG\Property(property="errors", type="string", example="Not found!")
+     *      )
+     * )
+     *
+     * @noinspection PhpOptionalBeforeRequiredParametersInspection
+     * @param User|null $existingUser
+     * @return JsonResponse
+     */
+
+     public function deleteUser(
+        User $existingUser = null
+    ) :JsonResponse {
+        
+        if($this->getCurrentUser() != "ROLE_ADMIN") {
+            return $this->respondForbidden();
+        }
+        
+
+        if(is_null($existingUser)) {
+            return $this->respondNotFound();
+        }
+        $this->em->remove($existingUser);
+        $this->em->flush();
+
+        // Last step : Return no data as confirmation.
+        return $this->json('User supprimé',Response::HTTP_OK,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function(){
+            return '';
+        }]);
+
+    }
+
+ 
+
+
+
 }

@@ -19,7 +19,7 @@ import '../styles/App.css';
 import '../styles/AppAfterLogIn.css';
 import '../styles/produits.css';
 
-const Produits = ({user,token,api,config,change_current_page,currentPageSwitch,changeCurrentShowDataProduit}) => {
+const Produits = ({token,api,config,change_current_page,currentPageSwitch,changeCurrentShowDataProduit}) => {
 
  
   const [query,setQuery] = useState('');
@@ -38,6 +38,10 @@ const Produits = ({user,token,api,config,change_current_page,currentPageSwitch,c
   const [filterParBoutique,setFilterParBoutique] = useState(null);
   const [filterParCategorie,setFilterParCategorie] = useState(null);
   const [allCategiriesOfSelectedProduit,setAllCategiriesOfSelectedProduit] = useState([]);
+  const [user,setUser] = useState([]);
+  const [myProducts,setMyProducts] = useState([]);
+  const [userRole,setUserRole] = useState([]);
+
 
   const getAllProduits = () => {
 
@@ -104,16 +108,45 @@ const Produits = ({user,token,api,config,change_current_page,currentPageSwitch,c
     )
   }
 
+  const getCurrentUser = ()=> {
+    const datas = {};
+    axios.get(`${api}/users/me`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
+      response => {
+          if( response.status === 200) {
+            setUser(response.data[0]);
+            setUser(response.data[0]);
+            setUserRole(response.data[0].roles[0])
+          }
+      }
+    )
+  }
+
+  const getMyProducts = () => {
+    console.log(user);
+    axios.get(`${api}/users/${user.id}/produits`,{headers: {"Authorization" : `Bearer ${token}`} }).then(
+      response => {
+          if( response.status === 200) {
+             console.log(response);
+             setMyProducts(response.data);
+          }
+      }
+    )
+  }
+
   useEffect( () =>{
     setIsloading(true);
+    getCurrentUser();
     getAllProduits();
+    getMyProducts();
   },[page,query,filterParBoutique,filterParCategorie]);
 
 
   useEffect( () =>{
     change_current_page("produits");
+    getCurrentUser();
     getAllBoutiqueToFilterProduit();
     getAllCategoriesToFilterProduit();
+    getMyProducts();
   },[]);
 
   useEffect( () =>{
@@ -143,6 +176,9 @@ const Produits = ({user,token,api,config,change_current_page,currentPageSwitch,c
                 allCategorieToProduit = {allCategorieToProduit}
                 filterParBoutique = {filterParBoutique}
                 filterParCategorie = {filterParCategorie}
+                userRole= {userRole}
+                api={api}
+                token={token}
         />
         {
           (is_loading) ? (<Loader/>) 
@@ -159,7 +195,10 @@ const Produits = ({user,token,api,config,change_current_page,currentPageSwitch,c
                         changeOperation = {(new_operation)=> {setOperation(new_operation)}}
                         changeProduitUpdate = {(new_update_produit)=> {setProduitUpdate(new_update_produit)}}  
                         changeAllCategiriesOfSelectedProduit = {(new_value) => { setAllCategiriesOfSelectedProduit(new_value)} }     
-                        changeCurrentShowDataProduit = {changeCurrentShowDataProduit}                 
+                        changeCurrentShowDataProduit = {changeCurrentShowDataProduit}      
+                        myProducts = {myProducts} 
+                        role = {userRole}
+
                     />
                   
                   ))
