@@ -102,7 +102,7 @@ class BoutiqueRepository extends ServiceEntityRepository
      */
     public function findAllBoutiquesWithFilter(
         $enConge = null,
-        $date_de_creationbefore = "",
+        $date_de_creationbefore = "", 
         $date_de_creationafter = "",
         $query,
         $orderBy = "date_de_creation",
@@ -157,6 +157,9 @@ class BoutiqueRepository extends ServiceEntityRepository
     }
 
 
+    
+
+
     /**
      * le nombre de boutique dans la bdd
      */
@@ -169,5 +172,7 @@ class BoutiqueRepository extends ServiceEntityRepository
 
         return $queryBuilder->getQuery()->getResult();
     }
+
+
 
 }

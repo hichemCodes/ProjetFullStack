@@ -1,6 +1,31 @@
-version: "3.8"
-services:
+version: "3"
 
+services:
+    nginx:
+        image: nginx:alpine
+        ports:
+            - "8000:80"
+        #volumes:
+            #- ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+            #- .:/var/www/html
+        depends_on:
+            - php
+        networks:
+            - dev
+    php:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - "9000"
+        volumes:
+            - .:/var/www/html
+        environment:
+            - DATABASE_URL="mysql://root:root@db:3306/UE_Full_Stack"
+        depends_on:
+            - db
+        networks:
+            - dev
     db:
         image: mysql
         container_name: db_docker_symfony
@@ -14,6 +39,8 @@ services:
             - MYSQL_PASSWORD=user
         ports:
             - 3306:80
+        volumes:
+            - db_data:/var/lib/mysql
         networks:
             - dev
 
@@ -24,36 +51,13 @@ services:
         depends_on:
             - db
         ports:
-            - 8000:80
+            - 8001:80
         environment:
             PMA_HOST: db
         networks:
             - dev
-
-    maildev:
-        image: maildev/maildev
-        container_name: maildev_docker_symfony
-        command: bin/maildev --web 80 --smtp 25 --hide-extensions STARTTLS
-        ports:
-          - "8081:80"
-        restart: always
-        networks:
-            - dev
-            
-    www:
-        build: php
-        container_name: www_docker_symfony
-        ports:
-          - "8080:80"
-        volumes:
-            - ./php/vhosts:/etc/apache2/sites-enabled
-            - ./:/var/www
-        restart: always
-        networks:
-            - dev
-       
 networks:
     dev:
 
 volumes:
-    db-data:
+    db_data:

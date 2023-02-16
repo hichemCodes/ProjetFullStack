@@ -113,6 +113,18 @@ class ApiController extends AbstractController
     }
 
     /**
+     * Returns a 422 Unprocessable Entity
+     *
+     * @param string $message
+     *
+     * @return JsonResponse
+     */
+    public function respondForbidden($message = "You don't have acces !"): JsonResponse
+    {
+        return $this->setStatusCode(403)->respondWithErrors($message);
+    }
+
+    /**
      * Returns a 404 Not Found
      *
      * @param string $message
