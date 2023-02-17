@@ -60,7 +60,7 @@ const Boutiques = ({token,api,config,change_current_page,currentPageSwitch,chang
         if(query != "") {
           datas.query = query
         }
-        console.log(datas);
+        console.log(token);
 
        axios.get(`${api}/boutiques`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
           response => {
