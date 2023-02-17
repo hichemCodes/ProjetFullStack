@@ -53,18 +53,32 @@ class AppFixtures extends Fixture
 
         $boutique = new Boutique();
         $boutique->setNom("Tech Store");
-        $horraires = '[{"lundi":{"matin":"8h-12h","apreMidi":"14h-18h"}},{"mardi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"mercredi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"jeudi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"vendredi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"samedi":{"matin":"8h-12h","apreMidi":"14h-20h"}},{"dimanche":{"matin":"8h-12h","apreMidi":"14h-20h"}}]';
-        $boutique->setHorairesDeOuverture(
-            array(json_encode($horraires))
-        );
+        
+        $horaires = '[
+            {"lundi":{"matin":"08:00h-12:00h","apreMidi":"14:00h-18:00h"}},
+            {"mardi":{"matin":"08:00h-12:00h","apreMidi":"14:00h-20:00h"}},
+            {"mercredi":{"matin":"08:00h-12:00h","apreMidi":"14:00h-20:00h"}},
+            {"jeudi":{"matin":"08:00h-12:00h","apreMidi":"14:00h-20:00h"}},
+            {"vendredi":{"matin":"08:00h-12:00h","apreMidi":"14:00h-20:00h"}},
+            {"samedi":{"matin":"08:00h-12:00h","apreMidi":"14:00h-20:00h"}},
+            {"dimanche":{"matin":"08:00h-12:00h","apreMidi":"14:00h-20:00h"}}
+        ]';
+        
+        // Decode the JSON array into a PHP array
+        $horairesDeOuverture = json_decode($horaires, true);
+        
+        // Set the horairesDeOuverture property of the Boutique entity
+        $boutique->setHorairesDeOuverture($horairesDeOuverture);
+        
         $boutique->setEnConge(false);
         $boutique->setDateDeCreation(new \DateTime());
+        
         $manager->persist($boutique);
 
         $boutique1 = new Boutique();
         $boutique1->setNom("Chico Home");
         $boutique1->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique1->setEnConge(false);
         $boutique1->setDateDeCreation(new \DateTime());
@@ -73,7 +87,7 @@ class AppFixtures extends Fixture
         $boutique2 = new Boutique();
         $boutique2->setNom("Deco Store");
         $boutique2->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique2->setEnConge(true);
         $boutique2->setDateDeCreation(new \DateTime());
@@ -82,7 +96,7 @@ class AppFixtures extends Fixture
         $boutique3 = new Boutique();
         $boutique3->setNom("Sun Store");
         $boutique3->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique3->setEnConge(false);
         $boutique3->setDateDeCreation(new \DateTime());
@@ -91,7 +105,7 @@ class AppFixtures extends Fixture
         $boutique4 = new Boutique();
         $boutique4->setNom("Hatch Store");
         $boutique4->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique4->setEnConge(true);
         $boutique4->setDateDeCreation(new \DateTime());
@@ -101,7 +115,7 @@ class AppFixtures extends Fixture
         $boutique5 = new Boutique();
         $boutique5->setNom("Fnac ");
         $boutique5->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique5->setEnConge(false);
         $boutique5->setDateDeCreation(new \DateTime());
@@ -111,7 +125,7 @@ class AppFixtures extends Fixture
         $boutique6 = new Boutique();
         $boutique6->setNom("Darty ");
         $boutique6->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique6->setEnConge(false);
         $boutique6->setDateDeCreation(new \DateTime());
@@ -121,7 +135,7 @@ class AppFixtures extends Fixture
         $boutique7 = new Boutique();
         $boutique7->setNom("Boulanger");
         $boutique7->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique7->setEnConge(true);
         $boutique7->setDateDeCreation(new \DateTime());
@@ -131,7 +145,7 @@ class AppFixtures extends Fixture
         $boutique8 = new Boutique();
         $boutique8->setNom("Photo Store");
         $boutique8->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique8->setEnConge(true);
         $boutique8->setDateDeCreation(new \DateTime());
@@ -141,7 +155,7 @@ class AppFixtures extends Fixture
         $boutique9 = new Boutique();
         $boutique9->setNom("Mobile");
         $boutique9->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique9->setEnConge(false);
         $boutique9->setDateDeCreation(new \DateTime());
@@ -151,7 +165,7 @@ class AppFixtures extends Fixture
         $boutique10 = new Boutique();
         $boutique10->setNom("Cell");
         $boutique10->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique10->setEnConge(false);
         $boutique10->setDateDeCreation(new \DateTime());
@@ -161,7 +175,7 @@ class AppFixtures extends Fixture
         $boutique11 = new Boutique();
         $boutique11->setNom("MYStore");
         $boutique11->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique11->setEnConge(true);
         $boutique11->setDateDeCreation(new \DateTime());
@@ -171,7 +185,7 @@ class AppFixtures extends Fixture
         $boutique12 = new Boutique();
         $boutique12->setNom("Super Store");
         $boutique12->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique12->setEnConge(false);
         $boutique12->setDateDeCreation(new \DateTime());
@@ -181,7 +195,7 @@ class AppFixtures extends Fixture
         $boutique13 = new Boutique();
         $boutique13->setNom("Annaba Technology");
         $boutique13->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique13->setEnConge(false);
         $boutique13->setDateDeCreation(new \DateTime());
@@ -190,7 +204,7 @@ class AppFixtures extends Fixture
         $boutique14 = new Boutique();
         $boutique14->setNom("Boutique");
         $boutique14->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique14->setEnConge(false);
         $boutique14->setDateDeCreation(new \DateTime());
@@ -199,7 +213,7 @@ class AppFixtures extends Fixture
         $boutique15 = new Boutique();
         $boutique15->setNom("SHOPY");
         $boutique15->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique15->setEnConge(false);
         $boutique15->setDateDeCreation(new \DateTime());
@@ -208,7 +222,7 @@ class AppFixtures extends Fixture
         $boutique16 = new Boutique();
         $boutique16->setNom("Robuste Center");
         $boutique16->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique16->setEnConge(false);
         $boutique16->setDateDeCreation(new \DateTime());
@@ -217,7 +231,7 @@ class AppFixtures extends Fixture
         $boutique17 = new Boutique();
         $boutique17->setNom("Val Europe");
         $boutique17->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique17->setEnConge(false);
         $boutique17->setDateDeCreation(new \DateTime());
@@ -226,7 +240,7 @@ class AppFixtures extends Fixture
         $boutique18 = new Boutique();
         $boutique18->setNom("Disney");
         $boutique18->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique18->setEnConge(false);
         $boutique18->setDateDeCreation(new \DateTime());
@@ -235,7 +249,7 @@ class AppFixtures extends Fixture
         $boutique19 = new Boutique();
         $boutique19->setNom("Vapiano France");
         $boutique19->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique19->setEnConge(false);
         $boutique19->setDateDeCreation(new \DateTime());
@@ -244,7 +258,7 @@ class AppFixtures extends Fixture
         $boutique20 = new Boutique();
         $boutique20->setNom("Sony France");
         $boutique20->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique20->setEnConge(true);
         $boutique20->setDateDeCreation(new \DateTime());
@@ -253,7 +267,7 @@ class AppFixtures extends Fixture
         $boutique21 = new Boutique();
         $boutique21->setNom("Apple France");
         $boutique21->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique21->setEnConge(false);
         $boutique21->setDateDeCreation(new \DateTime());
@@ -262,7 +276,7 @@ class AppFixtures extends Fixture
         $boutique22 = new Boutique();
         $boutique22->setNom("Samsung France");
         $boutique22->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique22->setEnConge(true);
         $boutique22->setDateDeCreation(new \DateTime());
@@ -271,7 +285,7 @@ class AppFixtures extends Fixture
         $boutique23 = new Boutique();
         $boutique23->setNom("LG France");
         $boutique23->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique23->setEnConge(true);
         $boutique23->setDateDeCreation(new \DateTime());
@@ -280,7 +294,7 @@ class AppFixtures extends Fixture
         $boutique24 = new Boutique();
         $boutique24->setNom("Microsoft France");
         $boutique24->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique24->setEnConge(true);
         $boutique24->setDateDeCreation(new \DateTime());
@@ -289,7 +303,7 @@ class AppFixtures extends Fixture
         $boutique25 = new Boutique();
         $boutique25->setNom("Kaspersky France");
         $boutique25->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique25->setEnConge(true);
         $boutique25->setDateDeCreation(new \DateTime());
@@ -298,7 +312,7 @@ class AppFixtures extends Fixture
         $boutique26 = new Boutique();
         $boutique26->setNom("Asus France");
         $boutique26->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique26->setEnConge(true);
         $boutique26->setDateDeCreation(new \DateTime());
@@ -307,7 +321,7 @@ class AppFixtures extends Fixture
         $boutique27 = new Boutique();
         $boutique27->setNom("HP France");
         $boutique27->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique27->setEnConge(true);
         $boutique27->setDateDeCreation(new \DateTime());
@@ -316,7 +330,7 @@ class AppFixtures extends Fixture
         $boutique28 = new Boutique();
         $boutique28->setNom("Dell France");
         $boutique28->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique28->setEnConge(true);
         $boutique28->setDateDeCreation(new \DateTime());
@@ -325,7 +339,7 @@ class AppFixtures extends Fixture
         $boutique29 = new Boutique();
         $boutique29->setNom("Future France");
         $boutique29->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique29->setEnConge(true);
         $boutique29->setDateDeCreation(new \DateTime());
@@ -334,7 +348,7 @@ class AppFixtures extends Fixture
         $boutique30 = new Boutique();
         $boutique30->setNom("Gaming Store");
         $boutique30->setHorairesDeOuverture(
-            array(json_encode($horraires))
+            $horairesDeOuverture
         );
         $boutique30->setEnConge(true);
         $boutique30->setDateDeCreation(new \DateTime());
@@ -343,6 +357,7 @@ class AppFixtures extends Fixture
 
         //create users
         $roles = array("ROLE_ADMIN","ROLE_LIVREUR_VENDEUR");
+        $boutiques = [$boutique3,$boutique11,$boutique13,$boutique16,$boutique1,$boutique3,$boutique6,$boutique18,$boutique9,$boutique5,$boutique6];
         for($i = 1;$i<11;$i++) {
 
             $user = new User();
@@ -358,6 +373,7 @@ class AppFixtures extends Fixture
                 $user->setNom("nom_livreur ".$i);
                 $user->setPrenom("prenom_livreur ".$i);
                 $user->setEmail("email_livreur".$i."@gmail.com");
+                $user->setBoutiqueId($boutiques[$i]);
             }
             $hash = $this->hasher->hashPassword($user,"123456mM");
             $user->setPassword($hash);

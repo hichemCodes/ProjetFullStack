@@ -337,6 +337,7 @@ class AuthController extends ApiController
             $existingUser->getId()
         );
 
+
         return $this->json($produits,Response::HTTP_OK,[],[ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($object){
             return "";
         }]);

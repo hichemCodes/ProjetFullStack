@@ -62,7 +62,7 @@ const Categorie = ({api,token,categorie,getAllCategories,categories,changeOperat
             
                 <div className="show_option">
                         <div className="cover_option">
-                    { ((myCategories.some(c=> c.id === categorie.id) && myCategories !== []) || (myCategories == [] && role == "ROLE_ADMIN"))
+                    { ((myCategories.some(c=> c.id === categorie.id) && myCategories.length !== 0) || (myCategories.length == 0 && role == "ROLE_ADMIN"))
                       ? 
                       <React.Fragment>
                             <i class="fa-solid fa-pen-to-square" title='modifier' onClick={()=>{updateCategorie(categorie.id,categorie,"update")}}></i>
