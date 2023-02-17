@@ -19,7 +19,7 @@ import '../styles/App.css';
 import '../styles/AppAfterLogIn.css';
 import '../styles/produits.css';
 
-const Produits = ({token,api,config,change_current_page,currentPageSwitch,changeCurrentShowDataProduit}) => {
+const Produits = ({token,api,config,change_current_page,currentPageSwitch,changeCurrentShowDataProduit,changeUser}) => {
 
  
   const [query,setQuery] = useState('');
@@ -45,6 +45,8 @@ const Produits = ({token,api,config,change_current_page,currentPageSwitch,change
 
   const getAllProduits = () => {
 
+      getMyProducts();
+      getCurrentUser();
       setOffest(per_page * (page - 1));
 
       const datas = {
@@ -138,7 +140,7 @@ const Produits = ({token,api,config,change_current_page,currentPageSwitch,change
     getCurrentUser();
     getAllProduits();
     getMyProducts();
-  },[page,query,filterParBoutique,filterParCategorie]);
+  },[page,query,filterParBoutique,filterParCategorie,currentPageSwitch]);
 
 
   useEffect( () =>{
@@ -160,6 +162,7 @@ const Produits = ({token,api,config,change_current_page,currentPageSwitch,change
            query = {query}
            change_query = {(new_query)=> { setQuery(new_query)}}
            user = {user}
+           changeUser = {changeUser}
         />
         <span id="current_action">{current_action} { (query != "") ? `(recherche : ${query} )` : ""}</span>
         <FilterProduit 

@@ -64,7 +64,7 @@ const Produit = ({api,token,produit,getAllProduits,produits,changeOperation,chan
             
                 <div className="show_option">
                <div className="cover_option">
-                { ((myProducts.some(p => p.id === produit.id) && myProducts !== []) || (myProducts == [] && role == "ROLE_ADMIN"))
+                { ((myProducts.some(p => p.id === produit.id) && myProducts.length !== 0) || (myProducts.length == 0 && role == "ROLE_ADMIN"))
                       ? 
                       <React.Fragment>
                             <i class="fa-solid fa-pen-to-square" title='modifier' onClick={()=>{updateProduit(produit.id,produit,"update")}}></i>

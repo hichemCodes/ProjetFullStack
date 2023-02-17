@@ -19,4 +19,5 @@ RUN pecl install apcu && docker-php-ext-enable apcu
 ENV COMPOSER_ALLOW_SUPERUSER=1
 #RUN chmod 644 /var/www/server/config/jwt/public.pem && /var/www/server/config/jwt/private.pem
 
+
 WORKDIR /var/www/

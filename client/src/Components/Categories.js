@@ -14,7 +14,7 @@ import AssignerProduitsToCategorie from './AssignerProduitsToCategorie';
 
 
 
-const Categories = ({token,api,config,change_current_page,currentPageSwitch,changeCurrentShowData}) => {
+const Categories = ({token,api,config,change_current_page,currentPageSwitch,changeCurrentShowData,changeUser}) => {
 
  
   const [query,setQuery] = useState('');
@@ -36,6 +36,7 @@ const Categories = ({token,api,config,change_current_page,currentPageSwitch,chan
 
   const getAllCategorie = () => {
 
+      getMyCategories();
       setOffest(per_page * (page - 1));
 
       const datas = {
@@ -104,6 +105,7 @@ const Categories = ({token,api,config,change_current_page,currentPageSwitch,chan
           if( response.status === 200) {
              console.log(response);
              setMyCategories(response.data);
+             setMyCategories(response.data);
           }
       }
     )
@@ -115,7 +117,7 @@ const Categories = ({token,api,config,change_current_page,currentPageSwitch,chan
     getCurrentUser();
     getAllCategorie();
     getMyCategories();
-  },[page,query]);
+  },[page,query,currentPageSwitch]);
 
 
   useEffect( () =>{
@@ -123,7 +125,6 @@ const Categories = ({token,api,config,change_current_page,currentPageSwitch,chan
     getCurrentUser();
     getAllProduitsToAssignCategorie();
     getMyCategories();
-
   },[]);
 
 
@@ -134,6 +135,7 @@ const Categories = ({token,api,config,change_current_page,currentPageSwitch,chan
             query = {query}
             change_query = {(new_query)=> { setQuery(new_query)}}
             user = {user}
+            changeUser = {changeUser}
         />
         
         <span id="current_action" className='current_action_custum'>{current_action} { (query != "") ? `(recherche : ${query} )` : ""}</span>
