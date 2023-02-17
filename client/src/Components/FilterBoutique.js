@@ -20,10 +20,14 @@ const FilterBoutique = (
         changeCreatedBeforeInput,
         changeCreatedafterInput,
         changeOperation,
-        changeBoutiqueUpdate
+        changeBoutiqueUpdate,
+        userRole,
+        api,
+        token
     }) => {
 
-    
+    const ROLE_ADMIN = process.env.ROLE_ADMIN;
+
     const show_en_conge = () =>{
         document.querySelector('.en_conge').classList.toggle('show_me');
 
@@ -70,6 +74,8 @@ const FilterBoutique = (
                  <SwitchPages 
                     change_current_page={change_current_page}
                     currentPageSwitch={currentPageSwitch}
+                    api ={api}
+                    token={token}
                  />
                  <div className="filter-container">
                     <span className="current_order c_item c_item_en_conge" onClick = {() => {show_en_conge() }}>En Congé :  <strong> {enConge == 1 ? "oui" : "non"} </strong> </span>
@@ -148,7 +154,12 @@ const FilterBoutique = (
                          get_page = { (new_page)=> { change_page(new_page)}}
                          
                 />
-                <span className="current_order c_item add_boutique" onClick = {() => {updateBoutique("add")}}> <strong>Ajouter</strong> </span>
+                {
+                  
+                    userRole == "ROLE_ADMIN" 
+                    ? <span className="current_order c_item add_boutique" onClick = {() => {updateBoutique("add")}}> <strong>Ajouter</strong> </span>
+                    : ''
+                 }
 
                 
 

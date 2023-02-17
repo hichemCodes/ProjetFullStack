@@ -5,7 +5,7 @@ import { useNavigate  } from "react-router-dom";
 
   
 
-const Boutique = ({api,token,boutique,getAllBoutiques,boutiques,changeOperation,changeBoutiqueUpdate,getAllProduitsNonAssigner,changeCurrentShowData}) => {
+const Boutique = ({api,token,boutique,getAllBoutiques,boutiques,changeOperation,changeBoutiqueUpdate,getAllProduitsNonAssigner,changeCurrentShowData,myBoutique,role}) => {
 
    
     const navigate = useNavigate();
@@ -84,9 +84,16 @@ const Boutique = ({api,token,boutique,getAllBoutiques,boutiques,changeOperation,
         <div className="card__image">
            <div className="show_option">
                 <div className="cover_option">
-                    <i class="fa-solid fa-pen-to-square" title='modifier' onClick={()=>{updateBoutique(boutique.id,boutique,"update")}}></i>
-                    <i class="fa-sharp fa-solid fa-trash" onClick={()=>{DeleteBoutique(boutique.id)}} title='supprimer'></i>
-                    <i class="fa-sharp fa-solid fa-cart-plus" onClick={()=>{AssignerBoutique(boutique.id)}}></i>
+                    { ((myBoutique == boutique.id && myBoutique !== 0) || (myBoutique == 0 && role == "ROLE_ADMIN"))
+                      ? 
+                      <React.Fragment>
+                        <i class="fa-solid fa-pen-to-square" title='modifier' onClick={()=>{updateBoutique(boutique.id,boutique,"update")}}></i>
+                        <i class="fa-sharp fa-solid fa-trash" onClick={()=>{DeleteBoutique(boutique.id)}} title='supprimer'></i>
+                        <i class="fa-sharp fa-solid fa-cart-plus" onClick={()=>{AssignerBoutique(boutique.id)}}></i>  
+                      </React.Fragment>  
+                      : ''
+                    }
+                   
                 </div>
                 <i class="fa-solid fa-store"></i>
            </div>

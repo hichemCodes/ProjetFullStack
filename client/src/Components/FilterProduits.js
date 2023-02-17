@@ -16,7 +16,10 @@ const FilterProduit = (
         allBoutiqueToProduit,
         allCategorieToProduit,
         filterParBoutique,
-        filterParCategorie
+        filterParCategorie,
+        userRole,
+        api,
+        token
     }) => {
 
     
@@ -40,6 +43,8 @@ const FilterProduit = (
                 <SwitchPages 
                     change_current_page={change_current_page}
                     currentPageSwitch={currentPageSwitch}
+                    api ={api}
+                    token={token}
                  />
                   <div className="filter-container">
                     <span className="current_order c_item c_item_en_conge f_boot" onClick = {() => {show_boutique() }}>Filtré par boutique</span>
@@ -89,8 +94,12 @@ const FilterProduit = (
                     all_pages = {all_pages} 
                     get_page = { (new_page)=> { change_page(new_page)}}
                 />
-                <span className="current_order c_item add_boutique" onClick = {() => {updateProduit("add")}}> <strong>Ajouter</strong> </span>
-
+                {
+                  
+                  userRole == "ROLE_ADMIN" 
+                  ?  <span className="current_order c_item add_boutique" onClick = {() => {updateProduit("add")}}> <strong>Ajouter</strong> </span>
+                  : ''
+               }
                 
 
 

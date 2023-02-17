@@ -20,14 +20,25 @@ use Nelmio\ApiDocBundle\Annotation\Security;
 use Swagger\Annotations as SWG;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use App\Entity\User;
 
 class ProduitController extends ApiController
 {
     private $em;
+    private $tokenStorage = null;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em,TokenStorageInterface $tokenStorage)
     {
         $this->em = $em;
+        $this->tokenStorage = $tokenStorage;
+    }
+
+    public function getCurrentUser() {
+        $useremail = $this->get('security.token_storage')->getToken()->getUser()->getUserIdentifier();
+        $user = $this->em->getRepository(User::class)->findBy(array("email" => $useremail));
+
+        return $user[0]->getRoles()[0];
     }
 
     /**
@@ -181,6 +192,10 @@ class ProduitController extends ApiController
         ProduitRepository $produitRepository,
         Request $request
     ): JsonResponse {
+
+        if($this->getCurrentUser() !=  "ROLE_ADMIN") {
+            return $this->respondForbidden();
+        }
 
         $request = $this->transformJsonBody($request);
         $nom = $request->get('nom');

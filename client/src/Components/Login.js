@@ -14,7 +14,7 @@ import logo from "../images/shop.png";
 
 
 
-const Login = ({changeToken,api}) => {
+const Login = ({changeToken,api,isAuthenticated,changeIsAuthenticated}) => {
 
   const [email,setEmail] = useState("");
   const [password,setPassword] = useState("");
@@ -35,6 +35,7 @@ const Login = ({changeToken,api}) => {
              if( response.status === 200) {
               changeToken(response.data.token);
               localStorage.setItem('token',response.data.token);
+              changeIsAuthenticated(!isAuthenticated);
               navigate("/boutiques");       
             }
         }

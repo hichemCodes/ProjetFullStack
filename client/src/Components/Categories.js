@@ -14,7 +14,7 @@ import AssignerProduitsToCategorie from './AssignerProduitsToCategorie';
 
 
 
-const Categories = ({user,token,api,config,change_current_page,currentPageSwitch,changeCurrentShowData}) => {
+const Categories = ({token,api,config,change_current_page,currentPageSwitch,changeCurrentShowData,changeUser}) => {
 
  
   const [query,setQuery] = useState('');
@@ -29,10 +29,14 @@ const Categories = ({user,token,api,config,change_current_page,currentPageSwitch
   const [categorieUpdate,setCategorieUpdate] = useState([]);
   const [allProduitsToCategorie,setAllProduitsToCategorie] = useState([]);
   const [allProduitsNotBelongToThisCategorie,setAllProduitsNotBelongToThisCategorie] = useState([]);
+  const [myCategories,setMyCategories] = useState([]);
+  const [user,setUser] = useState([]);
+  const [userRole,setUserRole] = useState([]);
 
 
   const getAllCategorie = () => {
 
+      getMyCategories();
       setOffest(per_page * (page - 1));
 
       const datas = {
@@ -80,15 +84,47 @@ const Categories = ({user,token,api,config,change_current_page,currentPageSwitch
     )
   }
 
+  const getCurrentUser = ()=> {
+    const datas = {};
+    axios.get(`${api}/users/me`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
+      response => {
+          if( response.status === 200) {
+            setUser(response.data[0]);
+            setUser(response.data[0]);
+            setUserRole(response.data[0].roles[0])
+          }
+      }
+    )
+
+  }
+
+  const getMyCategories = () => {
+    console.log(user);
+    axios.get(`${api}/users/${user.id}/categories`,{headers: {"Authorization" : `Bearer ${token}`} }).then(
+      response => {
+          if( response.status === 200) {
+             console.log(response);
+             setMyCategories(response.data);
+             setMyCategories(response.data);
+          }
+      }
+    )
+  }
+
+
   useEffect( () =>{
     setIsloading(true);
+    getCurrentUser();
     getAllCategorie();
-  },[page,query]);
+    getMyCategories();
+  },[page,query,currentPageSwitch]);
 
 
   useEffect( () =>{
     change_current_page("categories");
+    getCurrentUser();
     getAllProduitsToAssignCategorie();
+    getMyCategories();
   },[]);
 
 
@@ -99,6 +135,7 @@ const Categories = ({user,token,api,config,change_current_page,currentPageSwitch
             query = {query}
             change_query = {(new_query)=> { setQuery(new_query)}}
             user = {user}
+            changeUser = {changeUser}
         />
         
         <span id="current_action" className='current_action_custum'>{current_action} { (query != "") ? `(recherche : ${query} )` : ""}</span>
@@ -108,14 +145,20 @@ const Categories = ({user,token,api,config,change_current_page,currentPageSwitch
             <SwitchPages 
                 change_current_page={change_current_page}
                 currentPageSwitch={currentPageSwitch}
+                api={api}
+                token={token}
             />
             <AllPages 
                 current_page = {page} 
                 all_pages = {all_pages} 
                 get_page = { (new_page)=> { setPage(new_page)}}
             />
-            <span className="current_order c_item add_boutique" onClick = {() => {UpdateCategorieAdd("add")}}> <strong>Ajouter</strong> </span>
-
+            {
+                  
+                  userRole == "ROLE_ADMIN" 
+                  ?  <span className="current_order c_item add_boutique" onClick = {() => {UpdateCategorieAdd("add")}}> <strong>Ajouter</strong> </span>
+                  : ''
+               }
         </div>
         
         
@@ -135,6 +178,8 @@ const Categories = ({user,token,api,config,change_current_page,currentPageSwitch
                         changeCtegorieUpdate = {(new_value)=> {setCategorieUpdate(new_value)}}  
                         changeAllProduitsNotBelongToThisCategorie = {(new_value) => { setAllProduitsNotBelongToThisCategorie(new_value)} }                      
                         changeCurrentShowData = {changeCurrentShowData}
+                        myCategories = {myCategories}
+                        role = {userRole}
                     />
                   
                   ))

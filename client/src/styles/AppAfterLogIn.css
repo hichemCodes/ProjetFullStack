@@ -1017,3 +1017,21 @@ div [class^="col-"] {
   padding: 12px;
   
 }
+
+.admin-table {
+  width: 100%;
+  
+  background-color: #ffff;
+}
+
+.admin-container {
+
+  box-shadow: 10px 10px 30px #bdbdbd;
+  border-radius: 20px;
+  margin-top: 40px;
+}
+
+.admin-table th,td,tr {
+  text-align: center;
+}
+

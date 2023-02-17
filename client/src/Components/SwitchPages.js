@@ -1,10 +1,32 @@
-import React from 'react'
+import React, { useState,useEffect } from 'react';
+import axios from 'axios';
 
-const SwitchPages = ({change_current_page,currentPageSwitch}) => {
+const SwitchPages = ({change_current_page,currentPageSwitch,api,token}) => {
+
+    const [user,setUser] = useState([]);
+    const [userRole,setUserRole] = useState([]);
 
     const show_change_page = () =>{
         document.querySelector('.change_page').classList.toggle('show_me');
     } 
+
+
+
+    const getCurrentUser = ()=> {
+        const datas = {};
+        axios.get(`${api}/users/me`,{ params : datas,headers: {"Authorization" : `Bearer ${token}`} }).then(
+          response => {
+              if( response.status === 200) {
+                setUser(response.data[0]);
+                setUser(response.data[0]);
+                setUserRole(response.data[0].roles[0])
+              }
+          }
+        )
+      }
+      useEffect( () =>{
+        getCurrentUser();
+      },[]);
 
 
 
@@ -32,7 +54,21 @@ const SwitchPages = ({change_current_page,currentPageSwitch}) => {
                                     </div>
                                     <label htmlFor="categories" >Categories</label>
                         </div>
+                        {(userRole === "ROLE_ADMIN") 
+                        ? 
+                         <React.Fragment>
+                                <div className="o_item" onClick = {() => {change_current_page('administrateur')}}>
+                                    <div className={(currentPageSwitch == 'administrateur' ) ? 'checkbox c_check' : 'checkbox' } id="administrateur">
+                                        <div className="white_space"></div>
+                                    </div>
+                                    <label htmlFor="administrateur" >Administrateur</label>
+                                </div>
                       
+                         </React.Fragment>
+                        : ''
+                    
+                        }
+                        
                 </div>  
             </div>
                  

@@ -39,6 +39,42 @@ class UserRepository extends ServiceEntityRepository
         }
     }
 
+    //get boutiques details
+    public function getBoutiqueOfLivreur($id) {
+        $queryBuilder = $this->createQueryBuilder("u")
+        ->select('b.id')
+        ->innerJoin("u.boutique_id", "b")
+        ->where('u.id = :id')
+        ->setParameter('id',$id);
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    //get boutiques details
+    public function getProduitsOfLivreur($id) {
+        $queryBuilder = $this->createQueryBuilder("u")
+        ->select('p.id,p.nom,p.description')
+        ->innerJoin("u.boutique_id", "b")
+        ->innerJoin("b.produits", "p")
+        ->where('u.id = :id')
+        ->setParameter('id',$id);
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    public function getCategoriesOfLivreur($id) {
+        $queryBuilder = $this->createQueryBuilder("u")
+        ->select('c.id,c.nom')
+        ->innerJoin("u.boutique_id", "b")
+        ->innerJoin("b.produits", "p")
+        ->innerJoin("p.categories", "c")
+        ->where('u.id = :id')
+        ->setParameter('id',$id)
+        ->distinct();
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+
 //    /**
 //     * @return Ville[] Returns an array of Ville objects
 //     */
